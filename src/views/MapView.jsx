@@ -1,12 +1,12 @@
 // src/views/MapView.jsx
 
 import React, { useState } from 'react';
-import { ChevronLeft, X, Star, Utensils, Clock, Search, MapPin } from 'lucide-react';
+import { ChevronLeft, Star, Utensils, Clock, Search, MapPin } from 'lucide-react';
 import { RESTAURANTS } from '../data/mockData';
-import GoogleMapComponent from '../components/ui/GoogleMapComponent'; // 🌟 引入我們寫好的 Google Map 元件
+import GoogleMapComponent from '../components/ui/GoogleMapComponent';
 
 // ==========================================
-// 🌟 3D 舞台參數微調區
+// 🌟 3D 舞台參數配置
 // ==========================================
 const STAGE_CONFIG = {
   perspective: '1200px',
@@ -18,8 +18,8 @@ const STAGE_CONFIG = {
   },
   
   tabletActive: {
-    tablet: { x: '10%',   y: '0%', z: '0px', rotateY: '0deg', rotateX: '3deg', scale: 1.05, zIndex: 50 },
-    phone:  { x: '-160%', y: '5%', z: '-150px', rotateY: '12deg', rotateX: '5deg', scale: 0.85, zIndex: 10 }
+    tablet: { x: '12.5%',   y: '0%', z: '0px', rotateY: '0deg', rotateX: '3deg', scale: 1.05, zIndex: 50 },
+    phone:  { x: '-170%', y: '5%', z: '-300px', rotateY: '25deg', rotateX: '0deg', scale: 1, zIndex: 10 }
   }
 };
 
@@ -28,6 +28,7 @@ export default function MapView({ selectedShop, setSelectedShop }) {
   const [searchQuery, setSearchQuery] = useState('');
   const [activeDevice, setActiveDevice] = useState('phone');
 
+  // 店家篩選邏輯
   const filteredShops = RESTAURANTS.filter(shop => {
     if (filterTime !== '全部' && shop.distance > parseInt(filterTime)) return false;
     if (searchQuery && !shop.name.includes(searchQuery) && !shop.type.includes(searchQuery)) return false;
@@ -46,6 +47,7 @@ export default function MapView({ selectedShop, setSelectedShop }) {
       className="relative w-full h-screen bg-[#E5E3DF] overflow-hidden flex items-center justify-center animate-in fade-in duration-700"
       style={{ perspective: STAGE_CONFIG.perspective }}
     >
+      {/* 底部陰影裝飾 */}
       <div className="absolute bottom-[-5%] left-1/2 -translate-x-1/2 w-[70vw] h-[20vh] bg-stone-300/40 blur-[80px] rounded-full pointer-events-none"></div>
 
       {/* ==========================================
@@ -60,6 +62,7 @@ export default function MapView({ selectedShop, setSelectedShop }) {
           transformStyle: 'preserve-3d'
         }}
       >
+        {/* 當平板在後方時，點擊邊緣也可切換 */}
         {activeDevice !== 'tablet' && (
           <div 
             className="absolute inset-0 z-[100] bg-black/10 cursor-pointer rounded-[1.5rem] hover:bg-transparent transition-colors"
@@ -67,14 +70,17 @@ export default function MapView({ selectedShop, setSelectedShop }) {
           />
         )}
         
-        {/* 🌟 核心替換區：直接放入 GoogleMapComponent */}
         <div className="flex-1 relative bg-[#E8EAED] rounded-[1.5rem] overflow-hidden">
           <GoogleMapComponent 
             shops={filteredShops} 
             selectedShop={selectedShop} 
             onMarkerClick={(shop) => {
               setSelectedShop(shop);
-              setActiveDevice('phone'); // 點擊地圖上的店家時，將手機移到前方
+              setActiveDevice('phone'); // 點擊標記：選中並切換到手機觀看詳細內容
+            }}
+            onMapClick={() => {
+              setSelectedShop(null);    // 🌟 點擊地圖空白處：清空選取
+              setActiveDevice('tablet'); // 🌟 點擊地圖空白處：切換回平板看全圖
             }}
           />
         </div>
@@ -92,8 +98,10 @@ export default function MapView({ selectedShop, setSelectedShop }) {
           transformStyle: 'preserve-3d'
         }}
       >
+        {/* 瀏海裝飾 */}
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-28 h-6 bg-[#1A1A1A] rounded-b-2xl z-50"></div>
 
+        {/* 當手機在後方時，點擊邊緣也可切換 */}
         {activeDevice !== 'phone' && (
           <div 
             className="absolute inset-0 z-[100] bg-black/10 cursor-pointer rounded-[1.8rem]"
@@ -102,8 +110,8 @@ export default function MapView({ selectedShop, setSelectedShop }) {
         )}
 
         <div className="flex-1 relative bg-white rounded-[1.8rem] overflow-hidden flex flex-col">
-          
           {selectedShop ? (
+            /* 詳細資料模式 */
             <div className="flex-1 flex flex-col overflow-y-auto no-scrollbar animate-in fade-in slide-in-from-right-4 duration-300">
               <div className="relative w-full h-52 flex-shrink-0">
                 <img src={selectedShop.img} className="w-full h-full object-cover" alt={selectedShop.name}/>
@@ -143,6 +151,7 @@ export default function MapView({ selectedShop, setSelectedShop }) {
               </div>
             </div>
           ) : (
+            /* 搜尋清單模式 */
             <div className="flex-1 flex flex-col bg-white overflow-hidden pt-8">
               <div className="p-4 border-b border-stone-100 bg-white">
                  <div className="flex items-center bg-stone-100/60 border border-stone-200 rounded-xl px-4 py-3 mb-3">
@@ -173,11 +182,13 @@ export default function MapView({ selectedShop, setSelectedShop }) {
                  {filteredShops.map((shop, idx) => (
                    <div 
                      key={shop.id} 
-                     className="p-4 border-b border-stone-50 flex cursor-pointer hover:bg-stone-50 transition-colors animate-in fade-in"
+                     className={`p-4 border-b border-stone-50 flex cursor-pointer hover:bg-stone-50 transition-colors animate-in fade-in ${
+                       selectedShop?.id === shop.id ? 'bg-stone-50' : ''
+                     }`}
                      style={{ animationDelay: `${idx * 40}ms` }}
                      onClick={() => {
                         setSelectedShop(shop); 
-                        setActiveDevice('tablet'); 
+                        setActiveDevice('phone'); 
                      }}
                    >
                       <div className="flex-1 pr-3 flex flex-col justify-center">
