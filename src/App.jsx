@@ -10,7 +10,6 @@ import InfoView from './views/InfoView';
 import AboutView from './views/AboutView';
 import ShopDetailView from './views/ShopDetailView';
 
-
 export default function App() {
   const [activeTab, setActiveTab] = useState('home');
   const [selectedShop, setSelectedShop] = useState(null);
@@ -26,21 +25,24 @@ export default function App() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  const isCompactHeader = activeTab === 'map' || isScrolled;
-
   return (
-    
     <div className="cursor-none min-h-screen bg-[#F6F6F4] font-sans text-[#1A1A1A] selection:bg-[#1A1A1A] selection:text-white overflow-x-hidden">
+      
+      {/* 全域自定義鼠標與懸浮隨選導航欄 */}
       <CustomCursor setActiveTab={setActiveTab} />
 
-      <Header 
-        activeTab={activeTab} 
-        setActiveTab={setActiveTab} 
-        isCompactHeader={isCompactHeader} 
-      />
+      {/* 🌟 Header 條件渲染：地圖頁不顯示 Header */}
+      {activeTab !== 'map' && (
+        <Header 
+          activeTab={activeTab} 
+          setActiveTab={setActiveTab} 
+          isCompactHeader={isScrolled} 
+        />
+      )}
 
+      {/* 🌟 主內容區：地圖頁 pt 改為 0，達到真正的全螢幕滿版效果 */}
       <main className={`relative transition-all duration-500 ${
-        activeTab === 'map' ? 'h-screen pt-[70px] overflow-hidden' : 'min-h-screen pt-[140px]'
+        activeTab === 'map' ? 'h-screen pt-0 overflow-hidden' : 'min-h-screen pt-[140px]'
       }`}>
         {activeTab === 'home' && <HomeView setActiveTab={setActiveTab} />}
         {activeTab === 'shops' && <ShopsView setSelectedShop={setSelectedShop} setActiveTab={setActiveTab} />}
@@ -51,6 +53,7 @@ export default function App() {
         {activeTab === 'about' && <AboutView />}
       </main>
 
+      {/* 🌟 Footer 條件渲染：地圖頁不顯示 Footer */}
       {activeTab !== 'map' && (
         <Footer scrollToTop={scrollToTop} />
       )}
@@ -58,4 +61,3 @@ export default function App() {
     </div>
   );
 }
-
