@@ -11,14 +11,19 @@ export default function Header({ activeTab, setActiveTab, isCompactHeader }) {
         : 'fixed top-0 left-0 bg-[#F6F6F4] h-[140px]'
     }`}>
       <div className="max-w-7xl mx-auto w-full h-full relative px-6">
-        
+
+        {/* 🌟 修改這裡：加上 role="button" 與 bg-transparent */}
         <div 
-          className={`absolute transition-all duration-700 ease-in-out flex cursor-pointer z-10 ${
+          role="button" 
+          className={`absolute transition-all duration-700 ease-in-out flex cursor-pointer bg-transparent z-10 ${
             isCompactHeader
               ? 'top-1/2 -translate-y-1/2 left-6 flex-row items-center scale-75 origin-left'
               : 'top-8 left-1/2 -translate-x-1/2 flex-col items-center'
           }`}
-          onClick={() => setActiveTab('home')}
+          onClick={(e) => {
+            e.stopPropagation(); 
+            setActiveTab('home');
+          }}
         >
           <div className={`flex items-center text-[#1A1A1A] ${isCompactHeader ? 'mr-4' : 'mb-1'}`}>
             <Leaf size={isCompactHeader ? 20 : 24} strokeWidth={2} />
@@ -31,6 +36,7 @@ export default function Header({ activeTab, setActiveTab, isCompactHeader }) {
           </span>
         </div>
 
+        {/* ... 下方的導航列按鈕維持原樣 ... */}
         <div className={`absolute transition-all duration-700 ease-in-out flex ${
           isCompactHeader
             ? 'top-1/2 -translate-y-1/2 right-6 w-auto'
