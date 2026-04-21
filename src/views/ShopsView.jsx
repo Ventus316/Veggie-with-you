@@ -5,11 +5,15 @@ import { MapPin, Clock, ArrowRight, X, Leaf } from 'lucide-react';
 import { RESTAURANTS } from '../data/mockData';
 import FadeInCard from '../components/ui/FadeInCard';
 
-export default function ShopsView({ setSelectedShop }) {
+export default function ShopsView({ setSelectedShop, setActiveTab }) {
   const [filterType, setFilterType] = useState('全部');
   const [filterTime, setFilterTime] = useState('全部');
   const [selectedMenu, setSelectedMenu] = useState(null);
-
+  
+  const handleShopClick = (shopData) => {
+    setSelectedShop(shopData);    // 1. 將選中的店家資料存入 App.jsx 的 selectedShop
+    setActiveTab('shopDetail');   // 2. 將畫面切換到 ShopDetailView
+  };
   const filteredShops = RESTAURANTS.filter(shop => {
     if (filterType !== '全部' && shop.type !== filterType) return false;
     if (filterTime !== '全部' && shop.distance > parseInt(filterTime)) return false;
@@ -60,7 +64,7 @@ export default function ShopsView({ setSelectedShop }) {
       <div className="flex flex-col space-y-6">
         {filteredShops.map((shop, idx) => (
           <FadeInCard key={shop.id} delay={(idx % 5) * 100}>
-            <div className="group relative bg-[#FDFCF8] flex flex-col p-6 md:p-8 border border-stone-200 hover:border-[#1A1A1A] hover:shadow-xl transition-all duration-500">
+            <div onClick={() => handleShopClick(shop)} className="group relative bg-[#FDFCF8] flex flex-col p-6 md:p-8 border border-stone-200 hover:border-[#1A1A1A] hover:shadow-xl transition-all duration-500">
               <div className="flex flex-col mb-6 border-b border-stone-100 pb-4">
                 <div className="flex items-center space-x-3 mb-2">
                   <h3 className="text-xl font-bold tracking-[0.15em] text-[#1A1A1A]">{shop.name}</h3>
@@ -94,7 +98,10 @@ export default function ShopsView({ setSelectedShop }) {
 
               <div className="flex justify-end w-full">
                 <button 
-                  onClick={() => setSelectedMenu(shop.menuImg)}
+                  onClick={(e) => {
+                    e.stopPropagation(); // 阻止事件冒泡，避免觸發外層卡片的跳轉
+                    setSelectedMenu(shop.menuImg);
+                  }}
                   className="flex items-center space-x-2 text-[10px] font-bold tracking-[0.2em] text-[#1A1A1A] border-b border-[#1A1A1A] pb-1 uppercase hover:text-stone-400 hover:border-stone-400 transition-colors"
                 >
                   <span>查看線上完整菜單</span>
