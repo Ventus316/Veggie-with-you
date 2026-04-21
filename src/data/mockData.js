@@ -9,16 +9,76 @@ export const RECOMMEND_DISHES = [
 ];
 
 export const RESTAURANTS = [
-  { id: 1, name: "綠意植物料理", distance: 5, rating: "4.9", reviews: "210", type: "全素", open: "11:30 - 20:00", menuImg: "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?q=80&w=800&auto=format&fit=crop", img: "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?q=80&w=200&auto=format&fit=crop", recommendations: [{ name: "招牌牛油果藜麥沙拉", price: 120, img: "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?q=80&w=200&auto=format&fit=crop" }, { name: "松露野菇燉飯", price: 160, img: "https://images.unsplash.com/photo-1490645935967-10de6ba17061?q=80&w=200&auto=format&fit=crop" }] },
-  { id: 2, name: "興仁路清爽蔬食", distance: 5, rating: "4.8", reviews: "192", type: "蛋奶素", open: "11:00 - 19:30", menuImg: "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?q=80&w=800&auto=format&fit=crop", img: "https://images.unsplash.com/photo-1547592166-23ac45744acd?q=80&w=200&auto=format&fit=crop", recommendations: [{ name: "日式胡麻時蔬拌麵", price: 85, img: "https://images.unsplash.com/photo-1547592166-23ac45744acd?q=80&w=200&auto=format&fit=crop" }, { name: "黃金酥脆豆腐", price: 50, img: "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?q=80&w=200&auto=format&fit=crop" }] },
-  { id: 3, name: "內壢巷弄健康餐", distance: 10, rating: "4.5", reviews: "89", type: "五辛素", open: "10:30 - 20:00", menuImg: "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?q=80&w=800&auto=format&fit=crop", img: "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?q=80&w=200&auto=format&fit=crop", recommendations: [{ name: "溫補鮮蔬羅宋湯", price: 95, img: "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?q=80&w=200&auto=format&fit=crop" }, { name: "香料烤時蔬拼盤", price: 110, img: "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?q=80&w=200&auto=format&fit=crop" }] },
-  { id: 4, name: "純植系手作", distance: 15, rating: "4.7", reviews: "156", type: "全素", open: "12:00 - 21:00", menuImg: "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?q=80&w=800&auto=format&fit=crop", img: "https://images.unsplash.com/photo-1490645935967-10de6ba17061?q=80&w=200&auto=format&fit=crop", recommendations: [{ name: "青醬堅果義大利麵", price: 150, img: "https://images.unsplash.com/photo-1490645935967-10de6ba17061?q=80&w=200&auto=format&fit=crop" }, { name: "燕麥奶拿鐵", price: 80, img: "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?q=80&w=200&auto=format&fit=crop" }] },
-  { id: 5, name: "元智二門蔬食", distance: 5, rating: "4.6", reviews: "230", type: "蛋奶素", open: "11:00 - 14:00", menuImg: "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?q=80&w=800&auto=format&fit=crop", img: "https://images.unsplash.com/photo-1525059696034-4967a8e1dca2?q=80&w=200&auto=format&fit=crop", recommendations: [{ name: "植物肉手打漢堡", price: 110, img: "https://images.unsplash.com/photo-1525059696034-4967a8e1dca2?q=80&w=200&auto=format&fit=crop" }, { name: "起司薯塊", price: 60, img: "https://images.unsplash.com/photo-1547592166-23ac45744acd?q=80&w=200&auto=format&fit=crop" }] },
-  { id: 6, name: "大地生機飲食店", distance: 10, rating: "4.4", reviews: "78", type: "全素", open: "08:00 - 17:00", menuImg: "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?q=80&w=800&auto=format&fit=crop", img: "https://images.unsplash.com/photo-1540420773420-3366772f4999?q=80&w=200&auto=format&fit=crop", recommendations: [{ name: "五行養生拌飯", price: 100, img: "https://images.unsplash.com/photo-1540420773420-3366772f4999?q=80&w=200&auto=format&fit=crop" }, { name: "冷壓綠拿鐵", price: 90, img: "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?q=80&w=200&auto=format&fit=crop" }] },
-  { id: 7, name: "香草時光輕食", distance: 15, rating: "4.9", reviews: "312", type: "蛋奶素", open: "10:00 - 18:00", menuImg: "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?q=80&w=800&auto=format&fit=crop", img: "https://images.unsplash.com/photo-1505253716362-afaea1d3d1af?q=80&w=200&auto=format&fit=crop", recommendations: [{ name: "番茄莫札瑞拉帕尼尼", price: 130, img: "https://images.unsplash.com/photo-1505253716362-afaea1d3d1af?q=80&w=200&auto=format&fit=crop" }, { name: "手工優格杯", price: 75, img: "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?q=80&w=200&auto=format&fit=crop" }] },
-  { id: 8, name: "無肉不歡", distance: 5, rating: "4.3", reviews: "65", type: "五辛素", open: "17:00 - 23:00", menuImg: "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?q=80&w=800&auto=format&fit=crop", img: "https://images.unsplash.com/photo-1550547660-d9450f859349?q=80&w=200&auto=format&fit=crop", recommendations: [{ name: "麻辣植物肉串", price: 45, img: "https://images.unsplash.com/photo-1550547660-d9450f859349?q=80&w=200&auto=format&fit=crop" }, { name: "烤櫛瓜片", price: 40, img: "https://images.unsplash.com/photo-1547592166-23ac45744acd?q=80&w=200&auto=format&fit=crop" }] },
-  { id: 9, name: "和平豆花蔬食", distance: 10, rating: "4.8", reviews: "450", type: "全素", open: "13:00 - 21:00", menuImg: "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?q=80&w=800&auto=format&fit=crop", img: "https://images.unsplash.com/photo-1559314809-0d155014e29e?q=80&w=200&auto=format&fit=crop", recommendations: [{ name: "招牌綜合豆花", price: 50, img: "https://images.unsplash.com/photo-1559314809-0d155014e29e?q=80&w=200&auto=format&fit=crop" }, { name: "古早味綠豆湯", price: 40, img: "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?q=80&w=200&auto=format&fit=crop" }] },
-  { id: 10, name: "靜心禪食", distance: 15, rating: "4.9", reviews: "188", type: "全素", open: "11:30 - 14:00", menuImg: "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?q=80&w=800&auto=format&fit=crop", img: "https://images.unsplash.com/photo-1455619452474-d2be8b1e70cd?q=80&w=200&auto=format&fit=crop", recommendations: [{ name: "靜心定食餐盤", price: 200, img: "https://images.unsplash.com/photo-1455619452474-d2be8b1e70cd?q=80&w=200&auto=format&fit=crop" }, { name: "牛蒡養生茶", price: 60, img: "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?q=80&w=200&auto=format&fit=crop" }] }
+  { 
+    id: 1, name: "綠意植物料理", distance: 5, rating: "4.9", reviews: "210", type: "全素", open: "11:30 - 20:00", 
+    menuImg: "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?q=80&w=800&auto=format&fit=crop", 
+    img: "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?q=80&w=200&auto=format&fit=crop", 
+    recommendations: [{ name: "招牌牛油果藜麥沙拉", price: 120, img: "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?q=80&w=200&auto=format&fit=crop" }, { name: "松露野菇燉飯", price: 160, img: "https://images.unsplash.com/photo-1490645935967-10de6ba17061?q=80&w=200&auto=format&fit=crop" }],
+    lat: 24.9698, lng: 121.2635 // 📍 新增：元智大學正門周邊
+  },
+  { 
+    id: 2, name: "興仁路清爽蔬食", distance: 5, rating: "4.8", reviews: "192", type: "蛋奶素", open: "11:00 - 19:30", 
+    menuImg: "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?q=80&w=800&auto=format&fit=crop", 
+    img: "https://images.unsplash.com/photo-1547592166-23ac45744acd?q=80&w=200&auto=format&fit=crop", 
+    recommendations: [{ name: "日式胡麻時蔬拌麵", price: 85, img: "https://images.unsplash.com/photo-1547592166-23ac45744acd?q=80&w=200&auto=format&fit=crop" }, { name: "黃金酥脆豆腐", price: 50, img: "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?q=80&w=200&auto=format&fit=crop" }],
+    lat: 24.9685, lng: 121.2650 // 📍 新增：興仁國小方向
+  },
+  { 
+    id: 3, name: "內壢巷弄健康餐", distance: 10, rating: "4.5", reviews: "89", type: "五辛素", open: "10:30 - 20:00", 
+    menuImg: "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?q=80&w=800&auto=format&fit=crop", 
+    img: "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?q=80&w=200&auto=format&fit=crop", 
+    recommendations: [{ name: "溫補鮮蔬羅宋湯", price: 95, img: "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?q=80&w=200&auto=format&fit=crop" }, { name: "香料烤時蔬拼盤", price: 110, img: "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?q=80&w=200&auto=format&fit=crop" }],
+    lat: 24.9720, lng: 121.2610 // 📍 新增：往內壢火車站方向
+  },
+  { 
+    id: 4, name: "純植系手作", distance: 15, rating: "4.7", reviews: "156", type: "全素", open: "12:00 - 21:00", 
+    menuImg: "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?q=80&w=800&auto=format&fit=crop", 
+    img: "https://images.unsplash.com/photo-1490645935967-10de6ba17061?q=80&w=200&auto=format&fit=crop", 
+    recommendations: [{ name: "青醬堅果義大利麵", price: 150, img: "https://images.unsplash.com/photo-1490645935967-10de6ba17061?q=80&w=200&auto=format&fit=crop" }, { name: "燕麥奶拿鐵", price: 80, img: "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?q=80&w=200&auto=format&fit=crop" }],
+    lat: 24.9715, lng: 121.2640 // 📍 新增：遠東路周邊
+  },
+  { 
+    id: 5, name: "元智二門蔬食", distance: 5, rating: "4.6", reviews: "230", type: "蛋奶素", open: "11:00 - 14:00", 
+    menuImg: "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?q=80&w=800&auto=format&fit=crop", 
+    img: "https://images.unsplash.com/photo-1525059696034-4967a8e1dca2?q=80&w=200&auto=format&fit=crop", 
+    recommendations: [{ name: "植物肉手打漢堡", price: 110, img: "https://images.unsplash.com/photo-1525059696034-4967a8e1dca2?q=80&w=200&auto=format&fit=crop" }, { name: "起司薯塊", price: 60, img: "https://images.unsplash.com/photo-1547592166-23ac45744acd?q=80&w=200&auto=format&fit=crop" }],
+    lat: 24.9680, lng: 121.2615 // 📍 新增：靠近校園側門
+  },
+  { 
+    id: 6, name: "大地生機飲食店", distance: 10, rating: "4.4", reviews: "78", type: "全素", open: "08:00 - 17:00", 
+    menuImg: "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?q=80&w=800&auto=format&fit=crop", 
+    img: "https://images.unsplash.com/photo-1540420773420-3366772f4999?q=80&w=200&auto=format&fit=crop", 
+    recommendations: [{ name: "五行養生拌飯", price: 100, img: "https://images.unsplash.com/photo-1540420773420-3366772f4999?q=80&w=200&auto=format&fit=crop" }, { name: "冷壓綠拿鐵", price: 90, img: "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?q=80&w=200&auto=format&fit=crop" }],
+    lat: 24.9675, lng: 121.2660 // 📍 新增
+  },
+  { 
+    id: 7, name: "香草時光輕食", distance: 15, rating: "4.9", reviews: "312", type: "蛋奶素", open: "10:00 - 18:00", 
+    menuImg: "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?q=80&w=800&auto=format&fit=crop", 
+    img: "https://images.unsplash.com/photo-1505253716362-afaea1d3d1af?q=80&w=200&auto=format&fit=crop", 
+    recommendations: [{ name: "番茄莫札瑞拉帕尼尼", price: 130, img: "https://images.unsplash.com/photo-1505253716362-afaea1d3d1af?q=80&w=200&auto=format&fit=crop" }, { name: "手工優格杯", price: 75, img: "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?q=80&w=200&auto=format&fit=crop" }],
+    lat: 24.9730, lng: 121.2625 // 📍 新增
+  },
+  { 
+    id: 8, name: "無肉不歡", distance: 5, rating: "4.3", reviews: "65", type: "五辛素", open: "17:00 - 23:00", 
+    menuImg: "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?q=80&w=800&auto=format&fit=crop", 
+    img: "https://images.unsplash.com/photo-1550547660-d9450f859349?q=80&w=200&auto=format&fit=crop", 
+    recommendations: [{ name: "麻辣植物肉串", price: 45, img: "https://images.unsplash.com/photo-1550547660-d9450f859349?q=80&w=200&auto=format&fit=crop" }, { name: "烤櫛瓜片", price: 40, img: "https://images.unsplash.com/photo-1547592166-23ac45744acd?q=80&w=200&auto=format&fit=crop" }],
+    lat: 24.9705, lng: 121.2655 // 📍 新增
+  },
+  { 
+    id: 9, name: "和平豆花蔬食", distance: 10, rating: "4.8", reviews: "450", type: "全素", open: "13:00 - 21:00", 
+    menuImg: "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?q=80&w=800&auto=format&fit=crop", 
+    img: "https://images.unsplash.com/photo-1559314809-0d155014e29e?q=80&w=200&auto=format&fit=crop", 
+    recommendations: [{ name: "招牌綜合豆花", price: 50, img: "https://images.unsplash.com/photo-1559314809-0d155014e29e?q=80&w=200&auto=format&fit=crop" }, { name: "古早味綠豆湯", price: 40, img: "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?q=80&w=200&auto=format&fit=crop" }],
+    lat: 24.9690, lng: 121.2605 // 📍 新增
+  },
+  { 
+    id: 10, name: "靜心禪食", distance: 15, rating: "4.9", reviews: "188", type: "全素", open: "11:30 - 14:00", 
+    menuImg: "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?q=80&w=800&auto=format&fit=crop", 
+    img: "https://images.unsplash.com/photo-1455619452474-d2be8b1e70cd?q=80&w=200&auto=format&fit=crop", 
+    recommendations: [{ name: "靜心定食餐盘", price: 200, img: "https://images.unsplash.com/photo-1455619452474-d2be8b1e70cd?q=80&w=200&auto=format&fit=crop" }, { name: "牛蒡養生茶", price: 60, img: "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?q=80&w=200&auto=format&fit=crop" }],
+    lat: 24.9740, lng: 121.2600 // 📍 新增
+  }
 ];
 
 export const ALL_DISHES = [

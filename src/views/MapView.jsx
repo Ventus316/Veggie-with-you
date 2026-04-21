@@ -1,23 +1,22 @@
 // src/views/MapView.jsx
 
 import React, { useState } from 'react';
-import { ChevronLeft, X, Star, Utensils, MapPin, Clock, Search } from 'lucide-react';
+import { ChevronLeft, X, Star, Utensils, Clock, Search, MapPin } from 'lucide-react';
 import { RESTAURANTS } from '../data/mockData';
+import GoogleMapComponent from '../components/ui/GoogleMapComponent'; // 🌟 引入我們寫好的 Google Map 元件
 
 // ==========================================
-// 🌟 3D 舞台參數微調區 (可根據你的美感自行修改)
+// 🌟 3D 舞台參數微調區
 // ==========================================
 const STAGE_CONFIG = {
-  perspective: '1200px', // 空間深度
-  transition: 'transform 0.8s cubic-bezier(0.2, 0.8, 0.2, 1)', // 動畫平滑曲線
+  perspective: '1200px',
+  transition: 'transform 0.8s cubic-bezier(0.2, 0.8, 0.2, 1)',
   
-  // 狀態 A：手機在前方 (搜尋/詳細資訊模式)
   phoneActive: {
     phone:  { x: '-100%', y: '0%', z: '150px', rotateY: '0deg', rotateX: '3deg', scale: 1, zIndex: 50 },
     tablet: { x: '20%',  y: '0%', z: '-120px', rotateY: '-10deg', rotateX: '5deg', scale: 1, zIndex: 10 }
   },
   
-  // 狀態 B：平板在前方 (地圖導覽模式)
   tabletActive: {
     tablet: { x: '10%',   y: '0%', z: '0px', rotateY: '0deg', rotateX: '3deg', scale: 1.05, zIndex: 50 },
     phone:  { x: '-160%', y: '5%', z: '-150px', rotateY: '12deg', rotateX: '5deg', scale: 0.85, zIndex: 10 }
@@ -37,7 +36,6 @@ export default function MapView({ selectedShop, setSelectedShop }) {
 
   const currentPos = activeDevice === 'phone' ? STAGE_CONFIG.phoneActive : STAGE_CONFIG.tabletActive;
 
-  // 輔助函式：將設定轉換為 CSS Transform 字串
   const getTransform = (device) => {
     const { x, y, z, rotateY, rotateX, scale } = currentPos[device];
     return `translate3d(${x}, ${y}, ${z}) rotateY(${rotateY}) rotateX(${rotateX}) scale(${scale})`;
@@ -48,7 +46,6 @@ export default function MapView({ selectedShop, setSelectedShop }) {
       className="relative w-full h-screen bg-[#E5E3DF] overflow-hidden flex items-center justify-center animate-in fade-in duration-700"
       style={{ perspective: STAGE_CONFIG.perspective }}
     >
-      {/* 底部環境倒影/陰影 */}
       <div className="absolute bottom-[-5%] left-1/2 -translate-x-1/2 w-[70vw] h-[20vh] bg-stone-300/40 blur-[80px] rounded-full pointer-events-none"></div>
 
       {/* ==========================================
@@ -63,7 +60,6 @@ export default function MapView({ selectedShop, setSelectedShop }) {
           transformStyle: 'preserve-3d'
         }}
       >
-        {/* 平板非活動時的點擊覆蓋層 */}
         {activeDevice !== 'tablet' && (
           <div 
             className="absolute inset-0 z-[100] bg-black/10 cursor-pointer rounded-[1.5rem] hover:bg-transparent transition-colors"
@@ -71,52 +67,18 @@ export default function MapView({ selectedShop, setSelectedShop }) {
           />
         )}
         
-        {/* 平板螢幕 */}
+        {/* 🌟 核心替換區：直接放入 GoogleMapComponent */}
         <div className="flex-1 relative bg-[#E8EAED] rounded-[1.5rem] overflow-hidden">
-          <div className="absolute inset-0 opacity-[0.05]" style={{ backgroundImage: 'radial-gradient(#000 1px, transparent 1px)', backgroundSize: '24px 24px' }}></div>
-          
-          {/* 校園地標 */}
-          <div className="absolute top-[45%] left-[55%] z-10 flex flex-col items-center transform -translate-x-1/2 -translate-y-1/2">
-            <div className="w-10 h-10 bg-emerald-600 rounded-full shadow-lg border-[3px] border-white flex items-center justify-center text-white mb-1">
-              <span className="text-[10px] font-black">YZU</span>
-            </div>
-            <span className="bg-white/90 backdrop-blur px-2 py-0.5 rounded shadow text-[9px] font-bold text-[#1A1A1A]">元智大學</span>
-          </div>
-
-          {/* 店家標籤 (Pins) */}
-          {filteredShops.map(r => (
-            <div 
-              key={r.id}
-              role="button" // 🌟 確保被 CustomCursor 識別
-              className="absolute cursor-pointer transition-all z-20 group hover:scale-110"
-              style={{ 
-                top: `${45 + (r.distance % 2 === 0 ? 1 : -1) * (r.distance * 1.5)}%`, 
-                left: `${55 + (r.id % 2 === 0 ? 1 : -1) * (r.distance * 2)}%` 
-              }}
-              onClick={(e) => { 
-                // 🌟 修復核心：阻止冒泡與原生事件衝突
-                e.stopPropagation(); 
-                if (e.nativeEvent) e.nativeEvent.stopImmediatePropagation();
-                
-                setSelectedShop(r); 
-                setActiveDevice('phone'); // 點地圖時，把手機(資料頁)叫到前面
-              }}
-            >
-              <div className="flex flex-col items-center relative">
-                <div className={`px-2 py-1 rounded shadow-md text-[10px] font-bold mb-1 transition-colors ${selectedShop?.id === r.id ? 'bg-[#1A1A1A] text-white scale-110' : 'bg-white text-[#1A1A1A]'}`}>
-                  {r.name}
-                </div>
-                <MapPin 
-                  size={26} 
-                  className={selectedShop?.id === r.id ? 'text-[#1A1A1A]' : 'text-emerald-600'} 
-                  fill="#ffffff"
-                />
-              </div>
-            </div>
-          ))}
+          <GoogleMapComponent 
+            shops={filteredShops} 
+            selectedShop={selectedShop} 
+            onMarkerClick={(shop) => {
+              setSelectedShop(shop);
+              setActiveDevice('phone'); // 點擊地圖上的店家時，將手機移到前方
+            }}
+          />
         </div>
       </div>
-
 
       {/* ==========================================
           裝置 2：手機 (清單與詳細資料區)
@@ -215,7 +177,7 @@ export default function MapView({ selectedShop, setSelectedShop }) {
                      style={{ animationDelay: `${idx * 40}ms` }}
                      onClick={() => {
                         setSelectedShop(shop); 
-                        setActiveDevice('tablet'); // 點清單時，把地圖(平板)移到前方看位置
+                        setActiveDevice('tablet'); 
                      }}
                    >
                       <div className="flex-1 pr-3 flex flex-col justify-center">
