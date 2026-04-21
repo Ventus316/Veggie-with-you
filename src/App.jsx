@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Header from './components/layout/Header';
 import Footer from './components/layout/Footer';
+import CustomCursor from './components/ui/CustomCursor';
 import HomeView from './views/HomeView';
 import ShopsView from './views/ShopsView';
 import MapView from './views/MapView';
@@ -28,8 +29,10 @@ export default function App() {
   const isCompactHeader = activeTab === 'map' || isScrolled;
 
   return (
-    <div className="min-h-screen bg-[#F6F6F4] font-sans text-[#1A1A1A] selection:bg-[#1A1A1A] selection:text-white overflow-x-hidden">
-      
+    
+    <div className="cursor-none min-h-screen bg-[#F6F6F4] font-sans text-[#1A1A1A] selection:bg-[#1A1A1A] selection:text-white overflow-x-hidden">
+      <CustomCursor setActiveTab={setActiveTab} />
+
       <Header 
         activeTab={activeTab} 
         setActiveTab={setActiveTab} 
