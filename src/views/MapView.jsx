@@ -14,11 +14,11 @@ const STAGE_CONFIG = {
   
   phoneActive: {
     phone:  { x: '-100%', y: '0%', z: '150px', rotateY: '0deg', rotateX: '3deg', scale: 1, zIndex: 50 },
-    tablet: { x: '20%',  y: '0%', z: '-120px', rotateY: '-10deg', rotateX: '5deg', scale: 1, zIndex: 10 }
+    tablet: { x: '23%',  y: '0%', z: '-120px', rotateY: '-10deg', rotateX: '5deg', scale: 1, zIndex: 10 }
   },
   
   tabletActive: {
-    tablet: { x: '12.5%',   y: '0%', z: '0px', rotateY: '0deg', rotateX: '3deg', scale: 1.05, zIndex: 50 },
+    tablet: { x: '15%',   y: '0%', z: '0px', rotateY: '0deg', rotateX: '3deg', scale: 1.1, zIndex: 50 },
     phone:  { x: '-170%', y: '5%', z: '-300px', rotateY: '25deg', rotateX: '0deg', scale: 1, zIndex: 10 }
   }
 };
@@ -160,8 +160,6 @@ export default function MapView({ selectedShop, setSelectedShop }) {
                      type="text" 
                      placeholder="搜尋蔬食..." 
                      className="flex-1 bg-transparent text-xs font-medium focus:outline-none" 
-                     value={searchQuery} 
-                     onChange={e => setSearchQuery(e.target.value)}
                    />
                  </div>
                  <div className="flex items-center border border-stone-200 rounded-lg px-2 py-1.5 text-[10px] font-bold">

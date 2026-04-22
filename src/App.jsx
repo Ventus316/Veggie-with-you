@@ -29,7 +29,10 @@ export default function App() {
     <div className="cursor-none min-h-screen bg-[#F6F6F4] font-sans text-[#1A1A1A] selection:bg-[#1A1A1A] selection:text-white overflow-x-hidden">
       
       {/* 全域自定義鼠標與懸浮隨選導航欄 */}
-      <CustomCursor setActiveTab={setActiveTab} />
+      <CustomCursor 
+        activeTab={activeTab}
+        setActiveTab={setActiveTab} 
+      />
 
       {/* 🌟 Header 條件渲染：地圖頁不顯示 Header */}
       {activeTab !== 'map' && (
