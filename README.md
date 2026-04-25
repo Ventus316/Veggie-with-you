@@ -10,7 +10,7 @@
    ```
 2. 進入專案目錄 (重要)：
    ```bash
-   cd tearsPearls
+   cd YZU_VegFind
    ```
 3. 安裝專案依賴套件：
    ```bash
