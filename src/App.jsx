@@ -56,8 +56,8 @@ export default function App() {
         {activeTab === 'about' && <AboutView />}
       </main>
 
-      {/* 🌟 Footer 條件渲染：地圖頁不顯示 Footer */}
-      {activeTab !== 'map' && (
+      {/* 🌟 Footer 條件渲染：地圖頁與素食小百科頁不顯示 Footer */}
+      {activeTab !== 'map' && activeTab !== 'info' && (
         <Footer scrollToTop={scrollToTop} />
       )}
       
