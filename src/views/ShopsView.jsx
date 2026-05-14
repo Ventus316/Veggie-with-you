@@ -11,12 +11,14 @@ export default function ShopsView({ setSelectedShop, setActiveTab }) {
   const [selectedMenu, setSelectedMenu] = useState(null);
   
   const handleShopClick = (shopData) => {
-    setSelectedShop(shopData);    // 1. 將選中的店家資料存入 App.jsx 的 selectedShop
-    setActiveTab('shopDetail');   // 2. 將畫面切換到 ShopDetailView
+    setSelectedShop(shopData);
+    setActiveTab('shopDetail');
   };
+
   const filteredShops = RESTAURANTS.filter(shop => {
     if (filterType !== '全部' && shop.type !== filterType) return false;
-    if (filterTime !== '全部' && shop.distance > parseInt(filterTime)) return false;
+    // 【修改點 1】篩選邏輯：改為比對 shop.distance.walking
+    if (filterTime !== '全部' && shop.distance?.walking > parseInt(filterTime)) return false;
     return true;
   });
 
@@ -64,7 +66,7 @@ export default function ShopsView({ setSelectedShop, setActiveTab }) {
       <div className="flex flex-col space-y-6">
         {filteredShops.map((shop, idx) => (
           <FadeInCard key={shop.id} delay={(idx % 5) * 100}>
-            <div onClick={() => handleShopClick(shop)} className="group relative bg-[#FDFCF8] flex flex-col p-6 md:p-8 border border-stone-200 hover:border-[#1A1A1A] hover:shadow-xl transition-all duration-500">
+            <div onClick={() => handleShopClick(shop)} className="group relative bg-[#FDFCF8] flex flex-col p-6 md:p-8 border border-stone-200 hover:border-[#1A1A1A] hover:shadow-xl transition-all duration-500 cursor-pointer">
               <div className="flex flex-col mb-6 border-b border-stone-100 pb-4">
                 <div className="flex items-center space-x-3 mb-2">
                   <h3 className="text-xl font-bold tracking-[0.15em] text-[#1A1A1A]">{shop.name}</h3>
@@ -72,9 +74,16 @@ export default function ShopsView({ setSelectedShop, setActiveTab }) {
                     {shop.type}
                   </span>
                 </div>
+                {/* 【修改點 2】資訊列：改為顯示步行與機車時間。同步對 open 做陣列防呆處理 */}
                 <div className="flex items-center text-xs font-bold tracking-[0.1em] text-stone-400 space-x-5">
-                  <span className="flex items-center"><MapPin size={12} className="mr-1 text-stone-300" /> {shop.distance} min</span>
-                  <span className="flex items-center"><Clock size={12} className="mr-1 text-stone-300" /> {shop.open}</span>
+                  <span className="flex items-center">
+                    <MapPin size={12} className="mr-1 text-stone-300" /> 
+                    步行 {shop.distance?.walking || '--'} 分 / 機車 {shop.distance?.scooter || '--'} 分
+                  </span>
+                  <span className="flex items-center">
+                    <Clock size={12} className="mr-1 text-stone-300" /> 
+                    {Array.isArray(shop.open) ? '點擊查看詳細營業時間' : shop.open}
+                  </span>
                 </div>
               </div>
 
@@ -90,7 +99,7 @@ export default function ShopsView({ setSelectedShop, setActiveTab }) {
                     </div>
                     <div className="flex flex-col justify-center">
                       <span className="text-sm font-bold text-[#1A1A1A] tracking-[0.1em] mb-1">{dish.name}</span>
-                      <span className="text-xs font-bold text-stone-400 tracking-wider">NT$ {dish.price}</span>
+                      <span className="text-xs font-bold text-stone-400 tracking-wider">NT$ {dish.price || '--'}</span>
                     </div>
                   </div>
                 ))}
@@ -99,13 +108,18 @@ export default function ShopsView({ setSelectedShop, setActiveTab }) {
               <div className="flex justify-end w-full">
                 <button 
                   onClick={(e) => {
-                    e.stopPropagation(); // 阻止事件冒泡，避免觸發外層卡片的跳轉
+                    e.stopPropagation(); 
                     setSelectedMenu(shop.menuImg);
                   }}
-                  className="flex items-center space-x-2 text-[10px] font-bold tracking-[0.2em] text-[#1A1A1A] border-b border-[#1A1A1A] pb-1 uppercase hover:text-stone-400 hover:border-stone-400 transition-colors"
+                  disabled={!shop.menuImg}
+                  className={`flex items-center space-x-2 text-[10px] font-bold tracking-[0.2em] border-b pb-1 uppercase transition-colors ${
+                    shop.menuImg 
+                      ? 'text-[#1A1A1A] border-[#1A1A1A] hover:text-stone-400 hover:border-stone-400' 
+                      : 'text-stone-300 border-stone-300 cursor-not-allowed'
+                  }`}
                 >
-                  <span>查看線上完整菜單</span>
-                  <ArrowRight size={12} className="group-hover:translate-x-1 transition-transform" />
+                  <span>{shop.menuImg ? '查看線上完整菜單' : '暫無線上菜單'}</span>
+                  {shop.menuImg && <ArrowRight size={12} className="group-hover:translate-x-1 transition-transform" />}
                 </button>
               </div>
             </div>
@@ -120,9 +134,10 @@ export default function ShopsView({ setSelectedShop, setActiveTab }) {
         )}
       </div>
 
+      {/* 線上菜單放大燈箱 (Modal) */}
       {selectedMenu && (
-        <div className="fixed inset-0 z-[200] flex items-center justify-center bg-[#1A1A1A]/95 backdrop-blur-sm p-6 animate-in fade-in duration-300">
-          <div className="relative max-w-2xl w-full h-[80vh] flex flex-col items-center">
+        <div className="fixed inset-0 z-[200] flex items-center justify-center bg-[#1A1A1A]/95 backdrop-blur-sm p-6 animate-in fade-in duration-300" onClick={() => setSelectedMenu(null)}>
+          <div className="relative max-w-2xl w-full h-[80vh] flex flex-col items-center" onClick={e => e.stopPropagation()}>
             <button 
               onClick={() => setSelectedMenu(null)}
               className="absolute -top-12 right-0 text-white hover:text-stone-400 transition-colors flex items-center space-x-2 text-[10px] tracking-[0.2em] uppercase font-bold"

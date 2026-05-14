@@ -20,10 +20,10 @@ export default function MenuView({ setActiveTab, setSelectedShop }) {
 
   return (
     <div className="py-12 px-6 max-w-[1400px] mx-auto min-h-screen animate-in fade-in duration-1000">
-      <div className="text-center mb-16">
+      {/* <div className="text-center mb-16">
         <h1 className="text-3xl md:text-4xl font-light tracking-[0.2em] text-[#1A1A1A] mb-3 uppercase">餐點圖鑑</h1>
         <p className="text-[10px] font-bold tracking-[0.3em] text-stone-400 uppercase">Vegan Menu Gallery</p>
-      </div>
+      </div> */}
 
       <div className="flex flex-col space-y-2">
         {rows.map((row, rowIndex) => (

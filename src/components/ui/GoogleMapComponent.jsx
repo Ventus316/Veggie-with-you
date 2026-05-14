@@ -19,7 +19,7 @@ export default function GoogleMapComponent({ shops, selectedShop, onMarkerClick,
     const initMap = async () => {
       try {
         const { Map } = await importLibrary('maps');
-        const yzuCenter = { lat: 24.9701, lng: 121.2631 };
+        const yzuCenter = { lat: 24.9705, lng: 121.2633 };
 
         if (!googleMap.current && mapRef.current) {
           googleMap.current = new Map(mapRef.current, {

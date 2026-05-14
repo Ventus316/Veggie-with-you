@@ -7,11 +7,6 @@ import { TEAM_MEMBERS } from '../data/mockData';
 export default function AboutView() {
   return (
     <div className="py-12 md:py-24 px-6 max-w-6xl mx-auto animate-in fade-in duration-1000">
-      <div className="text-center mb-24">
-        <h1 className="text-3xl md:text-4xl font-light tracking-[0.2em] text-[#1A1A1A] mb-4 uppercase">關於我們</h1>
-        <p className="text-[10px] font-bold tracking-[0.3em] text-stone-400 uppercase">About YZU Veggie</p>
-      </div>
-
       <div className="mb-32 max-w-4xl mx-auto text-center">
         <h2 className="text-3xl md:text-5xl font-light tracking-[0.1em] text-[#1A1A1A] leading-[1.5] mb-16 relative inline-block">
           <span className="absolute -top-8 -left-8 text-stone-200">

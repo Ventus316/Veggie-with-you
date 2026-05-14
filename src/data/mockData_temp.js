@@ -1,5 +1,3 @@
-// src/data/mockData.js
-
 export const RESTAURANTS = [
   { 
     id: 1, 
@@ -69,7 +67,7 @@ export const RESTAURANTS = [
   },
   { 
     id: 3, 
-    name: "十味健康素食", 
+    name: "十味健康素食-中壢環中店", 
     distance: { walking: 5, scooter: 2 }, 
     address: "桃園市中壢區環中東路96號",
     phone: "03-456-7890", 
@@ -290,17 +288,17 @@ export const RESTAURANTS = [
       payment: "只收現金",
       reservation: "現場候位"
     },
-    menuImg: "images/fuyuan_menu.png",
-    img: "images/fuyuan_store.png", 
+    menuImg: "images/fuyuan_menu.jpeg",
+    img: "images/fuyuan_store.jpeg", 
     recommendations: [
-      { name: "什錦炒麵", price: 50, img: "images/fuyuan_noodles.png" }, 
-      { name: "招牌便當", price: 95, img: "images/fuyuan_bento.png" }
+      { name: "什錦炒麵", price: 50, img: "images/fuyuan_noodles.jpeg" }, 
+      { name: "招牌便當", price: 95, img: "images/fuyuan_bento.jpeg" }
     ],
     lat: 24.9650, lng: 121.2580 
   },
   { 
     id: 10, 
-    name: "蔬菓食堂", 
+    name: "蔬菓食堂 Vege&Dessert", 
     distance: { walking: 5, scooter: 2 }, 
     address: "桃園市八德區永福西街68-1號",
     phone: "03-456-7890", 
@@ -323,17 +321,17 @@ export const RESTAURANTS = [
       payment: "只收現金",
       reservation: "可訂位"
     },
-    menuImg: "images/vege_menu.jpg",
-    img: "images/vege_store.png", 
+    menuImg: "images/vege_menu.jpeg",
+    img: "images/vege_store.jpeg", 
     recommendations: [
-      { name: "藥膳十全大補鍋", price: 228, img: "images/vege_hotpot.png" }, 
-      { name: "脆皮叉燒飯", price: 130, img: "images/vege_rice.png" }
+      { name: "藥膳十全大補鍋", price: 228, img: "images/vege_hotpot.jpeg" }, 
+      { name: "脆皮叉燒飯(純素)", price: 130, img: "images/vege_rice.jpeg" }
     ],
     lat: 24.9620, lng: 121.2750 
   },
   { 
     id: 11, 
-    name: "得來素素食餐飲", 
+    name: "得來素素食餐飲 (中原店)", 
     distance: { walking: 5, scooter: 2 }, 
     address: "桃園市中壢區弘揚路77號",
     phone: "03-456-7890", 
@@ -356,11 +354,11 @@ export const RESTAURANTS = [
       payment: "只收現金",
       reservation: "現場候位"
     },
-    menuImg: "images/delaisu_menu.jpg",
-    img: "images/delaisu_store.png", 
+    menuImg: "images/delaisu_menu.jpeg",
+    img: "images/delaisu_store.jpeg", 
     recommendations: [
-      { name: "薯餅堡", price: 50, img: "images/delaisu_burger.png" }, 
-      { name: "起司蛋餅", price: 40, img: "images/delaisu_egg.png" }
+      { name: "薯餅堡", price: 50, img: "images/delaisu_burger.jpeg" }, 
+      { name: "起司蛋餅", price: 40, img: "images/delaisu_egg.jpeg" }
     ],
     lat: 24.9580, lng: 121.2410 
   },
@@ -389,149 +387,12 @@ export const RESTAURANTS = [
       payment: "只收現金",
       reservation: "接受訂位"
     },
-    menuImg: "images/hoanhy_menu.jpg",
-    img: "images/hoanhy_store.png", 
+    menuImg: "images/hoanhy_menu.jpeg",
+    img: "images/hoanhy_store.jpeg", 
     recommendations: [
-      { name: "什錦米粉", price: 90, img: "images/hoanhy_noodles.png" }, 
-      { name: "月亮煎餅", price: 110, img: "images/hoanhy_pancake.png" }
+      { name: "什錦米粉", price: 90, img: "images/hoanhy_noodles.jpeg" }, 
+      { name: "月亮煎餅", price: 110, img: "images/hoanhy_pancake.jpeg" }
     ],
     lat: 24.9980, lng: 121.3050 
   }
 ];
-
-// 根據上方的 RESTAURANTS 動態生成首頁的熱門餐點
-export const RECOMMEND_DISHES = RESTAURANTS.flatMap(shop => 
-  shop.recommendations.map((dish, index) => ({
-    id: `${shop.id}-${index}`,
-    shop: shop.name,
-    name: dish.name,
-    price: dish.price,
-    img: dish.img
-  }))
-).slice(0, 8); // 取前8個展示
-
-export const ALL_DISHES = RESTAURANTS.flatMap(shop => 
-  shop.recommendations.map((dish, index) => ({
-    id: `${shop.id}-${index}`,
-    shop: shop.name,
-    name: dish.name,
-    price: dish.price,
-    img: dish.img
-  }))
-);
-
-export const INFO_CATEGORIES = [
-  { title: '全素 / 純素', desc: '不含動物性成分，且不包含五辛。' },
-  { title: '蛋奶素', desc: '可食用植物性食物、蛋類及奶製品。' },
-  { title: '五辛素', desc: '除了植物外，亦含蔥、蒜、韭、蕎及洋蔥。' },
-  { title: '彈性素', desc: '多數時間維持蔬食，僅偶爾食用肉類。' },
-];
-
-// 小百科的詳細資料結構 (保留原有的工程邏輯)
-const localAsset = (fileName) => `${fileName}`;
-
-export const NUTRITION_TOPICS = [
-  {
-    id: 'rice',
-    tabLabel: '飯麵類',
-    title: '白飯',
-    description: '白米飯是穩定的碳水化合物來源，能快速提供能量，且低脂、易消化、不含麩質，是維持體力的基礎。',
-    theme: {
-      canvas: '#ffe8bf',
-      circlePrimary: '#211106',
-      circlePrimaryGradient: 'radial-gradient(51.09% 50% at 50% 50%, #874419 0%, #211106 100%)',
-      circleSecondary: '#a65f29',
-      text: '#ffffff',
-    },
-    // 🌟 這裡換回你的主視覺大圖
-    mainImage: localAsset('rice_1.png'),
-    mainImageAlt: '白飯',
-    thumbnails: [
-      // 🌟 這裡換回你的 6 個小碗圖 (請確保 public 資料夾裡的檔名也是用底線)
-      { src: localAsset('strongrice_2.png'), alt: '糙米飯', variant: 'square' },
-      { src: localAsset('noodle_2.png'), alt: '麵條', variant: 'rounded' },
-      { src: localAsset('fullnoodle_2.png'), alt: '拉麵', variant: 'wide' },
-      { src: localAsset('purplerice_2.png'), alt: '紫米飯', variant: 'rounded' },
-      { src: localAsset('animnoodle_2.png'), alt: '烏龍麵', variant: 'wide' },
-      { src: localAsset('rice_1.png'), alt: '白飯', variant: 'square', underline: true }
-    ],
-    panelLabel: '飯麵類'
-  },
-  {
-    id: 'vegetable',
-    tabLabel: '蔬菜類',
-    title: '菠菜',
-    description: '富含鐵質、葉酸與維生素K，有助於補血及維持骨骼健康。其豐富的葉黃素與胡蘿蔔素也能保護視力，是營養價值極高的深綠色蔬菜。',
-    theme: {
-      canvas: '#8bc34a',
-      circlePrimary: '#7bb12e',
-      circlePrimaryGradient: 'radial-gradient(50% 50% at 50% 50%, #8ac93f 0%, #7bb12e 100%)',
-      circleSecondary: '#c8df9c',
-      text: '#ffffff',
-    },
-    mainImage: localAsset('green_4.png'), // 請確認此檔名
-    mainImageAlt: '菠菜',
-    thumbnails: [
-      { src: localAsset('green_5.png'), alt: '菠菜小株', variant: 'small' },
-      { src: localAsset('green2_2.png'), alt: '高麗菜', variant: 'square' },
-      { src: localAsset('green3_2.png'), alt: '花椰菜', variant: 'square' },
-      { src: localAsset('redgreen_2.png'), alt: '胡蘿蔔', variant: 'tall' },
-      { src: localAsset('purplegreen_2.png'), alt: '茄子', variant: 'rounded' },
-      { src: localAsset('green1_2.png'), alt: '青江菜', variant: 'square', underline: true }
-    ],
-    panelLabel: '蔬菜類'
-  },
-  {
-    id: 'bean',
-    tabLabel: '豆製類',
-    title: '傳統豆腐',
-    description: '富含植物性蛋白質與鈣質，有助於肌肉生長與骨骼健康。其飽和脂肪低且不含膽固醇，是大豆異黃酮的優質來源，能幫助調節生理機能。',
-    theme: {
-      canvas: '#ddd8d8',
-      circlePrimary: '#333333',
-      circlePrimaryGradient: 'linear-gradient(180deg, #868686 0%, #222222 100%)',
-      circleSecondary: '#c8c8c8',
-      text: '#ffffff',
-    },
-    mainImage: localAsset('tofu_1.png'), // 請確認此檔名
-    mainImageAlt: '傳統豆腐',
-    thumbnails: [
-      { src: localAsset('drytofu_2.png'), alt: '煎豆腐', variant: 'square' },
-      { src: localAsset('greenmeat_2.png'), alt: '豆皮排', variant: 'wide' },
-      { src: localAsset('beanwater_2.png'), alt: '豆漿', variant: 'tall' },
-      { src: localAsset('bean_2.png'), alt: '毛豆', variant: 'square' },
-      { src: localAsset('japanbean_2.png'), alt: '納豆', variant: 'square' },
-      { src: localAsset('tofu_1.png'), alt: '傳統豆腐', variant: 'square', underline: true }
-    ],
-    panelLabel: '豆製類'
-  }
-];
-
-export const TEAM_MEMBERS = [
-  { name: "王大明", role: "Project Lead", img: "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?q=80&w=200&auto=format&fit=crop" },
-  { name: "李小華", role: "UI/UX Design", img: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=200&auto=format&fit=crop" },
-  { name: "陳阿強", role: "Frontend Dev", img: "https://images.unsplash.com/photo-1599566150163-29194dcaad36?q=80&w=200&auto=format&fit=crop" },
-  { name: "張小美", role: "Data Analysis", img: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?q=80&w=200&auto=format&fit=crop" },
-  { name: "林小宇", role: "Marketing", img: "https://images.unsplash.com/photo-1527980965255-d3b416303d12?q=80&w=200&auto=format&fit=crop" }
-];
-
-export const NUTRITION_DATA = {
-  '飯麵類': [
-    { name: '白飯', values: [{name: '熱量', value: 183}, {name: '糖分', value: 40}, {name: '蛋白質', value: 3}, {name: '脂肪', value: 0.3}, {name: '纖維', value: 0.4}] },
-    { name: '糙米飯', values: [{name: '熱量', value: 111}, {name: '糖分', value: 23}, {name: '蛋白質', value: 2.6}, {name: '脂肪', value: 0.9}, {name: '纖維', value: 1.8}] },
-    { name: '胚芽飯', values: [{name: '熱量', value: 160}, {name: '糖分', value: 34}, {name: '蛋白質', value: 3.5}, {name: '脂肪', value: 1.2}, {name: '纖維', value: 1.5}] },
-    { name: '地瓜', values: [{name: '熱量', value: 86}, {name: '糖分', value: 20}, {name: '蛋白質', value: 1.6}, {name: '脂肪', value: 0.1}, {name: '纖維', value: 3}] }
-  ],
-  '蔬菜類': [
-    { name: '高麗菜', values: [{name: '熱量', value: 25}, {name: '糖分', value: 5}, {name: '蛋白質', value: 1.3}, {name: '脂肪', value: 0.2}, {name: '纖維', value: 2.5}] },
-    { name: '花椰菜', values: [{name: '熱量', value: 34}, {name: '糖分', value: 7}, {name: '蛋白質', value: 2.8}, {name: '脂肪', value: 0.4}, {name: '纖維', value: 2.6}] },
-    { name: '地瓜葉', values: [{name: '熱量', value: 22}, {name: '糖分', value: 4}, {name: '蛋白質', value: 2.5}, {name: '脂肪', value: 0.2}, {name: '纖維', value: 3.3}] },
-    { name: '菠菜', values: [{name: '熱量', value: 23}, {name: '糖分', value: 4}, {name: '蛋白質', value: 2.9}, {name: '脂肪', value: 0.4}, {name: '纖維', value: 2.2}] }
-  ],
-  '豆製品': [
-    { name: '嫩豆腐', values: [{name: '熱量', value: 50}, {name: '糖分', value: 2}, {name: '蛋白質', value: 5.3}, {name: '脂肪', value: 3.0}, {name: '纖維', value: 0.2}] },
-    { name: '板豆腐', values: [{name: '熱量', value: 85}, {name: '糖分', value: 3}, {name: '蛋白質', value: 8.5}, {name: '脂肪', value: 5.0}, {name: '纖維', value: 0.6}] },
-    { name: '毛豆', values: [{name: '熱量', value: 125}, {name: '糖分', value: 11}, {name: '蛋白質', value: 12.0}, {name: '脂肪', value: 6.0}, {name: '纖維', value: 4.2}] },
-    { name: '無糖豆漿', values: [{name: '熱量', value: 35}, {name: '糖分', value: 1}, {name: '蛋白質', value: 3.6}, {name: '脂肪', value: 2.0}, {name: '纖維', value: 0.2}] }
-  ]
-};

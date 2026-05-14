@@ -1,7 +1,9 @@
+// src/App.jsx
 import React, { useState, useEffect } from 'react';
 import Header from './components/layout/Header';
 import Footer from './components/layout/Footer';
-import CustomCursor from './components/ui/CustomCursor';
+
+// 各頁面視圖
 import HomeView from './views/HomeView';
 import ShopsView from './views/ShopsView';
 import MapView from './views/MapView';
@@ -25,42 +27,55 @@ export default function App() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
+  const renderView = () => {
+    switch (activeTab) {
+      case 'home': return <HomeView setActiveTab={setActiveTab} />;
+      case 'shops': return <ShopsView setSelectedShop={setSelectedShop} setActiveTab={setActiveTab} />;
+      case 'shopDetail': return <ShopDetailView shop={selectedShop} setActiveTab={setActiveTab} />;
+      case 'map': 
+        return (
+          <MapView 
+            selectedShop={selectedShop} 
+            setSelectedShop={setSelectedShop} 
+            setActiveTab={setActiveTab} // 🌟 傳入跳轉函數
+          />
+        );
+      case 'menu': return <MenuView setActiveTab={setActiveTab} setSelectedShop={setSelectedShop} />;
+      case 'info': return <InfoView />;
+      case 'about': return <AboutView />;
+      default: return <HomeView setActiveTab={setActiveTab} />;
+    }
+  };
+
+  // 1. 控制膠囊導航顯示
+  const isFullScreenView = activeTab === 'map' || activeTab === 'info' || activeTab === 'menu' || activeTab === 'shopDetail' || activeTab === 'shops' || activeTab === 'about';
+  
+  // 2. 控制滾動鎖定 (僅地圖與百科鎖死高度)
+  const isNoScrollView = activeTab === 'map' || activeTab === 'info';
+  
+  // 3. 隱藏頁尾
+  const hideFooter = activeTab === 'map' || activeTab === 'info' || activeTab === 'home' || activeTab === 'menu' || activeTab === 'shopDetail' || activeTab === 'shops' || activeTab === 'about';
+
   return (
-    <div className="cursor-none min-h-screen bg-[#F6F6F4] font-sans text-[#1A1A1A] selection:bg-[#1A1A1A] selection:text-white overflow-x-hidden">
-      
-      {/* 全域自定義鼠標與懸浮隨選導航欄 */}
-      <CustomCursor 
-        activeTab={activeTab}
+    <div className="min-h-screen bg-[#F6F6F4] font-sans text-[#1A1A1A] selection:bg-[#1A1A1A] selection:text-white overflow-x-hidden">
+      <Header 
+        activeTab={activeTab} 
         setActiveTab={setActiveTab} 
+        isCompactHeader={isScrolled} 
+        isFullScreenView={isFullScreenView}
       />
 
-      {/* 🌟 Header 條件渲染：地圖頁不顯示 Header */}
-      {activeTab !== 'map' && (
-        <Header 
-          activeTab={activeTab} 
-          setActiveTab={setActiveTab} 
-          isCompactHeader={isScrolled} 
-        />
-      )}
-
-      {/* 🌟 主內容區：地圖頁 pt 改為 0，達到真正的全螢幕滿版效果 */}
       <main className={`relative transition-all duration-500 ${
-        activeTab === 'map' ? 'h-screen pt-0 overflow-hidden' : 'min-h-screen pt-[140px]'
+        isNoScrollView 
+          ? 'h-screen pt-0 overflow-hidden' 
+          : isFullScreenView 
+            ? 'min-h-screen pt-0 pb-16' 
+            : 'min-h-screen pt-[140px]'
       }`}>
-        {activeTab === 'home' && <HomeView setActiveTab={setActiveTab} />}
-        {activeTab === 'shops' && <ShopsView setSelectedShop={setSelectedShop} setActiveTab={setActiveTab} />}
-        {activeTab === 'shopDetail' && <ShopDetailView shop={selectedShop} setActiveTab={setActiveTab} />}
-        {activeTab === 'map' && <MapView selectedShop={selectedShop} setSelectedShop={setSelectedShop} />}
-        {activeTab === 'menu' && <MenuView setActiveTab={setActiveTab} setSelectedShop={setSelectedShop} />}
-        {activeTab === 'info' && <InfoView />}
-        {activeTab === 'about' && <AboutView />}
+        {renderView()}
       </main>
 
-      {/* 🌟 Footer 條件渲染：地圖頁與素食小百科頁不顯示 Footer */}
-      {activeTab !== 'map' && activeTab !== 'info' && (
-        <Footer scrollToTop={scrollToTop} />
-      )}
-      
+      {!hideFooter && <Footer scrollToTop={scrollToTop} />}
     </div>
   );
 }
