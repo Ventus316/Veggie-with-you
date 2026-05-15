@@ -36,7 +36,7 @@ export default function HomeView({ setActiveTab }) {
           
           {/* 3. 【內文】：mb-16 控制與下方按鈕的距離 */}
           <p className="text-sm md:text-base text-stone-500 leading-loose max-w-2xl font-medium tracking-wide pt-8">
-            解決校園周邊「不知道吃什麼」的痛點，透過高品質視覺圖鑑與直觀步行導航，為 YZU 師生串聯健康與永續的每一餐。
+            解決校園周邊「不知道吃什麼」的痛點，<br />透過高品質視覺圖鑑與直觀步行導航，<br />為 YZU 師生串聯健康與永續的每一餐。
           </p>  
         </div>
       </section>

@@ -1,4 +1,4 @@
-// src/components/ui/CustomCursor.jsx
+// src/components/ui/CustomCursor_old.jsx
 import React, { useState, useEffect, useCallback } from 'react';
 import { Plus, Map, Utensils, Store, BookOpen, Users, X } from 'lucide-react';
 

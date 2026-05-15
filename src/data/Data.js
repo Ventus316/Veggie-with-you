@@ -1,4 +1,4 @@
-// src/data/mockData.js
+// src/data/Data.js
 
 import { RESTAURANTS } from './restaurantsData';
 

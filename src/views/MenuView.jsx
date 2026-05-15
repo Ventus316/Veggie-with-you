@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { MapPin } from 'lucide-react';
-import { ALL_DISHES } from '../data/mockData';
+import { ALL_DISHES } from '../data/Data';
 import { RESTAURANTS } from '../data/restaurantsData';
 
 export default function MenuView({ setActiveTab, setSelectedShop }) {
@@ -74,10 +74,10 @@ export default function MenuView({ setActiveTab, setSelectedShop }) {
                     }}
                     className={`absolute bottom-4 right-4 md:bottom-6 md:right-6 text-white border-b border-transparent hover:text-stone-300 hover:border-stone-300 transition-colors z-20 flex items-center space-x-1 duration-500 delay-100 cursor-pointer ${isExpanded ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
                   >
-                    <span className="text-[10px] md:text-xs font-bold tracking-[0.15em] whitespace-nowrap uppercase drop-shadow-md">
+                    <span className="text-[14px] md:text-xs font-bold tracking-[0.15em] whitespace-nowrap uppercase drop-shadow-md">
                       {dish.shop}
                     </span>
-                    <MapPin size={14} className="hidden md:block drop-shadow-md" />
+                    <MapPin size={16} className="hidden md:block drop-shadow-md" />
                   </button>
                 </div>
               );

@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 // 🌟 從 mockData 引入自定義 Logo 素材
-import { LOGO_LONG, LOGO_SHORT } from '../../data/mockData';
+import { LOGO_LONG, LOGO_SHORT } from '../../data/Data';
 
 export default function Header({ activeTab, setActiveTab, isFullScreenView }) {
   const [isFloatingExpanded, setIsFloatingExpanded] = useState(true);
@@ -147,7 +147,7 @@ export default function Header({ activeTab, setActiveTab, isFullScreenView }) {
           {NAV_LINKS.map(item => (
             <button 
               key={item.id}
-              onClick={() => { setActiveTab(item.id); window.scrollTo(0,0); }}
+              onClick={() => { setActiveTab(item.id); }}
               className={`flex items-center whitespace-nowrap text-[10px] md:text-lg tracking-[0.15em] font-bold uppercase transition-colors duration-300 border-none bg-transparent cursor-pointer
                 ${activeTab === item.id ? 'text-[#1A1A1A]' : 'text-stone-400 hover:text-[#1A1A1A]'}
               `}

@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import { MapPin, Clock, ArrowRight, X, Leaf } from 'lucide-react';
 import { RESTAURANTS } from '../data/restaurantsData';
-import FadeInCard from '../components/ui/FadeInCard';
+import FadeInCard from '../components/ui/FadeInCard_shops';
 
 export default function ShopsView({ setSelectedShop, setActiveTab }) {
   const [filterType, setFilterType] = useState('全部');

@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { Leaf } from 'lucide-react';
-import { TEAM_MEMBERS } from '../data/mockData';
+import { TEAM_MEMBERS } from '../data/Data';
 
 export default function AboutView() {
   return (

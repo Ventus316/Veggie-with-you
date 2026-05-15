@@ -1,4 +1,5 @@
-// src/components/ui/GoogleMapComponent.jsx
+// src/components/ui/GoogleMapComponent_map.jsx
+
 import React, { useEffect, useRef } from 'react';
 import { setOptions, importLibrary } from '@googlemaps/js-api-loader';
 

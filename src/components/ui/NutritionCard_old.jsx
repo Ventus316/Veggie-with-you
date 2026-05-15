@@ -1,3 +1,5 @@
+// src/components/ui/NutritionCard_old.jsx
+
 import React from 'react';
 
 const THUMBNAIL_VARIANTS = {

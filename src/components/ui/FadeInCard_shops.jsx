@@ -1,4 +1,4 @@
-// src/components/ui/FadeInCard.jsx
+// src/components/ui/FadeInCard_shops.jsx
 
 import React, { useState, useEffect, useRef } from 'react';
 

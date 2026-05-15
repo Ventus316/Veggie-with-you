@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { ChevronLeft, Star, Utensils, Clock, Search, MapPin, X, ArrowRight, Filter } from 'lucide-react';
 import { RESTAURANTS } from '../data/restaurantsData';
-import GoogleMapComponent from '../components/ui/GoogleMapComponent';
+import GoogleMapComponent from '../components/ui/GoogleMapComponent_map';
 
 const STAGE_CONFIG = {
   perspective: '1200px',

@@ -1,4 +1,4 @@
-// src/components/ui/GlobalNavigation.jsx
+// src/components/ui/GlobalNavigation_old.jsx
 import React, { useState, useEffect, useRef } from 'react';
 import { Map, Utensils, Store, BookOpen, Users, X, Menu } from 'lucide-react';
 
