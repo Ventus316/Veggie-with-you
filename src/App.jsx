@@ -70,7 +70,7 @@ export default function App() {
           ? 'h-screen pt-0 overflow-hidden' 
           : isFullScreenView 
             ? 'min-h-screen pt-0 pb-16' 
-            : 'min-h-screen pt-[140px]'
+            : 'pt-1'
       }`}>
         {renderView()}
       </main>

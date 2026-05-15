@@ -52,7 +52,7 @@ export default function ShopDetailView({ shop, setActiveTab }) {
   };
 
   return (
-    <div className="py-12 px-6 max-w-6xl mx-auto min-h-screen animate-in fade-in duration-1000">
+    <div className="py-12 px-36 max-w-6xl mx-auto min-h-screen animate-in fade-in duration-1000">
       
       {/* 頂部：返回按鈕 */}
       <button 
@@ -104,7 +104,7 @@ export default function ShopDetailView({ shop, setActiveTab }) {
                <li className="flex justify-between border-b border-stone-100 pb-3"><span className="text-stone-500">聯絡電話</span> <span>{shop.phone || '--'}</span></li>
               {/* 營業時間 (改為左右排版、資料靠右對齊) */}
               <li className="flex justify-between items-start border-b border-stone-100 pb-3 pt-2">
-                <span className="text-stone-500 whitespace-nowrap mr-4">營業時間</span>
+                <span className="text-stone-500 whitespace-nowrap mr-4 pt-2">營業時間</span>
                 
                 <div className="space-y-6 flex flex-col items-end">
                   {(() => {

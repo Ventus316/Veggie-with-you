@@ -4,17 +4,9 @@ import React from 'react';
 
 export default function HomeView({ setActiveTab }) {
   return (
-    // 🌟 核心修改 1：加入 min-h-[calc(100vh-140px)] 與 flex flex-col justify-center
-    // 這樣可以扣除導航欄 (140px) 的高度，讓整個區塊在螢幕中「完美垂直置中」
-    <div className="animate-in fade-in duration-1000 min-h-[calc(100vh-140px)] flex flex-col justify-center pb-12">
-      
-      {/* 移除了原本寫死的 pt-24，讓外層的 flex 自動幫我們排版置中 */}
-      <section className="px-6 pt-8">
+    <div className="animate-in fade-in duration-1000 flex flex-col justify-center mt-8 mb-4">
+      <section className="px-6 pt-0">
         <div className="max-w-5xl mx-auto text-center flex flex-col items-center">
-          
-          {/* ==========================================
-              🛠️ 調整指南：你可以修改 mb- 後面的數字來控制間距
-              ========================================== */}
               
           {/* 1. 【主標題】：mb-8 控制與下方英文副標的距離 */}
           <h1 className="text-3xl md:text-5xl lg:text-[3.5rem] font-light text-[#1A1A1A] tracking-[0.1em] leading-[1.4] mb-6">

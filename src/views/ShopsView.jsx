@@ -24,7 +24,7 @@ export default function ShopsView({ setSelectedShop, setActiveTab }) {
 
   return (
     <div className="py-12 px-6 max-w-5xl mx-auto min-h-screen animate-in fade-in duration-1000">
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-16 border-b border-stone-200 pb-8">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-16 border-b border-stone-200 pb-8 mt-15 mx-6">
         <div>
           <h1 className="text-3xl md:text-4xl font-light tracking-[0.2em] text-[#1A1A1A] mb-3 uppercase">店家資訊</h1>
           <p className="text-[10px] font-bold tracking-[0.3em] text-stone-400 uppercase">Vegan Shops Guide</p>
@@ -63,7 +63,7 @@ export default function ShopsView({ setSelectedShop, setActiveTab }) {
         </div>
       </div>
 
-      <div className="flex flex-col space-y-6">
+      <div className="flex flex-col space-y-6 mx-6">
         {filteredShops.map((shop, idx) => (
           <FadeInCard key={shop.id} delay={(idx % 5) * 100}>
             <div onClick={() => handleShopClick(shop)} className="group relative bg-[#FDFCF8] flex flex-col p-6 md:p-8 border border-stone-200 hover:border-[#1A1A1A] hover:shadow-xl transition-all duration-500 cursor-pointer">

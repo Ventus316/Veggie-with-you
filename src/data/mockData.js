@@ -2,6 +2,12 @@
 
 import { RESTAURANTS } from './restaurantsData';
 
+import logo_long from "../assets/Icons/Logo_long.svg";
+import logo_short from "../assets/Icons/Logo_short.svg";
+
+export const LOGO_LONG = logo_long;
+export const LOGO_SHORT = logo_short;
+
 // 根據上方的 RESTAURANTS 動態生成首頁的熱門餐點
 export const RECOMMEND_DISHES = RESTAURANTS.flatMap(shop => 
   shop.recommendations.map((dish, index) => ({

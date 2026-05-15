@@ -6,8 +6,8 @@ export const RESTAURANTS = [
     name: "素窩-素食早午餐", 
     distance: { walking: 5, scooter: 2 }, 
     address: "桃園市中壢區興仁路二段67巷79弄7號",
-    phone: "03-456-7890", 
-    priceRange: "NT$ 50 - 150", 
+    phone: "03-285-0018", 
+    priceRange: "NT$ 30 - 200", 
     open: [
       { day: '一', time: '08:00-19:00' },
       { day: '二', time: '08:00-19:00' },
@@ -29,7 +29,7 @@ export const RESTAURANTS = [
     menuImg: "images/suwo_menu1.jpeg",
     img: "images/suwo_store2.jpeg", 
     recommendations: [
-      { name: "薯餅漢堡", price: null, img: "images/suwo_burger.jpeg" }, 
+      { name: "薯餅漢堡", price: 55, img: "images/suwo_burger.jpeg" }, 
       { name: "素煎餃", price: 65, img: "images/suwo_dumpling.jpeg" }
     ],
     lat: 24.9678, lng: 121.2636 
@@ -39,8 +39,8 @@ export const RESTAURANTS = [
     name: "天然素食", 
     distance: { walking: 5, scooter: 2 }, 
     address: "桃園市中壢區興仁路一段86號",
-    phone: "03-456-7890", 
-    priceRange: "NT$ 50 - 150", 
+    phone: "03-451-9063", 
+    priceRange: "NT$ 30 - 200", 
     open: [
       { day: '一', time: '休息' },
       { day: '二', time: '11:00-14:00\n16:30-19:30' },
@@ -62,18 +62,18 @@ export const RESTAURANTS = [
     menuImg: "images/tianran_menu.jpeg", 
     img: "images/tianran_store1.jpeg", 
     recommendations: [
-      { name: "素蚵仔煎", price: 60, img: "images/tianran_oyster.jpeg" }, 
+      { name: "素蚵仔煎", price: 50, img: "images/tianran_oyster.jpeg" }, 
       { name: "素水餃", price: 50, img: "images/tianran_dumpling.jpeg" }
     ],
     lat: 24.9711, lng: 121.2604
   },
   { 
     id: 3, 
-    name: "十味健康素食-中壢環中店", 
+    name: "十味健康素食", 
     distance: { walking: 5, scooter: 2 }, 
     address: "桃園市中壢區環中東路96號",
-    phone: "03-456-7890", 
-    priceRange: "NT$ 50 - 150", 
+    phone: "03-463-8858", 
+    priceRange: "NT$ 50 - 200", 
     open: [
       { day: '一', time: '休息' },
       { day: '二', time: '11:00-14:00\n17:00-19:30' },
@@ -92,10 +92,10 @@ export const RESTAURANTS = [
       payment: "只收現金",
       reservation: "不可訂位"
     },
-    menuImg: "images/shiwei_menu1.jpeg", 
+    menuImg: "images/shiwei_menu2.jpeg", 
     img: "images/shiwei_store1.jpeg", 
     recommendations: [
-      { name: "素咖哩烏龍麵", price: 125, img: "images/shiwei_udon.jpg" }, 
+      { name: "咖哩烏龍麵", price: 125, img: "images/shiwei_udon.jpg" }, 
       { name: "素魯飯", price: 45, img: "images/shiwei_rice.jpeg" }
     ],
     lat: 24.9772, lng: 121.2532 
@@ -105,8 +105,8 @@ export const RESTAURANTS = [
     name: "蓮生健康素食", 
     distance: { walking: 5, scooter: 2 }, 
     address: "桃園市中壢區榮民路220-2號",
-    phone: "03-456-7890", 
-    priceRange: "NT$ 50 - 150", 
+    phone: "03-461-5338", 
+    priceRange: "NT$ 30 - 200", 
     open: [
       { day: '一', time: '11:00-14:00' },
       { day: '二', time: '11:00-14:00' },
@@ -129,7 +129,7 @@ export const RESTAURANTS = [
     img: "images/liansheng_store.jpeg", 
     recommendations: [
       { name: "素排飯", price: 90, img: "images/liansheng_rice.jpeg" }, 
-      { name: "青菜豆腐湯", price: null, img: "images/liansheng_soup.jpeg" }
+      { name: "青菜豆腐湯", price: 35, img: "images/liansheng_soup.jpeg" }
     ],
     lat: 24.9654, lng: 121.2610 
   },
@@ -138,8 +138,8 @@ export const RESTAURANTS = [
     name: "拼拼蔬食", 
     distance: { walking: 5, scooter: 2 }, 
     address: "桃園市中壢區福德路129巷1號",
-    phone: "03-456-7890", 
-    priceRange: "NT$ 50 - 150", 
+    phone: "03-453-5089", 
+    priceRange: "NT$ 30 - 200", 
     open: [
       { day: '一', time: '休息' },
       { day: '二', time: '11:00-14:00\n16:30-20:30' },
@@ -171,8 +171,8 @@ export const RESTAURANTS = [
     name: "5+2素食坊", 
     distance: { walking: 5, scooter: 2 }, 
     address: "桃園市中壢區成章二街42號",
-    phone: "03-456-7890", 
-    priceRange: "NT$ 50 - 150", 
+    phone: "0919-578-019", 
+    priceRange: "NT$ 10 - 150", 
     open: [
       { day: '一', time: '休息' },
       { day: '二', time: '11:00-20:00' },
@@ -204,8 +204,8 @@ export const RESTAURANTS = [
     name: "蔬適圈串物坊", 
     distance: { walking: 5, scooter: 2 }, 
     address: "桃園市中壢區文化路54號",
-    phone: "03-456-7890", 
-    priceRange: "NT$ 50 - 150", 
+    phone: "0901-063-116", 
+    priceRange: "NT$ 40 - 400", 
     open: [
       { day: '一', time: '休息' },
       { day: '二', time: '17:00-23:00' },
@@ -237,8 +237,8 @@ export const RESTAURANTS = [
     name: "義式美味素食", 
     distance: { walking: 5, scooter: 2 }, 
     address: "桃園市中壢區中華路一段616號",
-    phone: "03-456-7890", 
-    priceRange: "NT$ 50 - 150", 
+    phone: "03-455-3019", 
+    priceRange: "NT$ 60 - 200", 
     open: [
       { day: '一', time: '11:00-14:00\n16:00-20:00' },
       { day: '二', time: '11:00-14:00\n16:00-20:00' },
@@ -270,8 +270,8 @@ export const RESTAURANTS = [
     name: "福緣素食", 
     distance: { walking: 5, scooter: 2 }, 
     address: "桃園市中壢區榮民路227號",
-    phone: "03-456-7890", 
-    priceRange: "NT$ 50 - 150", 
+    phone: "03-462-9168", 
+    priceRange: "NT$ 30 - 150", 
     open: [
       { day: '一', time: '10:00-13:00\n17:00-20:00' },
       { day: '二', time: '10:00-13:00\n17:00-20:00' },
@@ -290,21 +290,21 @@ export const RESTAURANTS = [
       payment: "只收現金",
       reservation: "現場候位"
     },
-    menuImg: "images/fuyuan_menu.jpeg",
+    menuImg: "images/fuyuan_menu.png",
     img: "images/fuyuan_store.png", 
     recommendations: [
-      { name: "什錦炒麵", price: 50, img: "images/fuyuan_noodles.jpeg" }, 
-      { name: "招牌便當", price: 95, img: "images/fuyuan_bento.jpeg" }
+      { name: "什錦炒麵", price: 50, img: "images/fuyuan_noodles.png" }, 
+      { name: "招牌便當", price: 95, img: "images/fuyuan_bento.png" }
     ],
     lat: 24.9650, lng: 121.2580 
   },
   { 
     id: 10, 
-    name: "蔬菓食堂 Vege&Dessert", 
+    name: "蔬菓食堂", 
     distance: { walking: 5, scooter: 2 }, 
     address: "桃園市八德區永福西街68-1號",
-    phone: "03-456-7890", 
-    priceRange: "NT$ 50 - 150", 
+    phone: "0910-016-798", 
+    priceRange: "NT$ 80 - 250", 
     open: [
       { day: '一', time: '11:00-14:30\n17:00-20:00' },
       { day: '二', time: '11:00-14:30\n17:00-20:00' },
@@ -323,21 +323,21 @@ export const RESTAURANTS = [
       payment: "只收現金",
       reservation: "可訂位"
     },
-    menuImg: "images/vege_menu.jpeg",
+    menuImg: "images/vege_menu.jpg",
     img: "images/vege_store.png", 
     recommendations: [
-      { name: "藥膳十全大補鍋", price: 228, img: "images/vege_hotpot.jpeg" }, 
-      { name: "脆皮叉燒飯(純素)", price: 130, img: "images/vege_rice.jpeg" }
+      { name: "藥膳十全大補鍋", price: 228, img: "images/vege_hotpot.png" }, 
+      { name: "脆皮叉燒飯(純素)", price: 130, img: "images/vege_rice.png" }
     ],
     lat: 24.9620, lng: 121.2750 
   },
   { 
     id: 11, 
-    name: "得來素素食餐飲 (中原店)", 
+    name: "得來素素食餐飲", 
     distance: { walking: 5, scooter: 2 }, 
     address: "桃園市中壢區弘揚路77號",
-    phone: "03-456-7890", 
-    priceRange: "NT$ 50 - 150", 
+    phone: "03-436-7111", 
+    priceRange: "NT$ 30 - 150", 
     open: [
       { day: '一', time: '06:15-13:00' },
       { day: '二', time: '06:15-13:00' },
@@ -356,11 +356,11 @@ export const RESTAURANTS = [
       payment: "只收現金",
       reservation: "現場候位"
     },
-    menuImg: "images/delaisu_menu.jpeg",
+    menuImg: "images/delaisu_menu.jpg",
     img: "images/delaisu_store.png", 
     recommendations: [
-      { name: "薯餅堡", price: 50, img: "images/delaisu_burger.jpeg" }, 
-      { name: "起司蛋餅", price: 40, img: "images/delaisu_egg.jpeg" }
+      { name: "薯餅堡", price: 50, img: "images/delaisu_burger.png" }, 
+      { name: "起司蛋餅", price: 40, img: "images/delaisu_egg.png" }
     ],
     lat: 24.9580, lng: 121.2410 
   },
@@ -369,8 +369,8 @@ export const RESTAURANTS = [
     name: "越式素食 歡喜吃素", 
     distance: { walking: 5, scooter: 2 }, 
     address: "桃園市桃園區正康二街70號",
-    phone: "03-456-7890", 
-    priceRange: "NT$ 50 - 150", 
+    phone: "0966-996-633", 
+    priceRange: "NT$ 70 - 300", 
     open: [
       { day: '一', time: '11:00-20:00' },
       { day: '二', time: '11:00-20:00' },
@@ -389,11 +389,11 @@ export const RESTAURANTS = [
       payment: "只收現金",
       reservation: "接受訂位"
     },
-    menuImg: "images/hoanhy_menu.jpeg",
+    menuImg: "images/hoanhy_menu.jpg",
     img: "images/hoanhy_store.png", 
     recommendations: [
-      { name: "什錦米粉", price: 90, img: "images/hoanhy_noodles.jpeg" }, 
-      { name: "月亮煎餅", price: 110, img: "images/hoanhy_pancake.jpeg" }
+      { name: "什錦米粉", price: 90, img: "images/hoanhy_noodles.png" }, 
+      { name: "月亮煎餅", price: 110, img: "images/hoanhy_pancake.png" }
     ],
     lat: 24.9980, lng: 121.3050 
   }
