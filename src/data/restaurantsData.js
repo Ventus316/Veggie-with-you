@@ -1,3 +1,5 @@
+// src/data/restaurantsData.js
+
 export const RESTAURANTS = [
   { 
     id: 1, 
@@ -289,7 +291,7 @@ export const RESTAURANTS = [
       reservation: "現場候位"
     },
     menuImg: "images/fuyuan_menu.jpeg",
-    img: "images/fuyuan_store.jpeg", 
+    img: "images/fuyuan_store.png", 
     recommendations: [
       { name: "什錦炒麵", price: 50, img: "images/fuyuan_noodles.jpeg" }, 
       { name: "招牌便當", price: 95, img: "images/fuyuan_bento.jpeg" }
@@ -322,7 +324,7 @@ export const RESTAURANTS = [
       reservation: "可訂位"
     },
     menuImg: "images/vege_menu.jpeg",
-    img: "images/vege_store.jpeg", 
+    img: "images/vege_store.png", 
     recommendations: [
       { name: "藥膳十全大補鍋", price: 228, img: "images/vege_hotpot.jpeg" }, 
       { name: "脆皮叉燒飯(純素)", price: 130, img: "images/vege_rice.jpeg" }
@@ -355,7 +357,7 @@ export const RESTAURANTS = [
       reservation: "現場候位"
     },
     menuImg: "images/delaisu_menu.jpeg",
-    img: "images/delaisu_store.jpeg", 
+    img: "images/delaisu_store.png", 
     recommendations: [
       { name: "薯餅堡", price: 50, img: "images/delaisu_burger.jpeg" }, 
       { name: "起司蛋餅", price: 40, img: "images/delaisu_egg.jpeg" }
@@ -388,7 +390,7 @@ export const RESTAURANTS = [
       reservation: "接受訂位"
     },
     menuImg: "images/hoanhy_menu.jpeg",
-    img: "images/hoanhy_store.jpeg", 
+    img: "images/hoanhy_store.png", 
     recommendations: [
       { name: "什錦米粉", price: 90, img: "images/hoanhy_noodles.jpeg" }, 
       { name: "月亮煎餅", price: 110, img: "images/hoanhy_pancake.jpeg" }

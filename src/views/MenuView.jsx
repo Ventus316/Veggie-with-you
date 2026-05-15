@@ -2,7 +2,8 @@
 
 import React, { useState } from 'react';
 import { MapPin } from 'lucide-react';
-import { ALL_DISHES, RESTAURANTS } from '../data/mockData';
+import { ALL_DISHES } from '../data/mockData';
+import { RESTAURANTS } from '../data/restaurantsData';
 
 export default function MenuView({ setActiveTab, setSelectedShop }) {
   const rows = [];

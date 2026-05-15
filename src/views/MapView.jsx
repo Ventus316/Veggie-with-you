@@ -1,7 +1,7 @@
 // src/views/MapView.jsx
 import React, { useState } from 'react';
 import { ChevronLeft, Star, Utensils, Clock, Search, MapPin, X, ArrowRight, Filter } from 'lucide-react';
-import { RESTAURANTS } from '../data/mockData';
+import { RESTAURANTS } from '../data/restaurantsData';
 import GoogleMapComponent from '../components/ui/GoogleMapComponent';
 
 const STAGE_CONFIG = {

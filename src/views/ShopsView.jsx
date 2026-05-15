@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { MapPin, Clock, ArrowRight, X, Leaf } from 'lucide-react';
-import { RESTAURANTS } from '../data/mockData';
+import { RESTAURANTS } from '../data/restaurantsData';
 import FadeInCard from '../components/ui/FadeInCard';
 
 export default function ShopsView({ setSelectedShop, setActiveTab }) {
