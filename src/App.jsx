@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import Header from './components/layout/Header';
 import Footer from './components/layout/Footer';
+import BackToTop from './components/ui/BackToTop';
 
 // 各頁面視圖
 import HomeView from './views/HomeView';
@@ -76,6 +77,8 @@ export default function App() {
       </main>
 
       {!hideFooter && <Footer scrollToTop={scrollToTop} />}
+    
+      <BackToTop />
     </div>
   );
 }
