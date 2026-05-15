@@ -1,4 +1,6 @@
-import React, { useState, useEffect } from 'react';
+// src/views/ShopDetailView.jsx
+
+import React, { useState, useEffect, useRef } from 'react';
 import { 
   ChevronLeft, 
   MapPin, 
@@ -11,7 +13,14 @@ import {
 
 export default function ShopDetailView({ shop, setActiveTab }) {
   const [selectedMenu, setSelectedMenu] = useState(null);
+  
+  // 🌟 縮放與拖拽的進階狀態
+  const [scale, setScale] = useState(1);
+  const [position, setPosition] = useState({ x: 0, y: 0 });
+  const [isDragging, setIsDragging] = useState(false);
+  const lastMousePos = useRef({ x: 0, y: 0 });
 
+  // 1. 處理頁面跳轉置頂
   useEffect(() => {
     if (!shop) {
       setActiveTab('shops');
@@ -20,7 +29,64 @@ export default function ShopDetailView({ shop, setActiveTab }) {
     }
   }, [shop, setActiveTab]);
 
+  // 2. 處理背景捲動鎖定與重置
+  useEffect(() => {
+    if (selectedMenu) {
+      // 開啟燈箱時禁止底層捲動
+      document.body.style.overflow = 'hidden';
+    } else {
+      // 關閉時恢復捲動並重置縮放與位移
+      document.body.style.overflow = 'unset';
+      setScale(1);
+      setPosition({ x: 0, y: 0 });
+    }
+    // 元件卸載時也要確保恢復捲動
+    return () => { document.body.style.overflow = 'unset'; };
+  }, [selectedMenu]);
+
   if (!shop) return null; 
+
+  // 🌟 滾輪縮放邏輯
+  const handleWheel = (e) => {
+    // 雖然外層已經 overflow: hidden，加上 preventDefault 可以避免其他預設滾動行為
+    // 注意：React 中 onWheel 可能無法直接 e.preventDefault()，但因為我們已經鎖了 body overflow，所以不會有背景滾動問題
+    const zoomSensitivity = 0.002;
+    const delta = -e.deltaY * zoomSensitivity;
+    let newScale = scale + delta;
+    
+    // 允許縮小到 0.3 倍（看超長菜單很有用），最大放大到 5 倍
+    newScale = Math.min(Math.max(0.3, newScale), 5);
+    setScale(newScale);
+  };
+
+  // 🌟 滑鼠中鍵拖拽邏輯
+  const handleMouseDown = (e) => {
+    if (e.button === 1) { // 1 代表滑鼠中鍵
+      e.preventDefault(); // 防止中鍵點擊出現原生捲動游標
+      setIsDragging(true);
+      lastMousePos.current = { x: e.clientX, y: e.clientY };
+    }
+  };
+
+  const handleMouseMove = (e) => {
+    if (!isDragging) return;
+    
+    const dx = e.clientX - lastMousePos.current.x;
+    const dy = e.clientY - lastMousePos.current.y;
+    
+    setPosition(prev => ({
+      x: prev.x + dx,
+      y: prev.y + dy
+    }));
+    
+    lastMousePos.current = { x: e.clientX, y: e.clientY };
+  };
+
+  const handleMouseUp = (e) => {
+    if (e.button === 1) {
+      setIsDragging(false);
+    }
+  };
 
   const getHighResImg = (url, size = '1200') => {
     return url ? url.replace('w=200', `w=${size}`).replace('w=800', `w=${size}`) : '';
@@ -36,14 +102,12 @@ export default function ShopDetailView({ shop, setActiveTab }) {
     extractedImgs[1] || extractedImgs[0] || "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?q=80&w=800&auto=format&fit=crop"
   ];
 
-  // 資料防呆與距離文字化
   const features = shop.features || {};
   const recommendations = shop.recommendations || [];
   const distanceText = shop.distance 
     ? `步行 ${shop.distance.walking} 分 / 機車 ${shop.distance.scooter} 分`
     : '-- 分鐘';
 
-  // 定義特色說明的中文標籤對應表
   const featureLabels = {
     portion: '份量',
     environment: '環境',
@@ -76,31 +140,30 @@ export default function ShopDetailView({ shop, setActiveTab }) {
 
       {/* 圖片展示區 */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-20 md:h-[480px]"> 
-        {/* 左側主圖 (菜單) */}
-        {/* 🌟 2. 移除原本的 aspect-ratio，改為 h-[300px] md:h-full，讓它填滿外層高度 */}
-        <div className="md:col-span-2 relative h-[300px] md:h-full rounded-xl overflow-hidden shadow-sm bg-stone-200">
+        <div 
+          onClick={() => shop.menuImg && setSelectedMenu(shop.menuImg)}
+          className={`md:col-span-2 relative h-[300px] md:h-full rounded-xl overflow-hidden shadow-sm bg-stone-200 ${shop.menuImg ? 'cursor-pointer group/menu' : ''}`}
+        >
           <img 
             src={displayMainImg} 
             alt="主視覺" 
-            // 🌟 3. 加入 object-left-top，讓定位靠左上角
-            className="w-full h-full object-cover object-left-top hover:scale-105 transition-transform duration-[1500ms]" 
+            className="w-full h-full object-cover object-left-top group-hover/menu:scale-105 transition-transform duration-[1500ms]" 
           />
-          <span className="absolute top-4 left-4 bg-[#1A1A1A]/80 backdrop-blur text-white text-[10px] px-3 py-1.5 tracking-widest font-bold uppercase shadow-sm">
+          <span className="absolute top-4 left-4 bg-[#1A1A1A]/80 backdrop-blur text-white text-[10px] px-3 py-1.5 tracking-widest font-bold uppercase shadow-sm pointer-events-none">
             {shop.menuImg ? '精選菜單' : '店家視覺'}
           </span>
+          {shop.menuImg && (
+            <div className="absolute bottom-4 right-4 bg-[#1A1A1A]/80 backdrop-blur text-white text-[10px] px-4 py-2 flex items-center tracking-widest font-bold uppercase shadow-sm opacity-80 group-hover/menu:opacity-100 transition-opacity">
+              <span>點擊查看完整菜單</span>
+              <ArrowRight size={12} className="ml-2 group-hover/menu:translate-x-1 transition-transform" />
+            </div>
+          )}
         </div>
         
-        {/* 右側：兩張特色餐點圖 */}
-        {/* 🌟 4. 加入 md:grid-rows-2 與 md:h-full，確保上下兩張圖均分高度 */}
         <div className="grid grid-cols-2 md:grid-cols-1 md:grid-rows-2 gap-6 md:h-full">
           {displayMealImgs.map((imgUrl, i) => (
             <div key={i} className="relative h-[150px] md:h-full rounded-xl overflow-hidden shadow-sm bg-stone-200">
-              <img 
-                src={imgUrl} 
-                alt="特色" 
-                // 🌟 5. 右側小圖同樣加入 object-left-top 維持裁切一致性
-                className="w-full h-full object-cover object-left-top hover:scale-105 transition-transform duration-[1500ms]" 
-              />
+              <img src={imgUrl} alt="特色" className="w-full h-full object-cover object-left-top hover:scale-105 transition-transform duration-[1500ms]" />
             </div>
           ))}
         </div>
@@ -109,7 +172,7 @@ export default function ShopDetailView({ shop, setActiveTab }) {
       {/* 資訊內容區 */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-16">
         
-        {/* 左側：詳細資訊清單 (價位區間、聯絡電話、營業時間) */}
+        {/* 左側：詳細資訊清單 */}
         <div className="lg:col-span-1 space-y-12">
           <div>
             <h3 className="text-sm font-bold tracking-[0.2em] text-stone-400 uppercase mb-6 flex items-center border-b border-stone-200 pb-3">
@@ -119,13 +182,11 @@ export default function ShopDetailView({ shop, setActiveTab }) {
                <li className="flex justify-between border-b border-stone-100 pb-3"><span className="text-stone-500">素食類別</span> <span>{shop.type || '--'}</span></li>
                <li className="flex justify-between border-b border-stone-100 pb-3"><span className="text-stone-500">價位區間</span> <span>{shop.priceRange || '--'}</span></li>
                <li className="flex justify-between border-b border-stone-100 pb-3"><span className="text-stone-500">聯絡電話</span> <span>{shop.phone || '--'}</span></li>
-              {/* 營業時間 (改為左右排版、資料靠右對齊) */}
+              
               <li className="flex justify-between items-start border-b border-stone-100 pb-3 pt-2">
                 <span className="text-stone-500 whitespace-nowrap mr-4 pt-2">營業時間</span>
-                
                 <div className="space-y-6 flex flex-col items-end">
                   {(() => {
-                    // 1. 將相同營業時間的日子整理在一起 (Hash Map)
                     const groupedMap = {};
                     shop.open?.forEach((item) => {
                       if (!groupedMap[item.time]) {
@@ -134,16 +195,13 @@ export default function ShopDetailView({ shop, setActiveTab }) {
                       groupedMap[item.time].push(item.day);
                     });
 
-                    // 2. 將整理好的資料轉回陣列來渲染
                     return Object.entries(groupedMap).map(([timeStr, daysArray], gIdx) => (
                       <div key={gIdx} className="flex flex-col items-end">
-                        
-                        {/* 第一行：將同樣時間的「日期 Icon」橫向並排，靠右對齊 (justify-end) */}
                         <div className="flex gap-2 mb-2 justify-end">
                           {daysArray.map((day, dIdx) => (
                             <div key={dIdx} className="w-8 h-8 flex items-center justify-center">
                               <img 
-                                src={`/images/icons/day_${day}.png`} // 替換為你的圖片路徑
+                                src={`/images/icons/day_${day}.png`} 
                                 alt={day} 
                                 className="w-full h-full object-contain"
                                 onError={(e) => {
@@ -154,13 +212,11 @@ export default function ShopDetailView({ shop, setActiveTab }) {
                             </div>
                           ))}
                         </div>
-
-                        {/* 第二行：顯示時間或公休 Icon，靠右對齊 */}
                         <div className="flex justify-end w-full">
                           {timeStr === '休息' ? (
                             <div className="h-8 flex items-center justify-end">
                               <img 
-                                src="/images/icons/closed_status.png" // 替換為你的公休圖片
+                                src="/images/icons/closed_status.png" 
                                 alt="公休" 
                                 className="h-6 object-contain"
                                 onError={(e) => {
@@ -177,7 +233,6 @@ export default function ShopDetailView({ shop, setActiveTab }) {
                             </div>
                           )}
                         </div>
-
                       </div>
                     ));
                   })()}
@@ -198,15 +253,13 @@ export default function ShopDetailView({ shop, setActiveTab }) {
           </button>
         </div>
 
-        {/* 右側：店家特色說明 (動態匯入包含付款、洗手間等) */}
+        {/* 右側：店家特色說明 & 推薦餐點 */}
         <div className="lg:col-span-2 space-y-16">
-          
           <div>
             <h3 className="text-sm font-bold tracking-[0.2em] text-stone-400 uppercase mb-6 flex items-center border-b border-stone-200 pb-3">
                <Star size={16} className="mr-2"/> 店家特色說明
             </h3>
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-               {/* 將 shop.features 物件內的所有屬性自動轉換為卡片 */}
                {Object.entries(features).map(([key, value]) => (
                   value ? (
                     <div key={key} className="bg-white p-6 border border-stone-200 shadow-sm rounded-xl hover:shadow-md transition-shadow">
@@ -220,7 +273,6 @@ export default function ShopDetailView({ shop, setActiveTab }) {
             </div>
           </div>
 
-          {/* 推薦餐點 */}
           <div>
             <h3 className="text-sm font-bold tracking-[0.2em] text-stone-400 uppercase mb-6 flex items-center border-b border-stone-200 pb-3">
                <Utensils size={16} className="mr-2"/> 推薦餐點資訊
@@ -240,18 +292,61 @@ export default function ShopDetailView({ shop, setActiveTab }) {
             </div>
           </div>
         </div>
-
       </div>
 
-      {/* 線上菜單放大燈箱 */}
+      {/* 🌟 終極版：線上菜單放大燈箱 */}
       {selectedMenu && (
-        <div className="fixed inset-0 z-[200] flex items-center justify-center bg-[#1A1A1A]/95 backdrop-blur-sm p-6 animate-in fade-in duration-300" onClick={() => setSelectedMenu(null)}>
-          <div className="relative max-w-2xl w-full h-[80vh] flex flex-col items-center" onClick={e => e.stopPropagation()}>
-            <button onClick={() => setSelectedMenu(null)} className="absolute -top-12 right-0 text-white hover:text-stone-400 transition-colors flex items-center space-x-2 text-[10px] tracking-[0.2em] uppercase font-bold cursor-pointer">
-              <span>Close</span> <X size={18} />
-            </button>
-            <div className="w-full h-full bg-[#F6F6F4] p-2 overflow-hidden shadow-2xl border border-stone-800">
-              <img src={selectedMenu} className="w-full h-full object-contain" alt="線上完整菜單" />
+        <div 
+          className="fixed inset-0 z-[200] flex items-center justify-center bg-[#1A1A1A]/95 backdrop-blur-sm p-4 md:p-10 animate-in fade-in duration-300 select-none" 
+          onClick={() => setSelectedMenu(null)}
+          onWheel={handleWheel} // 監聽全區滾輪
+        >
+          <div 
+            className="relative max-w-5xl w-full max-h-[85vh] md:max-h-[90vh] flex flex-col" 
+            onClick={e => e.stopPropagation()}
+          >
+            {/* 提示資訊列 */}
+            <div className="w-full flex justify-start items-end mb-3 text-stone-300 px-1 pointer-events-none">
+              <div className="flex flex-col">
+                <span className="text-[9px] md:text-xs tracking-[0.2em] font-bold uppercase opacity-60 mb-1">Menu Viewer</span>
+                <span className="text-[10px] md:text-xs tracking-widest font-bold text-white">
+                  滾輪縮放圖片 / 按住滑鼠中鍵拖曳
+                </span>
+              </div>
+            </div>
+
+            {/* 互動區塊 (接收中鍵拖拽事件) */}
+            <div 
+              className="relative flex-1 bg-[#F6F6F4] shadow-2xl border border-stone-800 overflow-hidden flex flex-col"
+              onMouseDown={handleMouseDown}
+              onMouseMove={handleMouseMove}
+              onMouseUp={handleMouseUp}
+              onMouseLeave={handleMouseUp}
+            >
+              
+              <button 
+                onClick={() => setSelectedMenu(null)} 
+                className="absolute top-4 right-4 z-50 group flex items-center justify-center w-10 h-10 md:w-12 md:h-12 bg-[#1A1A1A]/80 hover:bg-[#1A1A1A] backdrop-blur-md rounded-full transition-all duration-300 cursor-pointer shadow-lg border border-white/10"
+              >
+                <X size={20} className="text-white group-hover:rotate-90 transition-transform" />
+              </button>
+
+              {/* 圖片容器：使用 max-w-full 與 max-h-full 確保最上方與最下方在 1 倍時能完整顯示 */}
+              <div 
+                className="w-full h-full flex items-center justify-center"
+                style={{ cursor: isDragging ? 'grabbing' : 'grab' }}
+              >
+                <img 
+                  src={selectedMenu} 
+                  alt="線上完整菜單" 
+                  draggable="false" // 禁用原生拖拽，避免干擾我們自己寫的拖曳邏輯
+                  className="max-w-full max-h-full object-contain transition-transform duration-75 ease-out origin-center pointer-events-none"
+                  style={{ 
+                    // 🌟 完全交由 transform 來放大縮小，不會破壞 object-contain 的比例限制
+                    transform: `translate(${position.x}px, ${position.y}px) scale(${scale})` 
+                  }}
+                />
+              </div>
             </div>
           </div>
         </div>
