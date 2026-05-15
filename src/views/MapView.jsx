@@ -65,7 +65,7 @@ export default function MapView({ selectedShop, setSelectedShop, setActiveTab })
   return (
     <div className="relative w-full h-screen bg-[#E5E3DF] overflow-hidden flex items-center justify-center animate-in fade-in duration-700" style={{ perspective: STAGE_CONFIG.perspective }}>
       
-      {/* 🌟 1. 平板外框：加入 onClickCapture 與條件游標 */}
+      {/* ==================== 平板外框 ==================== */}
       <div 
         className="absolute w-[900px] max-w-[92vw] h-[600px] max-h-[75vh] bg-[#1A1A1A] rounded-[2rem] border-[10px] border-[#1A1A1A] shadow-2xl flex flex-col"
         style={{ 
@@ -75,20 +75,26 @@ export default function MapView({ selectedShop, setSelectedShop, setActiveTab })
           transformStyle: 'preserve-3d',
           cursor: activeDevice !== 'tablet' ? 'pointer' : 'default' 
         }}
-        onClickCapture={() => { if (activeDevice !== 'tablet') setActiveDevice('tablet'); }}
+        // 🌟 1. 加入 e.stopPropagation()，阻止點擊穿透
+        onClickCapture={(e) => { 
+          if (activeDevice !== 'tablet') {
+            e.stopPropagation();
+            setActiveDevice('tablet'); 
+          }
+        }}
       >
-        <div className="flex-1 relative bg-[#E8EAED] rounded-[1.5rem] overflow-hidden cursor-default">
+        {/* 🌟 2. 只有在 activeDevice 是 tablet 時才允許內部點擊 (pointer-events-none) */}
+        <div className={`flex-1 relative bg-[#E8EAED] rounded-[1.5rem] overflow-hidden ${activeDevice !== 'tablet' ? 'pointer-events-none' : ''}`}>
           <GoogleMapComponent 
             shops={filteredShops} 
             selectedShop={mapActiveShop} 
             onMarkerClick={(shop) => { setSelectedShop(shop); setActiveDevice('phone'); }}
-            // 🌟 2. 核心修復：點擊地圖時不再清空 selectedShop，只切換平板到前方
             onMapClick={() => { setActiveDevice('tablet'); }}
           />
         </div>
       </div>
 
-      {/* 🌟 3. 手機外框：加入 onClickCapture 與條件游標 */}
+      {/* ==================== 手機外框 ==================== */}
       <div 
         className="absolute w-[320px] h-[650px] max-h-[85vh] bg-[#1A1A1A] rounded-[2.5rem] border-[12px] border-[#1A1A1A] shadow-2xl flex flex-col"
         style={{ 
@@ -98,9 +104,16 @@ export default function MapView({ selectedShop, setSelectedShop, setActiveTab })
           transformStyle: 'preserve-3d',
           cursor: activeDevice !== 'phone' ? 'pointer' : 'default' 
         }}
-        onClickCapture={() => { if (activeDevice !== 'phone') setActiveDevice('phone'); }}
+        // 🌟 3. 加入 e.stopPropagation()，阻止點擊穿透
+        onClickCapture={(e) => { 
+          if (activeDevice !== 'phone') {
+            e.stopPropagation();
+            setActiveDevice('phone'); 
+          }
+        }}
       >
-        <div className="flex-1 relative bg-white rounded-[1.8rem] overflow-hidden flex flex-col cursor-default">
+        {/* 🌟 4. 只有在 activeDevice 是 phone 時才允許內部點擊 (pointer-events-none) */}
+        <div className={`flex-1 relative bg-white rounded-[1.8rem] overflow-hidden flex flex-col ${activeDevice !== 'phone' ? 'pointer-events-none' : ''}`}>
           {selectedShop ? (
             /* --- 詳細資料區 --- */
             <div className="flex-1 flex flex-col overflow-y-auto no-scrollbar animate-in fade-in duration-300">
