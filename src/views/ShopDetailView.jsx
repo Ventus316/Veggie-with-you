@@ -15,6 +15,8 @@ export default function ShopDetailView({ shop, setActiveTab }) {
   useEffect(() => {
     if (!shop) {
       setActiveTab('shops');
+    } else {
+      window.scrollTo(0, 0);
     }
   }, [shop, setActiveTab]);
 
