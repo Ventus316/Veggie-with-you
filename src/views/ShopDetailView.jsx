@@ -75,17 +75,32 @@ export default function ShopDetailView({ shop, setActiveTab }) {
       </div>
 
       {/* 圖片展示區 */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-20">
-        <div className="md:col-span-2 relative aspect-[16/9] md:aspect-auto rounded-xl overflow-hidden shadow-sm bg-stone-200">
-          <img src={displayMainImg} alt="主視覺" className="w-full h-full object-cover hover:scale-105 transition-transform duration-[1500ms]" />
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-20 md:h-[480px]"> 
+        {/* 左側主圖 (菜單) */}
+        {/* 🌟 2. 移除原本的 aspect-ratio，改為 h-[300px] md:h-full，讓它填滿外層高度 */}
+        <div className="md:col-span-2 relative h-[300px] md:h-full rounded-xl overflow-hidden shadow-sm bg-stone-200">
+          <img 
+            src={displayMainImg} 
+            alt="主視覺" 
+            // 🌟 3. 加入 object-left-top，讓定位靠左上角
+            className="w-full h-full object-cover object-left-top hover:scale-105 transition-transform duration-[1500ms]" 
+          />
           <span className="absolute top-4 left-4 bg-[#1A1A1A]/80 backdrop-blur text-white text-[10px] px-3 py-1.5 tracking-widest font-bold uppercase shadow-sm">
             {shop.menuImg ? '精選菜單' : '店家視覺'}
           </span>
         </div>
-        <div className="grid grid-cols-2 md:grid-cols-1 gap-6">
+        
+        {/* 右側：兩張特色餐點圖 */}
+        {/* 🌟 4. 加入 md:grid-rows-2 與 md:h-full，確保上下兩張圖均分高度 */}
+        <div className="grid grid-cols-2 md:grid-cols-1 md:grid-rows-2 gap-6 md:h-full">
           {displayMealImgs.map((imgUrl, i) => (
-            <div key={i} className="relative aspect-square md:aspect-[4/3] rounded-xl overflow-hidden shadow-sm bg-stone-200">
-              <img src={imgUrl} alt="特色" className="w-full h-full object-cover hover:scale-105 transition-transform duration-[1500ms]" />
+            <div key={i} className="relative h-[150px] md:h-full rounded-xl overflow-hidden shadow-sm bg-stone-200">
+              <img 
+                src={imgUrl} 
+                alt="特色" 
+                // 🌟 5. 右側小圖同樣加入 object-left-top 維持裁切一致性
+                className="w-full h-full object-cover object-left-top hover:scale-105 transition-transform duration-[1500ms]" 
+              />
             </div>
           ))}
         </div>
