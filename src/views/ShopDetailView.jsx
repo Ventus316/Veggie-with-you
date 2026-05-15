@@ -296,25 +296,6 @@ return Object.entries(groupedMap).map(([timeStr, daysArray], gIdx) => {
                ))}
             </div>
           </div>
-
-          <div>
-            <h3 className="text-sm font-bold tracking-[0.2em] text-stone-400 uppercase mb-6 flex items-center border-b border-stone-200 pb-3">
-               <Utensils size={16} className="mr-2"/> 推薦餐點資訊
-            </h3>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-               {recommendations.map((dish, i) => (
-                  <div key={i} className="flex items-center space-x-4 p-4 bg-white border border-stone-200 shadow-sm rounded-xl hover:border-[#1A1A1A] transition-all">
-                     <div className="w-24 h-24 flex-shrink-0 overflow-hidden rounded-lg bg-stone-200">
-                        {dish.img && <img src={dish.img} alt={dish.name} className="w-full h-full object-cover" />}
-                     </div>
-                     <div className="flex flex-col justify-center">
-                        <span className="text-sm font-bold text-[#1A1A1A] tracking-[0.15em] mb-2">{dish.name}</span>
-                        <span className="text-xs font-bold text-stone-400 tracking-wider">NT$ {dish.price || '--'}</span>
-                     </div>
-                  </div>
-               ))}
-            </div>
-          </div>
         </div>
       </div>
 
