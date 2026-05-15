@@ -11,6 +11,8 @@ import {
   X 
 } from 'lucide-react';
 
+import { WEEKDAY_ICONS } from '../data/Data';
+
 export default function ShopDetailView({ shop, setActiveTab }) {
   const [selectedMenu, setSelectedMenu] = useState(null);
   
@@ -184,7 +186,7 @@ export default function ShopDetailView({ shop, setActiveTab }) {
                <li className="flex justify-between border-b border-stone-100 pb-3"><span className="text-stone-500">聯絡電話</span> <span>{shop.phone || '--'}</span></li>
               
               <li className="flex justify-between items-start border-b border-stone-100 pb-3 pt-2">
-                <span className="text-stone-500 whitespace-nowrap mr-4 pt-2">營業時間</span>
+                <span className="text-stone-500 whitespace-nowrap mr-4 pt-1.5">營業時間</span>
                 <div className="space-y-6 flex flex-col items-end">
                   {(() => {
                     const groupedMap = {};
@@ -200,11 +202,13 @@ export default function ShopDetailView({ shop, setActiveTab }) {
                         <div className="flex gap-2 mb-2 justify-end">
                           {daysArray.map((day, dIdx) => (
                             <div key={dIdx} className="w-8 h-8 flex items-center justify-center">
+                              {/* 🌟 3. 換成自製素材的 Mapping */}
                               <img 
-                                src={`/images/icons/day_${day}.png`} 
+                                src={WEEKDAY_ICONS[day]} 
                                 alt={day} 
                                 className="w-full h-full object-contain"
                                 onError={(e) => {
+                                  // 如果沒有對應的圖片，依然保留圓形黑底白字的備用方案
                                   e.target.style.display = 'none';
                                   e.target.parentNode.innerHTML = `<span class="w-8 h-8 rounded-full bg-[#1A1A1A] text-white flex items-center justify-center text-[11px]">${day}</span>`;
                                 }}
