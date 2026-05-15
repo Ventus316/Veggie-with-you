@@ -197,48 +197,68 @@ export default function ShopDetailView({ shop, setActiveTab }) {
                       groupedMap[item.time].push(item.day);
                     });
 
-                    return Object.entries(groupedMap).map(([timeStr, daysArray], gIdx) => (
-                      <div key={gIdx} className="flex flex-col items-end">
-                        <div className="flex gap-2 mb-2 justify-end">
-                          {daysArray.map((day, dIdx) => (
-                            <div key={dIdx} className="w-8 h-8 flex items-center justify-center">
-                              {/* 🌟 3. 換成自製素材的 Mapping */}
-                              <img 
-                                src={WEEKDAY_ICONS[day]} 
-                                alt={day} 
-                                className="w-full h-full object-contain"
-                                onError={(e) => {
-                                  // 如果沒有對應的圖片，依然保留圓形黑底白字的備用方案
-                                  e.target.style.display = 'none';
-                                  e.target.parentNode.innerHTML = `<span class="w-8 h-8 rounded-full bg-[#1A1A1A] text-white flex items-center justify-center text-[11px]">${day}</span>`;
-                                }}
-                              />
-                            </div>
-                          ))}
+return Object.entries(groupedMap).map(([timeStr, daysArray], gIdx) => {
+                      
+                      // 🌟 新增分行邏輯：超過 5 個就拆分成兩行
+                      let rows = [daysArray];
+                      if (daysArray.length === 6) {
+                        rows = [daysArray.slice(0, 3), daysArray.slice(3, 6)]; // 3 + 3
+                      } else if (daysArray.length === 7) {
+                        rows = [daysArray.slice(0, 3), daysArray.slice(3, 7)]; // 3 + 4
+                      } else if (daysArray.length > 5) {
+                        // 備用防呆：超過 5 個的一律均分兩行
+                        const mid = Math.ceil(daysArray.length / 2);
+                        rows = [daysArray.slice(0, mid), daysArray.slice(mid)];
+                      }
+
+                      return (
+                        <div key={gIdx} className="flex flex-col items-end">
+                          
+                          {/* 🌟 透過 map 將切好的 rows 渲染成多行，並用 flex-col gap-2 產生垂直間距 */}
+                          <div className="flex flex-col gap-2 mb-2 items-end">
+                            {rows.map((row, rIdx) => (
+                              <div key={rIdx} className="flex gap-2 justify-end">
+                                {row.map((day, dIdx) => (
+                                  <div key={dIdx} className="w-8 h-8 flex items-center justify-center">
+                                    <img 
+                                      src={WEEKDAY_ICONS[day]} 
+                                      alt={day} 
+                                      className="w-full h-full object-contain"
+                                      onError={(e) => {
+                                        e.target.style.display = 'none';
+                                        e.target.parentNode.innerHTML = `<span class="w-8 h-8 rounded-full bg-[#1A1A1A] text-white flex items-center justify-center text-[11px]">${day}</span>`;
+                                      }}
+                                    />
+                                  </div>
+                                ))}
+                              </div>
+                            ))}
+                          </div>
+
+                          <div className="flex justify-end w-full">
+                            {timeStr === '休息' ? (
+                              <div className="h-8 flex items-center justify-end">
+                                <img 
+                                  src="/images/icons/closed_status.png" 
+                                  alt="公休" 
+                                  className="h-6 object-contain"
+                                  onError={(e) => {
+                                    e.target.style.display = 'none';
+                                    e.target.parentNode.innerHTML = `<span class="text-stone-500 font-bold tracking-widest text-sm bg-stone-200 px-2 py-1 rounded">公休</span>`;
+                                  }}
+                                />
+                              </div>
+                            ) : (
+                              <div className="text-sm font-bold tracking-widest text-stone-600 text-right">
+                                {timeStr.split('\n').map((line, i) => (
+                                  <span key={i} className="block">{line}</span>
+                                ))}
+                              </div>
+                            )}
+                          </div>
                         </div>
-                        <div className="flex justify-end w-full">
-                          {timeStr === '休息' ? (
-                            <div className="h-8 flex items-center justify-end">
-                              <img 
-                                src="/images/icons/closed_status.png" 
-                                alt="公休" 
-                                className="h-6 object-contain"
-                                onError={(e) => {
-                                  e.target.style.display = 'none';
-                                  e.target.parentNode.innerHTML = `<span class="text-stone-500 font-bold tracking-widest text-sm bg-stone-200 px-2 py-1 rounded">公休</span>`;
-                                }}
-                              />
-                            </div>
-                          ) : (
-                            <div className="text-sm font-bold tracking-widest text-stone-600 text-right">
-                              {timeStr.split('\n').map((line, i) => (
-                                <span key={i} className="block">{line}</span>
-                              ))}
-                            </div>
-                          )}
-                        </div>
-                      </div>
-                    ));
+                      );
+                    });
                   })()}
                 </div>
               </li>
