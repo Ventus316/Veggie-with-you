@@ -186,7 +186,7 @@ export const RESTAURANTS = [
     rating: "4.4", reviews: "68", 
     features: {
       portion: "份量正常",
-      environment: "一般小吃店",  
+      environment: "店面較老舊，位置較少",  
       restroom: "無",
       payment: "只收現金",
       reservation: "不可訂位"

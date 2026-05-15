@@ -4,8 +4,13 @@ import React, { useState } from 'react';
 import { MapPin } from 'lucide-react';
 import { ALL_DISHES } from '../data/Data';
 import { RESTAURANTS } from '../data/restaurantsData';
+// 🌟 引入滾動記憶鉤子 (確保你已經創建了這個檔案)
+import useScrollMemory from '../hooks/useScrollMemory';
 
 export default function MenuView({ setActiveTab, setSelectedShop }) {
+  // 🌟 啟用滾動記憶，給予專屬 ID
+  useScrollMemory('menu');
+
   const rows = [];
   for (let i = 0; i < ALL_DISHES.length; i += 4) {
     rows.push(ALL_DISHES.slice(i, i + 4));
@@ -21,11 +26,6 @@ export default function MenuView({ setActiveTab, setSelectedShop }) {
 
   return (
     <div className="pt-16 px-6 max-w-[1400px] mx-auto min-h-screen animate-in fade-in duration-1000">
-      {/* <div className="text-center mb-16">
-        <h1 className="text-3xl md:text-4xl font-light tracking-[0.2em] text-[#1A1A1A] mb-3 uppercase">餐點圖鑑</h1>
-        <p className="text-[10px] font-bold tracking-[0.3em] text-stone-400 uppercase">Vegan Menu Gallery</p>
-      </div> */}
-
       <div className="flex flex-col space-y-2">
         {rows.map((row, rowIndex) => (
           <div key={rowIndex} className="flex w-full h-[30vh] md:h-[40vh] gap-2 justify-around">
@@ -36,6 +36,20 @@ export default function MenuView({ setActiveTab, setSelectedShop }) {
                 <div 
                   key={dish.id} 
                   onMouseEnter={() => setExpandedRows(prev => ({ ...prev, [rowIndex]: colIndex }))}
+                  // 🌟 新增 onClick 事件：控制展開與跳轉詳情頁
+                  onClick={() => {
+                    if (isExpanded) {
+                      // 展開狀態下點擊：跳轉到店家詳情
+                      const targetShop = RESTAURANTS.find(r => r.name === dish.shop);
+                      if (targetShop) {
+                        setSelectedShop(targetShop);
+                        setActiveTab('shopDetail');
+                      }
+                    } else {
+                      // 未展開狀態下點擊：展開卡片 (支援手機版操作)
+                      setExpandedRows(prev => ({ ...prev, [rowIndex]: colIndex }));
+                    }
+                  }}
                   className={`relative transition-all duration-700 ease-[cubic-bezier(0.25,0.8,0.25,1)] overflow-hidden bg-stone-900 cursor-pointer ${isExpanded ? 'flex-[4]' : 'flex-1'}`}
                 >
                   <img 
@@ -63,9 +77,10 @@ export default function MenuView({ setActiveTab, setSelectedShop }) {
                     </span>
                   </div>
 
+                  {/* 🌟 你的地圖按鈕，因為有 e.stopPropagation()，所以不會觸發外層的跳轉 */}
                   <button 
                     onClick={(e) => {
-                      e.stopPropagation();
+                      e.stopPropagation(); 
                       const targetShop = RESTAURANTS.find(r => r.name === dish.shop);
                       if(targetShop) {
                         setSelectedShop(targetShop);
@@ -74,10 +89,10 @@ export default function MenuView({ setActiveTab, setSelectedShop }) {
                     }}
                     className={`absolute bottom-4 right-4 md:bottom-6 md:right-6 text-white border-b border-transparent hover:text-stone-300 hover:border-stone-300 transition-colors z-20 flex items-center space-x-1 duration-500 delay-100 cursor-pointer ${isExpanded ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
                   >
-                    <span className="text-[14px] md:text-xs font-bold tracking-[0.15em] whitespace-nowrap uppercase drop-shadow-md">
+                    <span className="text-[10px] md:text-xs font-bold tracking-[0.15em] whitespace-nowrap uppercase drop-shadow-md">
                       {dish.shop}
                     </span>
-                    <MapPin size={16} className="hidden md:block drop-shadow-md" />
+                    <MapPin size={14} className="hidden md:block drop-shadow-md" />
                   </button>
                 </div>
               );
