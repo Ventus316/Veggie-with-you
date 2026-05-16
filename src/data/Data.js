@@ -2,8 +2,8 @@
 
 import { RESTAURANTS } from './restaurantsData';
 
-import logo_long from "../assets/Icons/Logo_long.svg";
-import logo_short from "../assets/Icons/Logo_short.svg";
+import logo_long from "../assets/logo/Logo_long.svg";
+import logo_short from "../assets/logo/Logo_short.svg";
 
 import iconMon from '../assets/weekday/Mon.png';
 import iconTues from '../assets/weekday/Tues.png';
@@ -12,6 +12,9 @@ import iconThur from '../assets/weekday/Thur.png';
 import iconFri from '../assets/weekday/Fri.png';
 import iconSatu from '../assets/weekday/Satu.png';
 import iconSun from '../assets/weekday/Sun.png';
+
+import mapSchool from '../assets/map/school.png';
+import mapRadish from '../assets/map/radish.png';
 
 export const LOGO_LONG = logo_long;
 export const LOGO_SHORT = logo_short;
@@ -25,6 +28,10 @@ export const WEEKDAY_ICONS = {
   '六': iconSatu,
   '日': iconSun,
 };
+
+export const MAP_SCHOOL = mapSchool;
+export const MAP_RADISH = mapRadish;
+
 
 // 根據上方的 RESTAURANTS 動態生成首頁的熱門餐點
 export const RECOMMEND_DISHES = RESTAURANTS.flatMap(shop => 

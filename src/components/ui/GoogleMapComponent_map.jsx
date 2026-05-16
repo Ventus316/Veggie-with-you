@@ -3,18 +3,19 @@
 import React, { useEffect, useRef } from 'react';
 import { setOptions, importLibrary } from '@googlemaps/js-api-loader';
 
+// 🌟 1. 從 Data 引入自製的地圖素材
+import { MAP_SCHOOL, MAP_RADISH } from '../../data/Data';
+
 setOptions({
     key: import.meta.env.VITE_GOOGLE_MAPS_API_KEY,
     version: 'weekly',
 });
 
-// 🌟 定義自定義標記：一個優雅的「蔬食水滴針」SVG 路徑
-const PIN_SVG_PATH = "M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z";
-
 export default function GoogleMapComponent({ shops, selectedShop, onMarkerClick, onMapClick }) {
   const mapRef = useRef(null);
   const googleMap = useRef(null);
   const markersRef = useRef({});
+  const schoolMarkerRef = useRef(null); // 儲存學校標記的引用
 
   useEffect(() => {
     const initMap = async () => {
@@ -30,13 +31,25 @@ export default function GoogleMapComponent({ shops, selectedShop, onMarkerClick,
             disableDefaultUI: true,
             zoomControl: true,
             gestureHandling: 'greedy',
-            clickableIcons: false, // 禁用 Google 內建 POI 點擊，保持介面純粹
+            clickableIcons: false, // 禁用 Google 內建 POI 點擊
           });
 
-          // 🌟 修復點擊切換問題：直接在地圖物件上監聽點擊
           // 當地圖被點擊時，通知父層將平板移到前方
           googleMap.current.addListener('click', () => {
             if (onMapClick) onMapClick();
+          });
+
+          // 🌟 2. 在地圖初始化時，為「元智大學」建立專屬的永久地標標記
+          schoolMarkerRef.current = new window.google.maps.Marker({
+            position: yzuCenter,
+            map: googleMap.current,
+            title: "元智大學",
+            icon: {
+              url: MAP_SCHOOL,
+              scaledSize: new window.google.maps.Size(40, 50), // 設定合適的制服尺寸
+              anchor: new window.google.maps.Point(20, 25),   // 圓形圖標錨點設在正中心
+            },
+            zIndex: 10, // 層級略高於一般未選取的店家
           });
         }
 
@@ -52,28 +65,31 @@ export default function GoogleMapComponent({ shops, selectedShop, onMarkerClick,
   const renderMarkers = (shopsData) => {
     if (!googleMap.current || !window.google) return;
 
+    // 清除舊的店家標記（保留學校標記不清除）
     Object.values(markersRef.current).forEach((m) => m.setMap(null));
     markersRef.current = {};
 
     shopsData.forEach((shop) => {
       const isSelected = selectedShop?.id === shop.id;
 
+      // 🌟 3. 將店家標記全面換成自製的 mapRadish 素材
       const marker = new window.google.maps.Marker({
         position: { lat: shop.lat, lng: shop.lng },
         map: googleMap.current,
         title: shop.name,
-        // 🌟 美化標記：使用自定義 SVG
         icon: {
-          path: PIN_SVG_PATH,
-          fillColor: isSelected ? '#065f46' : '#8B8B8B', // 選中時為深綠色，未選中為大地灰
-          fillOpacity: 1,
-          strokeWeight: 1,
-          strokeColor: '#FFFFFF',
-          scale: isSelected ? 2.5 : 1.8, // 選中時放大標記
-          anchor: new window.google.maps.Point(12, 22), // 確保針尖對準座標
+          url: MAP_RADISH,
+          // 透過條件判斷，當選中該店家時動態放大圖片尺寸 (從 36px 放大到 50px)
+          scaledSize: isSelected 
+            ? new window.google.maps.Size(50, 60) 
+            : new window.google.maps.Size(30, 36),
+          // 精準計算錨點（Point 參數為: width/2, height），確保蘿蔔針尖底部直擊座標
+          anchor: isSelected 
+            ? new window.google.maps.Point(25, 60) 
+            : new window.google.maps.Point(15, 36),
         },
-        zIndex: isSelected ? 1000 : 1,
-        cursor: 'pointer', // 🌟 修復鼠標樣式
+        zIndex: isSelected ? 1000 : 1, // 被選中的店家擁有最高層級
+        cursor: 'pointer',
       });
 
       marker.addListener('click', () => onMarkerClick(shop));
@@ -89,7 +105,6 @@ export default function GoogleMapComponent({ shops, selectedShop, onMarkerClick,
   }, [selectedShop]);
 
   return (
-    // 🌟 增加 cursor-pointer 確保滑鼠懸浮時呈現可點擊狀態
     <div className="absolute inset-0 w-full h-full rounded-[1.5rem] overflow-hidden cursor-pointer">
       <div ref={mapRef} className="w-full h-full" />
     </div>

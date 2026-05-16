@@ -1,5 +1,5 @@
 // src/views/MapView.jsx
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { ChevronLeft, Star, Clock, Search, MapPin, X, ArrowRight, Filter } from 'lucide-react';
 import { RESTAURANTS } from '../data/restaurantsData';
 import GoogleMapComponent from '../components/ui/GoogleMapComponent_map';
@@ -12,7 +12,9 @@ const STAGE_CONFIG = {
     tablet: { x: '23%',  y: '0%', z: '-120px', rotateY: '-10deg', rotateX: '5deg', scale: 1, zIndex: 10 }
   },
   tabletActive: {
-    tablet: { x: '15%',   y: '0%', z: '0px', rotateY: '0deg', rotateX: '3deg', scale: 1.1, zIndex: 50 },
+    // 🌟 1. 核心修復：當平板是主角時，將 rotateX 設為 '0deg'。
+    // 這確保地圖完全平貼於螢幕，瀏覽器才能 100% 準確捕捉你的拖拉與縮放手勢。
+    tablet: { x: '15%',   y: '0%', z: '0px', rotateY: '0deg', rotateX: '0deg', scale: 1.1, zIndex: 50 },
     phone:  { x: '-170%', y: '5%', z: '-300px', rotateY: '25deg', rotateX: '0deg', scale: 1, zIndex: 10 }
   }
 };
@@ -27,7 +29,6 @@ export default function MapView({ selectedShop, setSelectedShop, setActiveTab })
 
   useEffect(() => {
     if (selectedShop) {
-      setActiveDevice('phone');
       const timer = setTimeout(() => {
         setMapActiveShop(selectedShop);
       }, 150);
@@ -37,24 +38,32 @@ export default function MapView({ selectedShop, setSelectedShop, setActiveTab })
     }
   }, [selectedShop]);
 
-  let filteredShops = RESTAURANTS.filter(shop => {
-    const walk = shop.distance?.walking || 0;
-    const scooter = shop.distance?.scooter || 0;
-    if (filterDist === 'walk-5' && walk > 5) return false;
-    if (filterDist === 'walk-10' && walk > 10) return false;
-    if (filterDist === 'walk-15' && walk > 15) return false;
-    if (filterDist === 'scoot-5' && scooter > 5) return false;
-    if (filterDist === 'scoot-10' && scooter > 10) return false;
+  // 🌟 2. 效能修復：使用 useMemo 包裝過濾邏輯
+  // 只有當篩選條件或 selectedShop 改變時，才重新計算陣列。
+  // 這樣切換 3D 視角時，Google Maps 就不會反覆重繪所有蘿蔔標記！
+  const filteredShops = useMemo(() => {
+    let result = RESTAURANTS.filter(shop => {
+      const walk = shop.distance?.walking || 0;
+      const scooter = shop.distance?.scooter || 0;
+      if (filterDist === 'walk-5' && walk > 5) return false;
+      if (filterDist === 'walk-10' && walk > 10) return false;
+      if (filterDist === 'walk-15' && walk > 15) return false;
+      if (filterDist === 'scoot-5' && scooter > 5) return false;
+      if (filterDist === 'scoot-10' && scooter > 10) return false;
 
-    if (filterType !== 'all' && !shop.type.includes(filterType)) return false;
-    if (searchQuery && !shop.name.includes(searchQuery) && !shop.type.includes(searchQuery)) return false;
+      if (filterType !== 'all' && !shop.type.includes(filterType)) return false;
+      if (searchQuery && !shop.name.includes(searchQuery) && !shop.type.includes(searchQuery)) return false;
 
-    return true;
-  });
+      return true;
+    });
 
-  if (selectedShop && !filteredShops.some(s => s.id === selectedShop.id)) {
-    filteredShops = [...filteredShops, selectedShop];
-  }
+    // 確保選中的店家不會被篩選器濾除
+    if (selectedShop && !result.some(s => s.id === selectedShop.id)) {
+      result = [...result, selectedShop];
+    }
+    
+    return result;
+  }, [filterDist, filterType, searchQuery, selectedShop]);
 
   const currentPos = activeDevice === 'phone' ? STAGE_CONFIG.phoneActive : STAGE_CONFIG.tabletActive;
   const getTransform = (device) => {
@@ -75,7 +84,6 @@ export default function MapView({ selectedShop, setSelectedShop, setActiveTab })
           transformStyle: 'preserve-3d',
           cursor: activeDevice !== 'tablet' ? 'pointer' : 'default' 
         }}
-        // 🌟 1. 加入 e.stopPropagation()，阻止點擊穿透
         onClickCapture={(e) => { 
           if (activeDevice !== 'tablet') {
             e.stopPropagation();
@@ -83,12 +91,11 @@ export default function MapView({ selectedShop, setSelectedShop, setActiveTab })
           }
         }}
       >
-        {/* 🌟 2. 只有在 activeDevice 是 tablet 時才允許內部點擊 (pointer-events-none) */}
         <div className={`flex-1 relative bg-[#E8EAED] rounded-[1.5rem] overflow-hidden ${activeDevice !== 'tablet' ? 'pointer-events-none' : ''}`}>
           <GoogleMapComponent 
             shops={filteredShops} 
             selectedShop={mapActiveShop} 
-            onMarkerClick={(shop) => { setSelectedShop(shop); setActiveDevice('phone'); }}
+            onMarkerClick={(shop) => { setSelectedShop(shop); setActiveDevice('tablet'); }}
             onMapClick={() => { setActiveDevice('tablet'); }}
           />
         </div>
@@ -104,7 +111,6 @@ export default function MapView({ selectedShop, setSelectedShop, setActiveTab })
           transformStyle: 'preserve-3d',
           cursor: activeDevice !== 'phone' ? 'pointer' : 'default' 
         }}
-        // 🌟 3. 加入 e.stopPropagation()，阻止點擊穿透
         onClickCapture={(e) => { 
           if (activeDevice !== 'phone') {
             e.stopPropagation();
@@ -112,7 +118,6 @@ export default function MapView({ selectedShop, setSelectedShop, setActiveTab })
           }
         }}
       >
-        {/* 🌟 4. 只有在 activeDevice 是 phone 時才允許內部點擊 (pointer-events-none) */}
         <div className={`flex-1 relative bg-white rounded-[1.8rem] overflow-hidden flex flex-col ${activeDevice !== 'phone' ? 'pointer-events-none' : ''}`}>
           {selectedShop ? (
             /* --- 詳細資料區 --- */
