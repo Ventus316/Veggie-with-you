@@ -1,5 +1,5 @@
 // src/views/ShopsView.jsx
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { MapPin, Clock, ArrowRight, X, Leaf } from 'lucide-react';
 import useShopFilters from '../hooks/useShopFilters';
 import FadeInCard from '../components/ui/FadeInCard_shops';
@@ -10,7 +10,6 @@ const TRANSPORT_LABELS = { walking: '步行', bicycle: '腳踏車', scooter: '�
 export default function ShopsView({ setSelectedShop, setActiveTab }) {
   const [selectedMenu, setSelectedMenu] = useState(null);
   
-  // 🌟 1. 移除 filterType，只保留交通與時間
   const { 
     filterTransport, setFilterTransport, 
     filterTime, setFilterTime, 
@@ -18,9 +17,37 @@ export default function ShopsView({ setSelectedShop, setActiveTab }) {
   } = useShopFilters();
   
   const handleShopClick = (shopData) => {
+    // 🌟 關鍵修正點 1：在點擊事件觸發的第一時間，火速捕捉並記錄目前的捲動高度
+    // 這能徹底避免 React 在銷毀組件過程中，瀏覽器提早將 scrollY 清零的隱患
+    sessionStorage.setItem('scroll_pos_shops', window.scrollY.toString());
+    
     setSelectedShop(shopData);
     setActiveTab('shopDetail');
   };
+
+  // 🌟 關鍵修正點 2：多週期滾動追蹤復原機制
+  // 完美攻克因 FadeInCard 動態加載、圖片撐開高度延遲導致單次 scrollTo 被瀏覽器沒收的 Bug
+  useEffect(() => {
+    const savedPosition = sessionStorage.getItem('scroll_pos_shops');
+    if (savedPosition) {
+      const targetScroll = parseInt(savedPosition, 10);
+      let attempts = 0;
+      
+      const intervalId = setInterval(() => {
+        window.scrollTo(0, targetScroll);
+        attempts++;
+        
+        // 條件檢查：如果成功抵達目標位置（誤差 3px 內），或者輪詢嘗試了 12 次（約 500ms，代表頁面已加載完畢）
+        // 則安全清除計時器，防止無限死迴圈，並將暫存歸零
+        if (Math.abs(window.scrollY - targetScroll) <= 3 || attempts > 12) {
+          clearInterval(intervalId);
+          sessionStorage.removeItem('scroll_pos_shops');
+        }
+      }, 40); // 每 40ms 緊密追蹤逼迫瀏覽器向下捲動
+
+      return () => clearInterval(intervalId);
+    }
+  }, [filteredShops]); // 綁定過濾名單，確保渲染上架後立刻開跑
 
   return (
     <div className="py-12 px-6 max-w-5xl mx-auto min-h-screen animate-in fade-in duration-1000">
@@ -30,7 +57,6 @@ export default function ShopsView({ setSelectedShop, setActiveTab }) {
           <p className="text-[10px] font-bold tracking-[0.3em] text-stone-400 uppercase">Vegan Shops Guide</p>
         </div>
         
-        {/* 🌟 2. 移除素食分類 UI，只保留交通與時間 */}
         <div className="flex flex-wrap gap-6 mt-8 md:mt-0">
           <div className="flex flex-col">
             <label className="text-[9px] font-bold tracking-[0.2em] text-stone-400 mb-2 uppercase">交通方式</label>
@@ -43,7 +69,6 @@ export default function ShopsView({ setSelectedShop, setActiveTab }) {
           </div>
           <div className="flex flex-col">
             <label className="text-[9px] font-bold tracking-[0.2em] text-stone-400 mb-2 uppercase">時間限制</label>
-            {/* 💡 已順手修正為 setFilterTime */}
             <select value={filterTime} onChange={e => setFilterTime(e.target.value)} className="appearance-none bg-transparent border-b border-[#1A1A1A] text-[#1A1A1A] text-xs font-bold tracking-[0.1em] pb-2 pr-6 focus:outline-none cursor-pointer">
               <option value="all">不限時間</option>
               <option value="5">5 分鐘以內</option>
@@ -108,7 +133,7 @@ export default function ShopsView({ setSelectedShop, setActiveTab }) {
                       : 'text-stone-300 border-stone-300 cursor-not-allowed'
                   }`}
                 >
-                  <span>{shop.menuImg ? '查看線上完整菜單' : '暫無線上菜單'}</span>
+                  <span>查看線上完整菜單</span>
                   {shop.menuImg && <ArrowRight size={12} className="group-hover:translate-x-1 transition-transform" />}
                 </button>
               </div>

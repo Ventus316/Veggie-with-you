@@ -145,7 +145,7 @@ export default function Header({ activeTab, setActiveTab, isFullScreenView }) {
           <img 
             src={ LOGO_SHORT } 
             alt="YZU Veggie Logo" 
-            className="w-50 h-auto object-contain mr-3 mb-4" 
+            className="w-25 h-auto object-contain mr-3 mb-4" 
           />
         </div>
 

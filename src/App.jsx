@@ -28,17 +28,23 @@ export default function App() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  // 🌟 核心修復：建立一個專門給全站「頂部導航欄」使用的分頁切換函式
-  // 當使用者主動點擊 Header 的標籤或 Logo 切換大分頁時，主動清空「已選取店家」，讓頁面回歸初始狀態
+  // 🌟 核心 BUG 修復點：導航欄全域切換攔截器
   const handleNavbarTabChange = (tabId) => {
+    // 1. 清除店家列表頁的捲動暫存，確保下次進去是全新的頂部
+    sessionStorage.removeItem('scroll_pos_shops'); 
+    // 2. 清除當前選取的店家狀態
     setSelectedShop(null); 
-    setActiveTab(tabId);
+    // 3. 切換目標分頁
+    setActiveTab(tabId); 
+    
+    // 🌟 4. 關鍵修復：不論跳轉到店家頁、餐點頁、關於我們還是首頁，
+    // 在組件抽換完成的瞬間，強迫瀏覽器視窗立刻、無延遲地回到最上方 (instant)
+    window.scrollTo({ top: 0, behavior: 'instant' });
   };
 
   const renderView = () => {
     switch (activeTab) {
       case 'home': return <HomeView setActiveTab={setActiveTab} />;
-      // 💡 店家列表與詳情頁維持使用原始的 setActiveTab，確保點擊卡片與跳轉詳情時狀態不被沖掉
       case 'shops': return <ShopsView setSelectedShop={setSelectedShop} setActiveTab={setActiveTab} />;
       case 'shopDetail': return <ShopDetailView shop={selectedShop} setActiveTab={setActiveTab} />;
       case 'map': 
@@ -67,7 +73,6 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-[#F6F6F4] font-sans text-[#1A1A1A] selection:bg-[#1A1A1A] selection:text-white overflow-x-hidden">
-      {/* 🌟 核心修復：將原本直接傳入的 setActiveTab 改為全新封裝的 handleNavbarTabChange */}
       <Header 
         activeTab={activeTab} 
         setActiveTab={handleNavbarTabChange} 
