@@ -1,26 +1,26 @@
 // src/views/ShopsView.jsx
-
 import React, { useState } from 'react';
 import { MapPin, Clock, ArrowRight, X, Leaf } from 'lucide-react';
-import { RESTAURANTS } from '../data/restaurantsData';
+import useShopFilters from '../hooks/useShopFilters';
 import FadeInCard from '../components/ui/FadeInCard_shops';
 
+// 定義翻譯對應表，供卡片動態顯示用
+const TRANSPORT_LABELS = { walking: '步行', bicycle: '腳踏車', scooter: '機車', transit: '大眾運輸' };
+
 export default function ShopsView({ setSelectedShop, setActiveTab }) {
-  const [filterType, setFilterType] = useState('全部');
-  const [filterTime, setFilterTime] = useState('全部');
   const [selectedMenu, setSelectedMenu] = useState(null);
+  
+  // 🌟 1. 移除 filterType，只保留交通與時間
+  const { 
+    filterTransport, setFilterTransport, 
+    filterTime, setFilterTime, 
+    filteredShops 
+  } = useShopFilters();
   
   const handleShopClick = (shopData) => {
     setSelectedShop(shopData);
     setActiveTab('shopDetail');
   };
-
-  const filteredShops = RESTAURANTS.filter(shop => {
-    if (filterType !== '全部' && shop.type !== filterType) return false;
-    // 【修改點 1】篩選邏輯：改為比對 shop.distance.walking
-    if (filterTime !== '全部' && shop.distance?.walking > parseInt(filterTime)) return false;
-    return true;
-  });
 
   return (
     <div className="py-12 px-6 max-w-5xl mx-auto min-h-screen animate-in fade-in duration-1000">
@@ -29,36 +29,27 @@ export default function ShopsView({ setSelectedShop, setActiveTab }) {
           <h1 className="text-3xl md:text-4xl font-light tracking-[0.2em] text-[#1A1A1A] mb-3 uppercase">店家資訊</h1>
           <p className="text-[10px] font-bold tracking-[0.3em] text-stone-400 uppercase">Vegan Shops Guide</p>
         </div>
-        <div className="flex space-x-8 mt-8 md:mt-0">
+        
+        {/* 🌟 2. 移除素食分類 UI，只保留交通與時間 */}
+        <div className="flex flex-wrap gap-6 mt-8 md:mt-0">
           <div className="flex flex-col">
-            <label className="text-[9px] font-bold tracking-[0.2em] text-stone-400 mb-2 uppercase">素食分類</label>
-            <div className="relative">
-              <select 
-                className="appearance-none bg-transparent border-b border-[#1A1A1A] text-[#1A1A1A] text-xs font-bold tracking-[0.1em] pb-2 pr-6 focus:outline-none cursor-pointer"
-                value={filterType}
-                onChange={e => setFilterType(e.target.value)}
-              >
-                <option value="全部">所有分類</option>
-                <option value="全素">全素</option>
-                <option value="蛋奶素">蛋奶素</option>
-                <option value="五辛素">五辛素</option>
-              </select>
-            </div>
+            <label className="text-[9px] font-bold tracking-[0.2em] text-stone-400 mb-2 uppercase">交通方式</label>
+            <select value={filterTransport} onChange={e => setFilterTransport(e.target.value)} className="appearance-none bg-transparent border-b border-[#1A1A1A] text-[#1A1A1A] text-xs font-bold tracking-[0.1em] pb-2 pr-6 focus:outline-none cursor-pointer">
+              <option value="walking">步行</option>
+              <option value="bicycle">腳踏車</option>
+              <option value="scooter">機車</option>
+              <option value="transit">大眾運輸</option>
+            </select>
           </div>
           <div className="flex flex-col">
-            <label className="text-[9px] font-bold tracking-[0.2em] text-stone-400 mb-2 uppercase">步行時間</label>
-            <div className="relative">
-              <select 
-                className="appearance-none bg-transparent border-b border-[#1A1A1A] text-[#1A1A1A] text-xs font-bold tracking-[0.1em] pb-2 pr-6 focus:outline-none cursor-pointer"
-                value={filterTime}
-                onChange={e => setFilterTime(e.target.value)}
-              >
-                <option value="全部">不限時間</option>
-                <option value="5">5 分鐘以內</option>
-                <option value="10">10 分鐘以內</option>
-                <option value="15">15 分鐘以內</option>
-              </select>
-            </div>
+            <label className="text-[9px] font-bold tracking-[0.2em] text-stone-400 mb-2 uppercase">時間限制</label>
+            {/* 💡 已順手修正為 setFilterTime */}
+            <select value={filterTime} onChange={e => setFilterTime(e.target.value)} className="appearance-none bg-transparent border-b border-[#1A1A1A] text-[#1A1A1A] text-xs font-bold tracking-[0.1em] pb-2 pr-6 focus:outline-none cursor-pointer">
+              <option value="all">不限時間</option>
+              <option value="5">5 分鐘以內</option>
+              <option value="10">10 分鐘以內</option>
+              <option value="15">15 分鐘以內</option>
+            </select>
           </div>
         </div>
       </div>
@@ -74,11 +65,10 @@ export default function ShopsView({ setSelectedShop, setActiveTab }) {
                     {shop.type}
                   </span>
                 </div>
-                {/* 【修改點 2】資訊列：改為顯示步行與機車時間。同步對 open 做陣列防呆處理 */}
                 <div className="flex items-center text-xs font-bold tracking-[0.1em] text-stone-400 space-x-5">
                   <span className="flex items-center">
                     <MapPin size={12} className="mr-1 text-stone-300" /> 
-                    步行 {shop.distance?.walking || '--'} 分 / 機車 {shop.distance?.scooter || '--'} 分
+                    {TRANSPORT_LABELS[filterTransport]} {shop.distance?.[filterTransport] || '--'} 分
                   </span>
                   <span className="flex items-center">
                     <Clock size={12} className="mr-1 text-stone-300" /> 

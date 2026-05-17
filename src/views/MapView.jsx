@@ -1,7 +1,8 @@
 // src/views/MapView.jsx
-import React, { useState, useEffect, useMemo } from 'react';
-import { ChevronLeft, Star, Clock, Search, MapPin, X, ArrowRight, Filter } from 'lucide-react';
-import { RESTAURANTS } from '../data/restaurantsData';
+import React, { useState, useEffect } from 'react';
+import { ChevronLeft, Star, Clock, Search, MapPin, X, ArrowRight, Navigation } from 'lucide-react';
+// 🌟 1. 引入共用 Hook
+import useShopFilters from '../hooks/useShopFilters';
 import GoogleMapComponent from '../components/ui/GoogleMapComponent_map';
 
 const STAGE_CONFIG = {
@@ -12,20 +13,23 @@ const STAGE_CONFIG = {
     tablet: { x: '23%',  y: '0%', z: '-120px', rotateY: '-10deg', rotateX: '5deg', scale: 1, zIndex: 10 }
   },
   tabletActive: {
-    // 🌟 1. 核心修復：當平板是主角時，將 rotateX 設為 '0deg'。
-    // 這確保地圖完全平貼於螢幕，瀏覽器才能 100% 準確捕捉你的拖拉與縮放手勢。
+    // 確保地圖平貼於螢幕，防止觸控偏移
     tablet: { x: '15%',   y: '0%', z: '0px', rotateY: '0deg', rotateX: '0deg', scale: 1.1, zIndex: 50 },
     phone:  { x: '-170%', y: '5%', z: '-300px', rotateY: '25deg', rotateX: '0deg', scale: 1, zIndex: 10 }
   }
 };
 
 export default function MapView({ selectedShop, setSelectedShop, setActiveTab }) {
-  const [filterDist, setFilterDist] = useState('all');
-  const [filterType, setFilterType] = useState('all');
-  const [searchQuery, setSearchQuery] = useState('');
-  
   const [activeDevice, setActiveDevice] = useState(selectedShop ? 'phone' : 'tablet');
   const [mapActiveShop, setMapActiveShop] = useState(null);
+
+  // 🌟 2. 使用 Hook 取得過濾後的乾淨資料，完全移除本地的 useMemo 與 filterType
+  const { 
+    filterTransport, setFilterTransport, 
+    filterTime, setFilterTime, 
+    searchQuery, setSearchQuery,
+    filteredShops 
+  } = useShopFilters(selectedShop);
 
   useEffect(() => {
     if (selectedShop) {
@@ -37,33 +41,6 @@ export default function MapView({ selectedShop, setSelectedShop, setActiveTab })
       setMapActiveShop(null);
     }
   }, [selectedShop]);
-
-  // 🌟 2. 效能修復：使用 useMemo 包裝過濾邏輯
-  // 只有當篩選條件或 selectedShop 改變時，才重新計算陣列。
-  // 這樣切換 3D 視角時，Google Maps 就不會反覆重繪所有蘿蔔標記！
-  const filteredShops = useMemo(() => {
-    let result = RESTAURANTS.filter(shop => {
-      const walk = shop.distance?.walking || 0;
-      const scooter = shop.distance?.scooter || 0;
-      if (filterDist === 'walk-5' && walk > 5) return false;
-      if (filterDist === 'walk-10' && walk > 10) return false;
-      if (filterDist === 'walk-15' && walk > 15) return false;
-      if (filterDist === 'scoot-5' && scooter > 5) return false;
-      if (filterDist === 'scoot-10' && scooter > 10) return false;
-
-      if (filterType !== 'all' && !shop.type.includes(filterType)) return false;
-      if (searchQuery && !shop.name.includes(searchQuery) && !shop.type.includes(searchQuery)) return false;
-
-      return true;
-    });
-
-    // 確保選中的店家不會被篩選器濾除
-    if (selectedShop && !result.some(s => s.id === selectedShop.id)) {
-      result = [...result, selectedShop];
-    }
-    
-    return result;
-  }, [filterDist, filterType, searchQuery, selectedShop]);
 
   const currentPos = activeDevice === 'phone' ? STAGE_CONFIG.phoneActive : STAGE_CONFIG.tabletActive;
   const getTransform = (device) => {
@@ -222,31 +199,32 @@ export default function MapView({ selectedShop, setSelectedShop, setActiveTab })
             /* --- 搜尋清單區 --- */
             <div className="flex-1 flex flex-col bg-white overflow-hidden pt-8">
               <div className="p-4 border-b border-stone-100 bg-white">
+                 
+                 {/* 搜尋框 */}
                  <div className="flex items-center bg-stone-100/60 border border-stone-200 rounded-xl px-4 py-3 mb-3">
                    <Search size={16} className="text-stone-400 mr-3 flex-shrink-0" />
-                   <input type="text" placeholder="搜尋蔬食..." className="flex-1 bg-transparent text-xs font-medium focus:outline-none border-none min-w-0" value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)}/>
+                   <input type="text" placeholder="搜尋店名..." className="flex-1 bg-transparent text-xs font-medium focus:outline-none border-none min-w-0" value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)}/>
                    {searchQuery && <X size={14} className="text-stone-400 cursor-pointer" onClick={() => setSearchQuery('')} />}
                  </div>
                  
+                 {/* 🌟 3. 只保留交通與時間篩選，並將它們並排 */}
                  <div className="grid grid-cols-2 gap-2">
                    <div className="flex items-center border border-stone-200 rounded-lg px-2 py-2 text-[9px] font-bold">
-                     <MapPin size={12} className="mr-1 text-stone-400 flex-shrink-0"/>
-                     <select className="bg-transparent focus:outline-none w-full border-none cursor-pointer appearance-none" value={filterDist} onChange={(e) => setFilterDist(e.target.value)}>
-                       <option value="all">不限距離</option>
-                       <option value="walk-5">步行 5分內</option>
-                       <option value="walk-10">步行 10分內</option>
-                       <option value="walk-15">步行 15分內</option>
-                       <option value="scoot-5">機車 5分內</option>
-                       <option value="scoot-10">機車 10分內</option>
+                     <Navigation size={12} className="mr-1 text-stone-400 flex-shrink-0"/>
+                     <select className="bg-transparent focus:outline-none w-full border-none cursor-pointer appearance-none" value={filterTransport} onChange={(e) => setFilterTransport(e.target.value)}>
+                       <option value="walking">步行</option>
+                       <option value="bicycle">腳踏車</option>
+                       <option value="scooter">機車</option>
+                       <option value="transit">大眾運輸</option>
                      </select>
                    </div>
                    <div className="flex items-center border border-stone-200 rounded-lg px-2 py-2 text-[9px] font-bold">
-                     <Filter size={12} className="mr-1 text-stone-400 flex-shrink-0"/>
-                     <select className="bg-transparent focus:outline-none w-full border-none cursor-pointer appearance-none" value={filterType} onChange={(e) => setFilterType(e.target.value)}>
-                       <option value="all">全部類別</option>
-                       <option value="全素">全素 / 純素</option>
-                       <option value="蛋奶素">蛋奶素</option>
-                       <option value="五辛素">五辛素</option>
+                     <Clock size={12} className="mr-1 text-stone-400 flex-shrink-0"/>
+                     <select className="bg-transparent focus:outline-none w-full border-none cursor-pointer appearance-none" value={filterTime} onChange={(e) => setFilterTime(e.target.value)}>
+                       <option value="all">不限時間</option>
+                       <option value="5">5 分鐘內</option>
+                       <option value="10">10 分鐘內</option>
+                       <option value="15">15 分鐘內</option>
                      </select>
                    </div>
                  </div>
