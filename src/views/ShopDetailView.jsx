@@ -112,7 +112,7 @@ export default function ShopDetailView({ shop, setActiveTab }) {
   };
 
   return (
-    <div className="py-12 px-36 max-w-6xl mx-auto min-h-screen animate-in fade-in duration-1000">
+    <div className="py-12 px-40 max-w-6xl mx-auto min-h-screen animate-in fade-in duration-1000">
       
       {/* 頂部：返回按鈕 */}
       <button 
@@ -189,7 +189,8 @@ export default function ShopDetailView({ shop, setActiveTab }) {
               
               <li className="flex justify-between items-start border-b border-stone-100 pb-3 pt-2">
                 <span className="text-stone-500 whitespace-nowrap mr-4 pt-1.5">營業時間</span>
-                <div className="space-y-6 flex flex-col items-end">
+                {/* 🌟 修改點：將 space-y-6 改為 space-y-4，並讓寬度自適應填滿 flex 區塊 */}
+                <div className="space-y-4 flex flex-col items-end flex-1">
                   {(() => {
                     const groupedMap = {};
                     shop.open?.forEach((item) => {
@@ -199,7 +200,10 @@ export default function ShopDetailView({ shop, setActiveTab }) {
                       groupedMap[item.time].push(item.day);
                     });
 
-                    return Object.entries(groupedMap).map(([timeStr, daysArray], gIdx) => {
+                    // 🌟 修改點：將 Map 轉成陣列，以便精準抓取最後一項
+                    const entries = Object.entries(groupedMap);
+
+                    return entries.map(([timeStr, daysArray], gIdx) => {
                       let rows = [daysArray];
                       if (daysArray.length === 6) {
                         rows = [daysArray.slice(0, 3), daysArray.slice(3, 6)];
@@ -210,8 +214,12 @@ export default function ShopDetailView({ shop, setActiveTab }) {
                         rows = [daysArray.slice(0, mid), daysArray.slice(mid)];
                       }
 
+                      // 🌟 修改點：判斷是否為最後一項
+                      const isLast = gIdx === entries.length - 1;
+
                       return (
-                        <div key={gIdx} className="flex flex-col items-end">
+                        // 🌟 修改點：動態套用條件式分隔線，最後一項不加 border 與 padding-bottom
+                        <div key={gIdx} className={`flex flex-col items-end w-full ${!isLast ? 'border-b border-[#1A1A1A]/10 border-[#1A1A1A]/30 pb-4' : ''}`}>
                           <div className="flex flex-col gap-2 mb-2 items-end">
                             {rows.map((row, rIdx) => (
                               <div key={rIdx} className="flex gap-2 justify-end">
@@ -263,14 +271,14 @@ export default function ShopDetailView({ shop, setActiveTab }) {
           </div>
         </div>
 
-        {/* 🌟 右側：店家特色說明 (2x2 非對稱網格佈局) */}
+        {/* 右側：店家特色說明 (2x2 非對稱網格佈局) */}
         <div className="lg:col-span-2 flex flex-col justify-start">
           <div>
             <h3 className="text-sm font-bold tracking-[0.2em] text-stone-400 uppercase mb-6 flex items-center border-b border-stone-200 pb-3">
                <MapPin size={16} className="mr-2"/> 店家特色說明
             </h3>
             
-            {/* 🌟 切分為 4 等分，左側佔 3 (75%)，右側佔 1 (25%) */}
+            {/* 切分為 4 等分，左側佔 3 (75%)，右側佔 1 (25%) */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6">
               
               {/* 第一行第一列 (75%)：份量 */}

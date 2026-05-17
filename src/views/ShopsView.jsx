@@ -17,16 +17,14 @@ export default function ShopsView({ setSelectedShop, setActiveTab }) {
   } = useShopFilters();
   
   const handleShopClick = (shopData) => {
-    // 🌟 關鍵修正點 1：在點擊事件觸發的第一時間，火速捕捉並記錄目前的捲動高度
-    // 這能徹底避免 React 在銷毀組件過程中，瀏覽器提早將 scrollY 清零的隱患
+    // 關鍵修正點 1：在點擊事件觸發的第一時間，火速捕捉並記錄目前的捲動高度
     sessionStorage.setItem('scroll_pos_shops', window.scrollY.toString());
     
     setSelectedShop(shopData);
     setActiveTab('shopDetail');
   };
 
-  // 🌟 關鍵修正點 2：多週期滾動追蹤復原機制
-  // 完美攻克因 FadeInCard 動態加載、圖片撐開高度延遲導致單次 scrollTo 被瀏覽器沒收的 Bug
+  // 關鍵修正點 2：多週期滾動追蹤復原機制
   useEffect(() => {
     const savedPosition = sessionStorage.getItem('scroll_pos_shops');
     if (savedPosition) {
@@ -37,17 +35,37 @@ export default function ShopsView({ setSelectedShop, setActiveTab }) {
         window.scrollTo(0, targetScroll);
         attempts++;
         
-        // 條件檢查：如果成功抵達目標位置（誤差 3px 內），或者輪詢嘗試了 12 次（約 500ms，代表頁面已加載完畢）
-        // 則安全清除計時器，防止無限死迴圈，並將暫存歸零
         if (Math.abs(window.scrollY - targetScroll) <= 3 || attempts > 12) {
           clearInterval(intervalId);
           sessionStorage.removeItem('scroll_pos_shops');
         }
-      }, 40); // 每 40ms 緊密追蹤逼迫瀏覽器向下捲動
+      }, 40);
 
       return () => clearInterval(intervalId);
     }
-  }, [filteredShops]); // 綁定過濾名單，確保渲染上架後立刻開跑
+  }, [filteredShops]);
+
+  // 🌟 核心新增：動態獲取並格式化今日營業時間的輔助函式
+  const getTodayOpenHours = (openArray) => {
+    if (!Array.isArray(openArray)) return '暫無營業時間資料';
+    
+    // 1. 取得今日星期幾對應的中文標籤 (JavaScript 的 getDay() 0是週日，1是週一...)
+    const daysMap = ['日', '一', '二', '三', '四', '五', '六'];
+    const todayDayStr = daysMap[new Date().getDay()];
+    
+    // 2. 從店家的營業時間陣列中找出今日對應的物件
+    const todayInfo = openArray.find(item => item.day === todayDayStr);
+    
+    if (!todayInfo) return '未提供今日營業時間';
+    
+    // 3. 根據營業狀態回傳美化後的字串
+    if (todayInfo.time === '休息') {
+      return '今日公休';
+    }
+    
+    // 4. 防呆處理：將兩段式營業時間的 \n 換行符號替換為空白，確保卡片內部排版維持完美的單行不變形
+    return `今日 ${todayInfo.time.replace(/\n/g, ' ')}`;
+  };
 
   return (
     <div className="py-12 px-6 max-w-5xl mx-auto min-h-screen animate-in fade-in duration-1000">
@@ -95,9 +113,10 @@ export default function ShopsView({ setSelectedShop, setActiveTab }) {
                     <MapPin size={12} className="mr-1 text-stone-300" /> 
                     {TRANSPORT_LABELS[filterTransport]} {shop.distance?.[filterTransport] || '--'} 分
                   </span>
-                  <span className="flex items-center">
+                  {/* 🌟 核心調整：調用動態時間函式，即時呈現今日營業時段或公修標籤 */}
+                  <span className={`flex items-center ${shop.open && shop.open[new Date().getDay() === 0 ? 6 : new Date().getDay() - 1]?.time === '休息' ? 'text-rose-500/80' : ''}`}>
                     <Clock size={12} className="mr-1 text-stone-300" /> 
-                    {Array.isArray(shop.open) ? '點擊查看詳細營業時間' : shop.open}
+                    {getTodayOpenHours(shop.open)}
                   </span>
                 </div>
               </div>
