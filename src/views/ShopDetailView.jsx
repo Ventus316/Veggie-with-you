@@ -4,11 +4,12 @@ import React, { useState, useEffect, useRef } from 'react';
 import { 
   ChevronLeft, 
   MapPin, 
-  Star, 
   Info, 
   ArrowRight, 
-  Utensils, 
-  X 
+  X,
+  CheckCircle2, 
+  XCircle,
+  Navigation
 } from 'lucide-react';
 
 import { WEEKDAY_ICONS } from '../data/Data';
@@ -16,13 +17,11 @@ import { WEEKDAY_ICONS } from '../data/Data';
 export default function ShopDetailView({ shop, setActiveTab }) {
   const [selectedMenu, setSelectedMenu] = useState(null);
   
-  // 🌟 縮放與拖拽的進階狀態
   const [scale, setScale] = useState(1);
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const [isDragging, setIsDragging] = useState(false);
   const lastMousePos = useRef({ x: 0, y: 0 });
 
-  // 1. 處理頁面跳轉置頂
   useEffect(() => {
     if (!shop) {
       setActiveTab('shops');
@@ -31,40 +30,31 @@ export default function ShopDetailView({ shop, setActiveTab }) {
     }
   }, [shop, setActiveTab]);
 
-  // 2. 處理背景捲動鎖定與重置
   useEffect(() => {
     if (selectedMenu) {
-      // 開啟燈箱時禁止底層捲動
       document.body.style.overflow = 'hidden';
     } else {
-      // 關閉時恢復捲動並重置縮放與位移
       document.body.style.overflow = 'unset';
       setScale(1);
       setPosition({ x: 0, y: 0 });
     }
-    // 元件卸載時也要確保恢復捲動
     return () => { document.body.style.overflow = 'unset'; };
   }, [selectedMenu]);
 
   if (!shop) return null; 
 
-  // 🌟 滾輪縮放邏輯
   const handleWheel = (e) => {
-    // 雖然外層已經 overflow: hidden，加上 preventDefault 可以避免其他預設滾動行為
-    // 注意：React 中 onWheel 可能無法直接 e.preventDefault()，但因為我們已經鎖了 body overflow，所以不會有背景滾動問題
     const zoomSensitivity = 0.002;
     const delta = -e.deltaY * zoomSensitivity;
     let newScale = scale + delta;
     
-    // 允許縮小到 0.3 倍（看超長菜單很有用），最大放大到 5 倍
     newScale = Math.min(Math.max(0.3, newScale), 5);
     setScale(newScale);
   };
 
-  // 🌟 滑鼠中鍵拖拽邏輯
   const handleMouseDown = (e) => {
-    if (e.button === 1) { // 1 代表滑鼠中鍵
-      e.preventDefault(); // 防止中鍵點擊出現原生捲動游標
+    if (e.button === 1) { 
+      e.preventDefault(); 
       setIsDragging(true);
       lastMousePos.current = { x: e.clientX, y: e.clientY };
     }
@@ -105,18 +95,20 @@ export default function ShopDetailView({ shop, setActiveTab }) {
   ];
 
   const features = shop.features || {};
-  const recommendations = shop.recommendations || [];
-  const distanceText = shop.distance 
-    ? `步行 ${shop.distance.walking} 分 / 機車 ${shop.distance.scooter} 分`
-    : '-- 分鐘';
 
-  const featureLabels = {
-    portion: '份量',
-    environment: '環境',
-    restroom: '洗手間',
-    payment: '付款方式',
-    reservation: '訂位規則',
-    aesthetics: '餐點美觀'
+  const renderStatusIcon = (value) => {
+    const isPositive = (val) => {
+      if (!val) return false;
+      const str = val.toString().toLowerCase();
+      if (str.includes('不可') || str === '無' || str.includes('不外借') || str.includes('不提供')) return false;
+      return true;
+    };
+
+    return isPositive(value) ? (
+      <CheckCircle2 size={20} strokeWidth={2.5} className="text-emerald-600 flex-shrink-0" />
+    ) : (
+      <XCircle size={20} strokeWidth={2.5} className="text-rose-500 flex-shrink-0" />
+    );
   };
 
   return (
@@ -133,10 +125,20 @@ export default function ShopDetailView({ shop, setActiveTab }) {
       {/* 標題與簡介 */}
       <div className="mb-12 border-b border-stone-200 pb-8">
         <h1 className="text-4xl md:text-5xl font-light tracking-[0.15em] text-[#1A1A1A] mb-6">{shop.name}</h1>
-        <div className="flex flex-wrap items-center text-xs font-bold tracking-[0.1em] text-stone-500 gap-6">
-          <span className="px-3 py-1 border border-[#1A1A1A] text-[#1A1A1A] uppercase">{shop.type || '素食'}</span>
-          <span className="flex items-center"><MapPin size={14} className="mr-1.5"/> {distanceText}</span>
-          <span className="flex items-center"><Star size={14} className="mr-1.5 text-[#1A1A1A]" fill="currentColor"/> {shop.rating || '4.0'} ({shop.reviews || '0'})</span>
+        
+        <div className="flex flex-wrap items-center text-[10px] md:text-xs font-bold tracking-[0.1em] text-stone-500 gap-3">
+          <span className="px-3 py-1 border border-[#1A1A1A] text-[#1A1A1A] uppercase mr-2">{shop.type || '素食'}</span>
+          
+          {shop.distance && (
+            <>
+              <span className="bg-stone-200/60 text-stone-600 px-2.5 py-1 rounded-md">步行 {shop.distance.walking} 分</span>
+              <span className="bg-stone-200/60 text-stone-600 px-2.5 py-1 rounded-md">單車 {shop.distance.bicycle} 分</span>
+              <span className="bg-stone-200/60 text-stone-600 px-2.5 py-1 rounded-md">機車 {shop.distance.scooter} 分</span>
+              {shop.distance.transit < 99 && (
+                <span className="bg-stone-200/60 text-stone-600 px-2.5 py-1 rounded-md">公車 {shop.distance.transit} 分</span>
+              )}
+            </>
+          )}
         </div>
       </div>
 
@@ -197,24 +199,19 @@ export default function ShopDetailView({ shop, setActiveTab }) {
                       groupedMap[item.time].push(item.day);
                     });
 
-return Object.entries(groupedMap).map(([timeStr, daysArray], gIdx) => {
-                      
-                      // 🌟 新增分行邏輯：超過 5 個就拆分成兩行
+                    return Object.entries(groupedMap).map(([timeStr, daysArray], gIdx) => {
                       let rows = [daysArray];
                       if (daysArray.length === 6) {
-                        rows = [daysArray.slice(0, 3), daysArray.slice(3, 6)]; // 3 + 3
+                        rows = [daysArray.slice(0, 3), daysArray.slice(3, 6)];
                       } else if (daysArray.length === 7) {
-                        rows = [daysArray.slice(0, 3), daysArray.slice(3, 7)]; // 3 + 4
+                        rows = [daysArray.slice(0, 3), daysArray.slice(3, 7)];
                       } else if (daysArray.length > 5) {
-                        // 備用防呆：超過 5 個的一律均分兩行
                         const mid = Math.ceil(daysArray.length / 2);
                         rows = [daysArray.slice(0, mid), daysArray.slice(mid)];
                       }
 
                       return (
                         <div key={gIdx} className="flex flex-col items-end">
-                          
-                          {/* 🌟 透過 map 將切好的 rows 渲染成多行，並用 flex-col gap-2 產生垂直間距 */}
                           <div className="flex flex-col gap-2 mb-2 items-end">
                             {rows.map((row, rIdx) => (
                               <div key={rIdx} className="flex gap-2 justify-end">
@@ -264,53 +261,85 @@ return Object.entries(groupedMap).map(([timeStr, daysArray], gIdx) => {
               </li>
             </ul>
           </div>
-
-          <button
-            onClick={() => shop.menuImg && setSelectedMenu(shop.menuImg)}
-            disabled={!shop.menuImg}
-            className={`w-full py-4 text-white text-xs font-bold tracking-[0.2em] uppercase transition-all duration-300 flex items-center justify-center space-x-2 ${
-              shop.menuImg ? 'bg-[#1A1A1A] hover:bg-stone-700 cursor-pointer' : 'bg-stone-300 cursor-not-allowed'
-            }`}
-          >
-            <span>{shop.menuImg ? '查看線上菜單' : '暫無線上菜單'}</span>
-            <ArrowRight size={14} />
-          </button>
         </div>
 
-        {/* 右側：店家特色說明 & 推薦餐點 */}
-        <div className="lg:col-span-2 space-y-16">
+        {/* 🌟 右側：店家特色說明 (2x2 非對稱網格佈局) */}
+        <div className="lg:col-span-2 flex flex-col justify-start">
           <div>
             <h3 className="text-sm font-bold tracking-[0.2em] text-stone-400 uppercase mb-6 flex items-center border-b border-stone-200 pb-3">
-               <Star size={16} className="mr-2"/> 店家特色說明
+               <MapPin size={16} className="mr-2"/> 店家特色說明
             </h3>
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-               {Object.entries(features).map(([key, value]) => (
-                  value ? (
-                    <div key={key} className="bg-white p-6 border border-stone-200 shadow-sm rounded-xl hover:shadow-md transition-shadow">
-                      <h4 className="text-[10px] font-black tracking-widest text-[#1A1A1A] mb-3 uppercase">
-                        {featureLabels[key] || key}
-                      </h4>
-                      <p className="text-sm text-stone-500 leading-loose font-medium">{value}</p>
+            
+            {/* 🌟 切分為 4 等分，左側佔 3 (75%)，右側佔 1 (25%) */}
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6">
+              
+              {/* 第一行第一列 (75%)：份量 */}
+              {features.portion && (
+                <div className="sm:col-span-2 bg-white p-6 border border-stone-200 shadow-sm rounded-xl hover:shadow-md transition-shadow flex flex-col justify-center">
+                  <h4 className="text-[14px] font-black tracking-widest text-[#1A1A1A] mb-1 uppercase">份量</h4>
+                  <p className="text-sm text-stone-500 leading-loose font-medium">{features.portion}</p>
+                </div>
+              )}
+
+              {/* 第一行第二列 (25%)：付款方式 */}
+              {features.payment && (
+                <div className="sm:col-span-1 bg-white p-6 border border-stone-200 shadow-sm rounded-xl hover:shadow-md transition-shadow flex flex-col justify-center">
+                  <h4 className="text-[14px] font-black tracking-widest text-[#1A1A1A] mb-1 uppercase">付款方式</h4>
+                  <p className="text-sm text-stone-500 leading-loose font-medium">{features.payment}</p>
+                </div>
+              )}
+
+              {/* 第二行第一列 (75%)：環境 */}
+              {features.environment && (
+                <div className="sm:col-span-2 bg-white p-6 border border-stone-200 shadow-sm rounded-xl hover:shadow-md transition-shadow flex flex-col justify-center">
+                  <h4 className="text-[14px] font-black tracking-widest text-[#1A1A1A] mb-1 uppercase">環境</h4>
+                  <p className="text-sm text-stone-500 leading-loose font-medium">{features.environment}</p>
+                </div>
+              )}
+
+              {/* 第二行第二列 (25%)：訂位與洗手間 (同一個膠囊) */}
+              {(features.reservation || features.restroom) && (
+                <div className="sm:col-span-1 bg-white p-6 border border-stone-200 shadow-sm rounded-xl hover:shadow-md transition-shadow flex flex-col justify-center gap-3">
+                  {features.reservation && (
+                    <div className="flex items-center justify-between w-full">
+                      <h4 className="text-[14px] font-black tracking-widest text-[#1A1A1A] uppercase m-0">訂位</h4>
+                      {renderStatusIcon(features.reservation)}
                     </div>
-                  ) : null
-               ))}
+                  )}
+                  {features.restroom && (
+                    <div className="flex items-center justify-between w-full">
+                      <h4 className="text-[14px] font-black tracking-widest text-[#1A1A1A] uppercase m-0">洗手間</h4>
+                      {renderStatusIcon(features.restroom)}
+                    </div>
+                  )}
+                </div>
+              )}
+
             </div>
           </div>
+
+          {/* 底部：跳轉地圖按鈕 */}
+          <button
+            onClick={() => setActiveTab('map')}
+            className="w-full mt-6 py-4 text-white text-xs font-bold tracking-[0.2em] uppercase transition-all duration-300 flex items-center justify-center space-x-2 bg-[#1A1A1A] hover:bg-stone-700 cursor-pointer rounded-xl shadow-md"
+          >
+            <span>前往地圖查看路線</span>
+            <Navigation size={14} />
+          </button>
         </div>
       </div>
 
-      {/* 🌟 終極版：線上菜單放大燈箱 */}
+      {/* 線上菜單放大燈箱 */}
       {selectedMenu && (
         <div 
           className="fixed inset-0 z-[200] flex items-center justify-center bg-[#1A1A1A]/95 backdrop-blur-sm p-4 md:p-10 animate-in fade-in duration-300 select-none" 
           onClick={() => setSelectedMenu(null)}
-          onWheel={handleWheel} // 監聽全區滾輪
+          onWheel={handleWheel} 
         >
           <div 
             className="relative max-w-5xl w-full max-h-[85vh] md:max-h-[90vh] flex flex-col" 
             onClick={e => e.stopPropagation()}
           >
-            {/* 提示資訊列 */}
             <div className="w-full flex justify-start items-end mb-3 text-stone-300 px-1 pointer-events-none">
               <div className="flex flex-col">
                 <span className="text-[9px] md:text-xs tracking-[0.2em] font-bold uppercase opacity-60 mb-1">Menu Viewer</span>
@@ -320,7 +349,6 @@ return Object.entries(groupedMap).map(([timeStr, daysArray], gIdx) => {
               </div>
             </div>
 
-            {/* 互動區塊 (接收中鍵拖拽事件) */}
             <div 
               className="relative flex-1 bg-[#F6F6F4] shadow-2xl border border-stone-800 overflow-hidden flex flex-col"
               onMouseDown={handleMouseDown}
@@ -336,7 +364,6 @@ return Object.entries(groupedMap).map(([timeStr, daysArray], gIdx) => {
                 <X size={20} className="text-white group-hover:rotate-90 transition-transform" />
               </button>
 
-              {/* 圖片容器：使用 max-w-full 與 max-h-full 確保最上方與最下方在 1 倍時能完整顯示 */}
               <div 
                 className="w-full h-full flex items-center justify-center"
                 style={{ cursor: isDragging ? 'grabbing' : 'grab' }}
@@ -344,10 +371,9 @@ return Object.entries(groupedMap).map(([timeStr, daysArray], gIdx) => {
                 <img 
                   src={selectedMenu} 
                   alt="線上完整菜單" 
-                  draggable="false" // 禁用原生拖拽，避免干擾我們自己寫的拖曳邏輯
+                  draggable="false"
                   className="max-w-full max-h-full object-contain transition-transform duration-75 ease-out origin-center pointer-events-none"
                   style={{ 
-                    // 🌟 完全交由 transform 來放大縮小，不會破壞 object-contain 的比例限制
                     transform: `translate(${position.x}px, ${position.y}px) scale(${scale})` 
                   }}
                 />
