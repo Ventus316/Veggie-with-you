@@ -28,9 +28,17 @@ export default function App() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
+  // 🌟 核心修復：建立一個專門給全站「頂部導航欄」使用的分頁切換函式
+  // 當使用者主動點擊 Header 的標籤或 Logo 切換大分頁時，主動清空「已選取店家」，讓頁面回歸初始狀態
+  const handleNavbarTabChange = (tabId) => {
+    setSelectedShop(null); 
+    setActiveTab(tabId);
+  };
+
   const renderView = () => {
     switch (activeTab) {
       case 'home': return <HomeView setActiveTab={setActiveTab} />;
+      // 💡 店家列表與詳情頁維持使用原始的 setActiveTab，確保點擊卡片與跳轉詳情時狀態不被沖掉
       case 'shops': return <ShopsView setSelectedShop={setSelectedShop} setActiveTab={setActiveTab} />;
       case 'shopDetail': return <ShopDetailView shop={selectedShop} setActiveTab={setActiveTab} />;
       case 'map': 
@@ -38,7 +46,7 @@ export default function App() {
           <MapView 
             selectedShop={selectedShop} 
             setSelectedShop={setSelectedShop} 
-            setActiveTab={setActiveTab} // 🌟 傳入跳轉函數
+            setActiveTab={setActiveTab} 
           />
         );
       case 'menu': return <MenuView setActiveTab={setActiveTab} setSelectedShop={setSelectedShop} />;
@@ -59,9 +67,10 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-[#F6F6F4] font-sans text-[#1A1A1A] selection:bg-[#1A1A1A] selection:text-white overflow-x-hidden">
+      {/* 🌟 核心修復：將原本直接傳入的 setActiveTab 改為全新封裝的 handleNavbarTabChange */}
       <Header 
         activeTab={activeTab} 
-        setActiveTab={setActiveTab} 
+        setActiveTab={handleNavbarTabChange} 
         isCompactHeader={isScrolled} 
         isFullScreenView={isFullScreenView}
       />
