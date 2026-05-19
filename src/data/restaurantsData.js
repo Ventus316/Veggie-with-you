@@ -4,7 +4,7 @@ export const RESTAURANTS = [
   { 
     id: 1, 
     name: "素窩-素食早午餐", 
-    distance: { walking: 5, bicycle: 3, scooter: 2, transit: 10 },
+    distance: { walking: 5, bicycle: 2, scooter: 2 },
     address: "桃園市中壢區興仁路二段67巷79弄7號",
     phone: "03-285-0018", 
     priceRange: "NT$ 30 - 200", 
@@ -37,7 +37,7 @@ export const RESTAURANTS = [
   { 
     id: 2, 
     name: "天然素食", 
-    distance: { walking: 5, bicycle: 3, scooter: 2, transit: 10 },
+    distance: { walking: 8, bicycle: 4, scooter: 4 },
     address: "桃園市中壢區興仁路一段86號",
     phone: "03-451-9063", 
     priceRange: "NT$ 30 - 200", 
@@ -70,7 +70,7 @@ export const RESTAURANTS = [
   { 
     id: 3, 
     name: "十味健康素食", 
-    distance: { walking: 5, bicycle: 3, scooter: 2, transit: 10 },
+    distance: { walking: 12, bicycle: 5, scooter: 4 },
     address: "桃園市中壢區環中東路96號",
     phone: "03-463-8858", 
     priceRange: "NT$ 50 - 200", 
@@ -103,7 +103,7 @@ export const RESTAURANTS = [
   { 
     id: 4, 
     name: "蓮生健康素食", 
-    distance: { walking: 5, bicycle: 3, scooter: 2, transit: 10 },
+    distance: { walking: 10, bicycle: 4, scooter: 3 },
     address: "桃園市中壢區榮民路220-2號",
     phone: "03-461-5338", 
     priceRange: "NT$ 30 - 200", 
@@ -136,7 +136,7 @@ export const RESTAURANTS = [
   { 
     id: 5, 
     name: "拼拼蔬食", 
-    distance: { walking: 5, bicycle: 3, scooter: 2, transit: 10 },
+    distance: { walking: 17, bicycle: 6, scooter: 4 },
     address: "桃園市中壢區福德路129巷1號",
     phone: "03-453-5089", 
     priceRange: "NT$ 30 - 200", 
@@ -162,14 +162,14 @@ export const RESTAURANTS = [
     img: "images/pinpin_store.jpeg", 
     recommendations: [
       { name: "香椿湯麵", price: 80, img: "images/pinpin_noodle.jpeg" }, 
-      { name: "客製滷味", price: null, img: "images/pinpin_luwei.jpeg" }
+      { name: "客製滷味", price: '自由搭配', img: "images/pinpin_luwei.jpeg" }
     ],
     lat: 24.9763, lng: 121.2573 
   },
   { 
     id: 6, 
     name: "5+2素食坊", 
-    distance: { walking: 5, bicycle: 3, scooter: 2, transit: 10 },
+    distance: { walking: 19, bicycle: 7, scooter: 5 },
     address: "桃園市中壢區成章二街42號",
     phone: "0919-578-019", 
     priceRange: "NT$ 10 - 150", 
@@ -202,7 +202,7 @@ export const RESTAURANTS = [
   { 
     id: 7, 
     name: "蔬適圈串物坊", 
-    distance: { walking: 5, bicycle: 3, scooter: 2, transit: 10 },
+    distance: { walking: 20, bicycle: 7, scooter: 5 },
     address: "桃園市中壢區文化路54號",
     phone: "0901-063-116", 
     priceRange: "NT$ 40 - 400", 
@@ -235,7 +235,7 @@ export const RESTAURANTS = [
   { 
     id: 8, 
     name: "義式美味素食", 
-    distance: { walking: 5, bicycle: 3, scooter: 2, transit: 10 },
+    distance: { walking: 26, bicycle: 11, scooter: 6 },
     address: "桃園市中壢區中華路一段616號",
     phone: "03-455-3019", 
     priceRange: "NT$ 60 - 200", 
@@ -268,7 +268,7 @@ export const RESTAURANTS = [
   { 
     id: 9, 
     name: "福緣素食", 
-    distance: { walking: 5, bicycle: 3, scooter: 2, transit: 10 },
+    distance: { walking: 11, bicycle: 4, scooter: 3 },
     address: "桃園市中壢區榮民路227號",
     phone: "03-462-9168", 
     priceRange: "NT$ 30 - 150", 
@@ -301,7 +301,7 @@ export const RESTAURANTS = [
   { 
     id: 10, 
     name: "蔬菓食堂", 
-    distance: { walking: 5, bicycle: 3, scooter: 2, transit: 10 },
+    distance: { walking: 63, bicycle: 16, scooter: 12 },
     address: "桃園市八德區永福西街68-1號",
     phone: "0910-016-798", 
     priceRange: "NT$ 80 - 250", 
@@ -327,14 +327,14 @@ export const RESTAURANTS = [
     img: "images/vege_store.png", 
     recommendations: [
       { name: "藥膳十全大補鍋", price: 228, img: "images/vege_hotpot.png" }, 
-      { name: "脆皮叉燒飯(純素)", price: 130, img: "images/vege_rice.png" }
+      { name: "脆皮叉燒飯", price: 130, img: "images/vege_rice.png" }
     ],
     lat: 24.9620, lng: 121.2750 
   },
   { 
     id: 11, 
     name: "得來素素食餐飲", 
-    distance: { walking: 5, bicycle: 3, scooter: 2, transit: 10 },
+    distance: { walking: 44, bicycle: 14, scooter: 10 },
     address: "桃園市中壢區弘揚路77號",
     phone: "03-436-7111", 
     priceRange: "NT$ 30 - 150", 
@@ -367,7 +367,7 @@ export const RESTAURANTS = [
   { 
     id: 12,
     name: "越式素食 歡喜吃素", 
-    distance: { walking: 5, bicycle: 3, scooter: 2, transit: 10 },
+    distance: { walking: 93, bicycle: 30, scooter: 18 },
     address: "桃園市桃園區正康二街70號",
     phone: "0966-996-633", 
     priceRange: "NT$ 70 - 300", 

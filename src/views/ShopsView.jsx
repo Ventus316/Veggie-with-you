@@ -82,11 +82,10 @@ export default function ShopsView({ setSelectedShop, setActiveTab }) {
               <option value="walking">步行</option>
               <option value="bicycle">腳踏車</option>
               <option value="scooter">機車</option>
-              <option value="transit">大眾運輸</option>
             </select>
           </div>
           <div className="flex flex-col">
-            <label className="text-[9px] font-bold tracking-[0.2em] text-stone-400 mb-2 uppercase">時間限制</label>
+            <label className="text-[9px] font-bold tracking-[0.2em] text-stone-400 mb-2 uppercase">時間</label>
             <select value={filterTime} onChange={e => setFilterTime(e.target.value)} className="appearance-none bg-transparent border-b border-[#1A1A1A] text-[#1A1A1A] text-xs font-bold tracking-[0.1em] pb-2 pr-6 focus:outline-none cursor-pointer">
               <option value="all">不限時間</option>
               <option value="5">5 分鐘以內</option>

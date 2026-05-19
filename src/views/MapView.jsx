@@ -118,8 +118,8 @@ export default function MapView({ selectedShop, setSelectedShop, setActiveTab })
                   <div className="flex items-start space-x-3">
                     <MapPin size={16} className="text-stone-300 flex-shrink-0" />
                     <div className="leading-tight">
-                      步行約 {selectedShop.distance?.walking || 0} 分鐘
-                      <span className="text-stone-400 ml-1">· 機車約 {selectedShop.distance?.scooter || 0} 分鐘</span>
+                      步行 {selectedShop.distance?.walking || 0} 分鐘
+                      <span className="text-stone-400 ml-1">· 機車 {selectedShop.distance?.scooter || 0} 分鐘</span>
                     </div>
                   </div>
                   <div className="flex items-start space-x-3 w-full">
@@ -215,7 +215,6 @@ export default function MapView({ selectedShop, setSelectedShop, setActiveTab })
                        <option value="walking">步行</option>
                        <option value="bicycle">腳踏車</option>
                        <option value="scooter">機車</option>
-                       <option value="transit">大眾運輸</option>
                      </select>
                    </div>
                    <div className="flex items-center border border-stone-200 rounded-lg px-2 py-2 text-[9px] font-bold">

@@ -132,7 +132,7 @@ export default function ShopDetailView({ shop, setActiveTab }) {
           {shop.distance && (
             <>
               <span className="bg-stone-200/60 text-stone-600 px-2.5 py-1 rounded-md">步行 {shop.distance.walking} 分</span>
-              <span className="bg-stone-200/60 text-stone-600 px-2.5 py-1 rounded-md">單車 {shop.distance.bicycle} 分</span>
+              <span className="bg-stone-200/60 text-stone-600 px-2.5 py-1 rounded-md">腳踏車 {shop.distance.bicycle} 分</span>
               <span className="bg-stone-200/60 text-stone-600 px-2.5 py-1 rounded-md">機車 {shop.distance.scooter} 分</span>
               {shop.distance.transit < 99 && (
                 <span className="bg-stone-200/60 text-stone-600 px-2.5 py-1 rounded-md">公車 {shop.distance.transit} 分</span>
