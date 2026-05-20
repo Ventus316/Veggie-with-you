@@ -5,6 +5,9 @@ import useShopFilters from '../hooks/useShopFilters';
 import FadeInCard from '../components/ui/FadeInCard_shops';
 import { SORT_ICONS } from '../data/Data';
 
+// 🌟 1. 引入剛剛抽離出來的獨立燈箱組件
+import MenuLightbox from '../components/ui/MenuLightbox';
+
 // 定義翻譯對應表，供卡片動態顯示用
 const TRANSPORT_LABELS = { walking: '步行', bicycle: '腳踏車', scooter: '機車', transit: '大眾運輸' };
 
@@ -46,25 +49,21 @@ export default function ShopsView({ setSelectedShop, setActiveTab }) {
     }
   }, [filteredShops]);
 
-  // 🌟 核心新增：動態獲取並格式化今日營業時間的輔助函式
+  // 動態獲取並格式化今日營業時間的輔助函式
   const getTodayOpenHours = (openArray) => {
     if (!Array.isArray(openArray)) return '暫無營業時間資料';
     
-    // 1. 取得今日星期幾對應的中文標籤 (JavaScript 的 getDay() 0是週日，1是週一...)
     const daysMap = ['日', '一', '二', '三', '四', '五', '六'];
     const todayDayStr = daysMap[new Date().getDay()];
     
-    // 2. 從店家的營業時間陣列中找出今日對應的物件
     const todayInfo = openArray.find(item => item.day === todayDayStr);
     
     if (!todayInfo) return '未提供今日營業時間';
     
-    // 3. 根據營業狀態回傳美化後的字串
     if (todayInfo.time === '休息') {
       return '今日公休';
     }
     
-    // 4. 防呆處理：將兩段式營業時間的 \n 換行符號替換為空白，確保卡片內部排版維持完美的單行不變形
     return `今日 ${todayInfo.time.replace(/\n/g, ' ')}`;
   };
 
@@ -72,10 +71,9 @@ export default function ShopsView({ setSelectedShop, setActiveTab }) {
     <div className="px-6 max-w-5xl mx-auto min-h-screen animate-in fade-in duration-1000">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-8 border-b border-stone-200 pb-8 mt-8 mx-12">
         
-        {/* 🌟 終極解法：橫向膠囊按鈕 (完全避開 3D 圖層重疊 Bug) */}
         <div className="space-y-3 w-full overflow-hidden">
           
-          {/* 交通工具列 (可橫向滑動) */}
+          {/* 交通工具列 */}
           <div className="flex gap-2 overflow-x-auto no-scrollbar">
             {[
               { id: 'walking', label: '步行', icon: SORT_ICONS.walking },
@@ -94,7 +92,6 @@ export default function ShopsView({ setSelectedShop, setActiveTab }) {
                 <img 
                   src={opt.icon} 
                   alt={opt.label}
-                  // 🌟 如果被選中，用 filter 讓圖標變成純白色；沒選中就維持原本的灰色
                   className={`w-3.5 h-3.5 mr-1.5 object-contain ${
                     filterTransport === opt.id 
                       ? 'filter brightness-0 invert' 
@@ -106,7 +103,7 @@ export default function ShopsView({ setSelectedShop, setActiveTab }) {
             ))}
           </div>
 
-          {/* 時間限制列 (可橫向滑動) */}
+          {/* 時間限制列 */}
           <div className="flex gap-2 overflow-x-auto no-scrollbar">
             {[
               { id: 'all', label: '不限' },
@@ -148,7 +145,6 @@ export default function ShopsView({ setSelectedShop, setActiveTab }) {
                     <MapPin size={12} className="mr-1 text-stone-300" /> 
                     {TRANSPORT_LABELS[filterTransport]} {shop.distance?.[filterTransport] || '--'} 分
                   </span>
-                  {/* 🌟 核心調整：調用動態時間函式，即時呈現今日營業時段或公修標籤 */}
                   <span className={`flex items-center ${shop.open && shop.open[new Date().getDay() === 0 ? 6 : new Date().getDay() - 1]?.time === '休息' ? 'text-rose-500/80' : ''}`}>
                     <Clock size={12} className="mr-1 text-stone-300" /> 
                     {getTodayOpenHours(shop.open)}
@@ -203,25 +199,12 @@ export default function ShopsView({ setSelectedShop, setActiveTab }) {
         )}
       </div>
 
-      {/* 線上菜單放大燈箱 (Modal) */}
+      {/* 🌟 2. 替換為統一的 MenuLightbox 組件 */}
       {selectedMenu && (
-        <div className="fixed inset-0 z-[200] flex items-center justify-center bg-[#1A1A1A]/95 backdrop-blur-sm p-6 animate-in fade-in duration-300" onClick={() => setSelectedMenu(null)}>
-          <div className="relative max-w-2xl w-full h-[80vh] flex flex-col items-center" onClick={e => e.stopPropagation()}>
-            <button 
-              onClick={() => setSelectedMenu(null)}
-              className="absolute -top-12 right-0 text-white hover:text-stone-400 transition-colors flex items-center space-x-2 text-[10px] tracking-[0.2em] uppercase font-bold"
-            >
-              <span>Close</span> <X size={18} />
-            </button>
-            <div className="w-full h-full bg-[#F6F6F4] p-2 overflow-hidden shadow-2xl border border-stone-800">
-              <img 
-                src={selectedMenu} 
-                className="w-full h-full object-contain" 
-                alt="線上完整菜單" 
-              />
-            </div>
-          </div>
-        </div>
+        <MenuLightbox 
+          selectedMenu={selectedMenu} 
+          onClose={() => setSelectedMenu(null)} 
+        />
       )}
     </div>
   );

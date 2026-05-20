@@ -1,26 +1,22 @@
 // src/views/ShopDetailView.jsx
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   ChevronLeft, 
   MapPin, 
   Info, 
   ArrowRight, 
-  X,
   CheckCircle2, 
   XCircle,
   Navigation
 } from 'lucide-react';
 
 import { WEEKDAY_ICONS } from '../data/Data';
+// 🌟 1. 引入剛剛拆分出去的燈箱組件
+import MenuLightbox from '../components/ui/MenuLightbox';
 
 export default function ShopDetailView({ shop, setActiveTab }) {
   const [selectedMenu, setSelectedMenu] = useState(null);
-  
-  const [scale, setScale] = useState(1);
-  const [position, setPosition] = useState({ x: 0, y: 0 });
-  const [isDragging, setIsDragging] = useState(false);
-  const lastMousePos = useRef({ x: 0, y: 0 });
 
   useEffect(() => {
     if (!shop) {
@@ -30,55 +26,7 @@ export default function ShopDetailView({ shop, setActiveTab }) {
     }
   }, [shop, setActiveTab]);
 
-  useEffect(() => {
-    if (selectedMenu) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = 'unset';
-      setScale(1);
-      setPosition({ x: 0, y: 0 });
-    }
-    return () => { document.body.style.overflow = 'unset'; };
-  }, [selectedMenu]);
-
   if (!shop) return null; 
-
-  const handleWheel = (e) => {
-    const zoomSensitivity = 0.002;
-    const delta = -e.deltaY * zoomSensitivity;
-    let newScale = scale + delta;
-    
-    newScale = Math.min(Math.max(0.3, newScale), 5);
-    setScale(newScale);
-  };
-
-  const handleMouseDown = (e) => {
-    if (e.button === 1) { 
-      e.preventDefault(); 
-      setIsDragging(true);
-      lastMousePos.current = { x: e.clientX, y: e.clientY };
-    }
-  };
-
-  const handleMouseMove = (e) => {
-    if (!isDragging) return;
-    
-    const dx = e.clientX - lastMousePos.current.x;
-    const dy = e.clientY - lastMousePos.current.y;
-    
-    setPosition(prev => ({
-      x: prev.x + dx,
-      y: prev.y + dy
-    }));
-    
-    lastMousePos.current = { x: e.clientX, y: e.clientY };
-  };
-
-  const handleMouseUp = (e) => {
-    if (e.button === 1) {
-      setIsDragging(false);
-    }
-  };
 
   const getHighResImg = (url, size = '1200') => {
     return url ? url.replace('w=200', `w=${size}`).replace('w=800', `w=${size}`) : '';
@@ -189,7 +137,6 @@ export default function ShopDetailView({ shop, setActiveTab }) {
               
               <li className="flex justify-between items-start border-b border-stone-100 pb-3 pt-2">
                 <span className="text-stone-500 whitespace-nowrap mr-4 pt-1.5">營業時間</span>
-                {/* 🌟 修改點：將 space-y-6 改為 space-y-4，並讓寬度自適應填滿 flex 區塊 */}
                 <div className="space-y-4 flex flex-col items-end flex-1">
                   {(() => {
                     const groupedMap = {};
@@ -200,7 +147,6 @@ export default function ShopDetailView({ shop, setActiveTab }) {
                       groupedMap[item.time].push(item.day);
                     });
 
-                    // 🌟 修改點：將 Map 轉成陣列，以便精準抓取最後一項
                     const entries = Object.entries(groupedMap);
 
                     return entries.map(([timeStr, daysArray], gIdx) => {
@@ -214,11 +160,9 @@ export default function ShopDetailView({ shop, setActiveTab }) {
                         rows = [daysArray.slice(0, mid), daysArray.slice(mid)];
                       }
 
-                      // 🌟 修改點：判斷是否為最後一項
                       const isLast = gIdx === entries.length - 1;
 
                       return (
-                        // 🌟 修改點：動態套用條件式分隔線，最後一項不加 border 與 padding-bottom
                         <div key={gIdx} className={`flex flex-col items-end w-full ${!isLast ? 'border-b border-[#1A1A1A]/10 border-[#1A1A1A]/30 pb-4' : ''}`}>
                           <div className="flex flex-col gap-2 mb-2 items-end">
                             {rows.map((row, rIdx) => (
@@ -271,17 +215,15 @@ export default function ShopDetailView({ shop, setActiveTab }) {
           </div>
         </div>
 
-        {/* 右側：店家特色說明 (2x2 非對稱網格佈局) */}
+        {/* 右側：店家特色說明 */}
         <div className="lg:col-span-2 flex flex-col justify-start">
           <div>
             <h3 className="text-sm font-bold tracking-[0.2em] text-stone-400 uppercase mb-6 flex items-center border-b border-stone-200 pb-3">
                <MapPin size={16} className="mr-2"/> 店家特色說明
             </h3>
             
-            {/* 切分為 4 等分，左側佔 3 (75%)，右側佔 1 (25%) */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6">
               
-              {/* 第一行第一列 (75%)：份量 */}
               {features.portion && (
                 <div className="sm:col-span-2 bg-white p-6 border border-stone-200 shadow-sm rounded-xl hover:shadow-md transition-shadow flex flex-col justify-center">
                   <h4 className="text-[14px] font-black tracking-widest text-[#1A1A1A] mb-1 uppercase">份量</h4>
@@ -289,7 +231,6 @@ export default function ShopDetailView({ shop, setActiveTab }) {
                 </div>
               )}
 
-              {/* 第一行第二列 (25%)：付款方式 */}
               {features.payment && (
                 <div className="sm:col-span-1 bg-white p-6 border border-stone-200 shadow-sm rounded-xl hover:shadow-md transition-shadow flex flex-col justify-center">
                   <h4 className="text-[14px] font-black tracking-widest text-[#1A1A1A] mb-1 uppercase">付款方式</h4>
@@ -297,7 +238,6 @@ export default function ShopDetailView({ shop, setActiveTab }) {
                 </div>
               )}
 
-              {/* 第二行第一列 (75%)：環境 */}
               {features.environment && (
                 <div className="sm:col-span-2 bg-white p-6 border border-stone-200 shadow-sm rounded-xl hover:shadow-md transition-shadow flex flex-col justify-center">
                   <h4 className="text-[14px] font-black tracking-widest text-[#1A1A1A] mb-1 uppercase">環境</h4>
@@ -305,7 +245,6 @@ export default function ShopDetailView({ shop, setActiveTab }) {
                 </div>
               )}
 
-              {/* 第二行第二列 (25%)：訂位與洗手間 (同一個膠囊) */}
               {(features.reservation || features.restroom) && (
                 <div className="sm:col-span-1 bg-white p-6 border border-stone-200 shadow-sm rounded-xl hover:shadow-md transition-shadow flex flex-col justify-center gap-3">
                   {features.reservation && (
@@ -326,7 +265,6 @@ export default function ShopDetailView({ shop, setActiveTab }) {
             </div>
           </div>
 
-          {/* 底部：跳轉地圖按鈕 */}
           <button
             onClick={() => setActiveTab('map')}
             className="w-full mt-6 py-4 text-white text-xs font-bold tracking-[0.2em] uppercase transition-all duration-300 flex items-center justify-center space-x-2 bg-[#1A1A1A] hover:bg-stone-700 cursor-pointer rounded-xl shadow-md"
@@ -337,58 +275,12 @@ export default function ShopDetailView({ shop, setActiveTab }) {
         </div>
       </div>
 
-      {/* 線上菜單放大燈箱 */}
+      {/* 🌟 2. 使用抽離出來的獨立燈箱組件 */}
       {selectedMenu && (
-        <div 
-          className="fixed inset-0 z-[200] flex items-center justify-center bg-[#1A1A1A]/95 backdrop-blur-sm p-4 md:p-10 animate-in fade-in duration-300 select-none" 
-          onClick={() => setSelectedMenu(null)}
-          onWheel={handleWheel} 
-        >
-          <div 
-            className="relative max-w-5xl w-full max-h-[85vh] md:max-h-[90vh] flex flex-col" 
-            onClick={e => e.stopPropagation()}
-          >
-            <div className="w-full flex justify-start items-end mb-3 text-stone-300 px-1 pointer-events-none">
-              <div className="flex flex-col">
-                <span className="text-[9px] md:text-xs tracking-[0.2em] font-bold uppercase opacity-60 mb-1">Menu Viewer</span>
-                <span className="text-[10px] md:text-xs tracking-widest font-bold text-white">
-                  滾輪縮放圖片 / 按住滑鼠中鍵拖曳
-                </span>
-              </div>
-            </div>
-
-            <div 
-              className="relative flex-1 bg-[#F6F6F4] shadow-2xl border border-stone-800 overflow-hidden flex flex-col"
-              onMouseDown={handleMouseDown}
-              onMouseMove={handleMouseMove}
-              onMouseUp={handleMouseUp}
-              onMouseLeave={handleMouseUp}
-            >
-              
-              <button 
-                onClick={() => setSelectedMenu(null)} 
-                className="absolute top-4 right-4 z-50 group flex items-center justify-center w-10 h-10 md:w-12 md:h-12 bg-[#1A1A1A]/80 hover:bg-[#1A1A1A] backdrop-blur-md rounded-full transition-all duration-300 cursor-pointer shadow-lg border border-white/10"
-              >
-                <X size={20} className="text-white group-hover:rotate-90 transition-transform" />
-              </button>
-
-              <div 
-                className="w-full h-full flex items-center justify-center"
-                style={{ cursor: isDragging ? 'grabbing' : 'grab' }}
-              >
-                <img 
-                  src={selectedMenu} 
-                  alt="線上完整菜單" 
-                  draggable="false"
-                  className="max-w-full max-h-full object-contain transition-transform duration-75 ease-out origin-center pointer-events-none"
-                  style={{ 
-                    transform: `translate(${position.x}px, ${position.y}px) scale(${scale})` 
-                  }}
-                />
-              </div>
-            </div>
-          </div>
-        </div>
+        <MenuLightbox 
+          selectedMenu={selectedMenu} 
+          onClose={() => setSelectedMenu(null)} 
+        />
       )}
     </div>
   );
