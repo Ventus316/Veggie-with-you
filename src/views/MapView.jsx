@@ -5,6 +5,8 @@ import { ChevronLeft, Star, Clock, Search, MapPin, X, ArrowRight, Navigation } f
 import useShopFilters from '../hooks/useShopFilters';
 import GoogleMapComponent from '../components/ui/GoogleMapComponent_map';
 
+import { SORT_ICONS } from '../data/Data';
+
 const STAGE_CONFIG = {
   perspective: '1200px',
   transition: 'transform 0.8s cubic-bezier(0.2, 0.8, 0.2, 1)',
@@ -198,35 +200,75 @@ export default function MapView({ selectedShop, setSelectedShop, setActiveTab })
           ) : (
             /* --- 搜尋清單區 --- */
             <div className="flex-1 flex flex-col bg-white overflow-hidden pt-8">
-              <div className="p-4 border-b border-stone-100 bg-white">
+              
+              {/* 頭部搜尋與篩選區塊 */}
+              <div className="py-2 px-4 border-b border-stone-100 bg-white">
                  
                  {/* 搜尋框 */}
-                 <div className="flex items-center bg-stone-100/60 border border-stone-200 rounded-xl px-4 py-3 mb-3">
+                 <div className="flex items-center bg-stone-100/60 border border-stone-200 rounded-xl px-4 py-3 mb-4">
                    <Search size={16} className="text-stone-400 mr-3 flex-shrink-0" />
                    <input type="text" placeholder="搜尋店名..." className="flex-1 bg-transparent text-xs font-medium focus:outline-none border-none min-w-0" value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)}/>
-                   {searchQuery && <X size={14} className="text-stone-400 cursor-pointer" onClick={() => setSearchQuery('')} />}
+                   {searchQuery && <X size={10} className="text-stone-400 cursor-pointer" onClick={() => setSearchQuery('')} />}
                  </div>
                  
-                 {/* 🌟 3. 只保留交通與時間篩選，並將它們並排 */}
-                 <div className="grid grid-cols-2 gap-2">
-                   <div className="flex items-center border border-stone-200 rounded-lg px-2 py-2 text-[9px] font-bold">
-                     <Navigation size={12} className="mr-1 text-stone-400 flex-shrink-0"/>
-                     <select className="bg-transparent focus:outline-none w-full border-none cursor-pointer appearance-none" value={filterTransport} onChange={(e) => setFilterTransport(e.target.value)}>
-                       <option value="walking">步行</option>
-                       <option value="bicycle">腳踏車</option>
-                       <option value="scooter">機車</option>
-                     </select>
-                   </div>
-                   <div className="flex items-center border border-stone-200 rounded-lg px-2 py-2 text-[9px] font-bold">
-                     <Clock size={12} className="mr-1 text-stone-400 flex-shrink-0"/>
-                     <select className="bg-transparent focus:outline-none w-full border-none cursor-pointer appearance-none" value={filterTime} onChange={(e) => setFilterTime(e.target.value)}>
-                       <option value="all">不限時間</option>
-                       <option value="5">5 分鐘內</option>
-                       <option value="10">10 分鐘內</option>
-                       <option value="15">15 分鐘內</option>
-                     </select>
-                   </div>
-                 </div>
+                {/* 🌟 終極解法：橫向膠囊按鈕 (完全避開 3D 圖層重疊 Bug) */}
+                <div className="space-y-3 w-full overflow-hidden">
+                  
+                  {/* 交通工具列 (可橫向滑動) */}
+                  <div className="flex gap-2 overflow-x-auto no-scrollbar">
+                    {[
+                      { id: 'walking', label: '步行', icon: SORT_ICONS.walking },
+                      { id: 'bicycle', label: '腳踏車', icon: SORT_ICONS.bicycle },
+                      { id: 'scooter', label: '機車', icon: SORT_ICONS.scooter }
+                    ].map(opt => (
+                      <button
+                        key={opt.id}
+                        onClick={(e) => { e.stopPropagation(); setFilterTransport(opt.id); }}
+                        className={`flex-shrink-0 flex items-center px-3 py-2 rounded-lg text-[10px] font-bold border transition-colors ${
+                          filterTransport === opt.id 
+                            ? 'bg-stone-800 text-white border-stone-800 shadow-sm' 
+                            : 'bg-white text-stone-600 border-stone-200 hover:bg-stone-50'
+                        }`}
+                      >
+                        <img 
+                          src={opt.icon} 
+                          alt={opt.label}
+                          // 🌟 如果被選中，用 filter 讓圖標變成純白色；沒選中就維持原本的灰色
+                          className={`w-3.5 h-3.5 mr-1.5 object-contain ${
+                            filterTransport === opt.id 
+                              ? 'filter brightness-0 invert' 
+                              : 'filter brightness-50 contrast-125'
+                          }`} 
+                        />
+                        {opt.label}
+                      </button>
+                    ))}
+                  </div>
+
+                  {/* 時間限制列 (可橫向滑動) */}
+                  <div className="flex gap-2 overflow-x-auto no-scrollbar">
+                    {[
+                      { id: 'all', label: '不限' },
+                      { id: '5', label: '5 分' },
+                      { id: '10', label: '10 分' },
+                      { id: '15', label: '15 分' }
+                    ].map(opt => (
+                      <button
+                        key={opt.id}
+                        onClick={(e) => { e.stopPropagation(); setFilterTime(opt.id); }}
+                        className={`flex-shrink-0 flex items-center px-2 py-2 rounded-lg text-[10px] font-bold border transition-colors ${
+                          filterTime === opt.id 
+                            ? 'bg-stone-800 text-white border-stone-800 shadow-sm' 
+                            : 'bg-white text-stone-600 border-stone-200 hover:bg-stone-50'
+                        }`}
+                      >
+                        <Clock size={12} className={`mr-1.5 ${filterTime === opt.id ? 'text-white' : 'text-stone-400'}`} />
+                        {opt.label}
+                      </button>
+                    ))}
+                  </div>
+
+                </div>
               </div>
 
               <div className="flex-1 overflow-y-auto no-scrollbar">

@@ -13,6 +13,10 @@ import iconFri from '../assets/weekday/Fri.png';
 import iconSatu from '../assets/weekday/Satu.png';
 import iconSun from '../assets/weekday/Sun.png';
 
+import iconWalk from '../assets/sort/icon_walking.png';
+import iconBicycle from '../assets/sort/icon_bicycle.svg';
+import iconScooter from '../assets/sort/icon_scooter.svg';
+
 import mapSchool from '../assets/map/school.png';
 import mapRadish from '../assets/map/radish.png';
 
@@ -28,6 +32,12 @@ export const WEEKDAY_ICONS = {
   '六': iconSatu,
   '日': iconSun,
 };
+
+export const SORT_ICONS = { 
+  walking: iconWalk,
+  bicycle: iconBicycle,
+  scooter: iconScooter
+}
 
 export const MAP_SCHOOL = mapSchool;
 export const MAP_RADISH = mapRadish;

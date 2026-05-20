@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { MapPin, Clock, ArrowRight, X, Leaf } from 'lucide-react';
 import useShopFilters from '../hooks/useShopFilters';
 import FadeInCard from '../components/ui/FadeInCard_shops';
+import { SORT_ICONS } from '../data/Data';
 
 // 定義翻譯對應表，供卡片動態顯示用
 const TRANSPORT_LABELS = { walking: '步行', bicycle: '腳踏車', scooter: '機車', transit: '大眾運輸' };
@@ -68,31 +69,66 @@ export default function ShopsView({ setSelectedShop, setActiveTab }) {
   };
 
   return (
-    <div className="py-12 px-6 max-w-5xl mx-auto min-h-screen animate-in fade-in duration-1000">
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-16 border-b border-stone-200 pb-8 mt-15 mx-6">
-        <div>
-          <h1 className="text-3xl md:text-4xl font-light tracking-[0.2em] text-[#1A1A1A] mb-3 uppercase">店家資訊</h1>
-          <p className="text-[10px] font-bold tracking-[0.3em] text-stone-400 uppercase">Vegan Shops Guide</p>
-        </div>
+    <div className="px-6 max-w-5xl mx-auto min-h-screen animate-in fade-in duration-1000">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-8 border-b border-stone-200 pb-8 mt-8 mx-12">
         
-        <div className="flex flex-wrap gap-6 mt-8 md:mt-0">
-          <div className="flex flex-col">
-            <label className="text-[9px] font-bold tracking-[0.2em] text-stone-400 mb-2 uppercase">交通方式</label>
-            <select value={filterTransport} onChange={e => setFilterTransport(e.target.value)} className="appearance-none bg-transparent border-b border-[#1A1A1A] text-[#1A1A1A] text-xs font-bold tracking-[0.1em] pb-2 pr-6 focus:outline-none cursor-pointer">
-              <option value="walking">步行</option>
-              <option value="bicycle">腳踏車</option>
-              <option value="scooter">機車</option>
-            </select>
+        {/* 🌟 終極解法：橫向膠囊按鈕 (完全避開 3D 圖層重疊 Bug) */}
+        <div className="space-y-3 w-full overflow-hidden">
+          
+          {/* 交通工具列 (可橫向滑動) */}
+          <div className="flex gap-2 overflow-x-auto no-scrollbar">
+            {[
+              { id: 'walking', label: '步行', icon: SORT_ICONS.walking },
+              { id: 'bicycle', label: '腳踏車', icon: SORT_ICONS.bicycle },
+              { id: 'scooter', label: '機車', icon: SORT_ICONS.scooter }
+            ].map(opt => (
+              <button
+                key={opt.id}
+                onClick={(e) => { e.stopPropagation(); setFilterTransport(opt.id); }}
+                className={`flex-shrink-0 flex items-center px-3 py-2 rounded-lg text-[10px] font-bold border transition-colors ${
+                  filterTransport === opt.id 
+                    ? 'bg-stone-800 text-white border-stone-800 shadow-sm' 
+                    : 'bg-white text-stone-600 border-stone-200 hover:bg-stone-50'
+                }`}
+              >
+                <img 
+                  src={opt.icon} 
+                  alt={opt.label}
+                  // 🌟 如果被選中，用 filter 讓圖標變成純白色；沒選中就維持原本的灰色
+                  className={`w-3.5 h-3.5 mr-1.5 object-contain ${
+                    filterTransport === opt.id 
+                      ? 'filter brightness-0 invert' 
+                      : 'filter brightness-50 contrast-125'
+                  }`} 
+                />
+                {opt.label}
+              </button>
+            ))}
           </div>
-          <div className="flex flex-col">
-            <label className="text-[9px] font-bold tracking-[0.2em] text-stone-400 mb-2 uppercase">時間</label>
-            <select value={filterTime} onChange={e => setFilterTime(e.target.value)} className="appearance-none bg-transparent border-b border-[#1A1A1A] text-[#1A1A1A] text-xs font-bold tracking-[0.1em] pb-2 pr-6 focus:outline-none cursor-pointer">
-              <option value="all">不限時間</option>
-              <option value="5">5 分鐘以內</option>
-              <option value="10">10 分鐘以內</option>
-              <option value="15">15 分鐘以內</option>
-            </select>
+
+          {/* 時間限制列 (可橫向滑動) */}
+          <div className="flex gap-2 overflow-x-auto no-scrollbar">
+            {[
+              { id: 'all', label: '不限' },
+              { id: '5', label: '5 分' },
+              { id: '10', label: '10 分' },
+              { id: '15', label: '15 分' }
+            ].map(opt => (
+              <button
+                key={opt.id}
+                onClick={(e) => { e.stopPropagation(); setFilterTime(opt.id); }}
+                className={`flex-shrink-0 flex items-center px-2 py-2 rounded-lg text-[10px] font-bold border transition-colors ${
+                  filterTime === opt.id 
+                    ? 'bg-stone-800 text-white border-stone-800 shadow-sm' 
+                    : 'bg-white text-stone-600 border-stone-200 hover:bg-stone-50'
+                }`}
+              >
+                <Clock size={12} className={`mr-1.5 ${filterTime === opt.id ? 'text-white' : 'text-stone-400'}`} />
+                {opt.label}
+              </button>
+            ))}
           </div>
+
         </div>
       </div>
 
