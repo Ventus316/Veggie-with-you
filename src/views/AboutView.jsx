@@ -6,8 +6,8 @@ import { TEAM_MEMBERS } from '../data/Data';
 
 export default function AboutView() {
   return (
-    <div className="py-12 md:py-24 px-6 max-w-6xl mx-auto animate-in fade-in duration-1000">
-      <div className="mb-32 max-w-4xl mx-auto text-center">
+    <div className="pt-8 min-h-screen flex items-center justify-center animate-in fade-in duration-1000">
+      <div className="max-w-4xl mx-auto text-center">
         <h2 className="text-3xl md:text-5xl font-light tracking-[0.1em] text-[#1A1A1A] leading-[1.5] mb-16 relative inline-block">
           <span className="absolute -top-8 -left-8 text-stone-200">
             <Leaf size={48} strokeWidth={1} />
@@ -17,15 +17,15 @@ export default function AboutView() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-12 text-left">
           <div className="space-y-4">
-            <h3 className="text-sm font-bold tracking-[0.15em] text-[#1A1A1A] border-b border-[#1A1A1A] pb-2 inline-block uppercase">設計緣由</h3>
-            <p className="text-sm text-stone-500 leading-loose tracking-wide font-medium">
+            <h3 className="text-[20px] font-bold tracking-[0.15em] text-[#1A1A1A] border-b border-[#1A1A1A] pb-2 inline-block uppercase">設計緣由</h3>
+            <p className="text-[16px] text-stone-500 leading-loose tracking-wide font-medium">
               元智大學生活圈雖然美食林立，但長期以來存在資訊不對稱與選擇門檻高的問題。學生午休時間有限，若不清楚哪家店有提供蔬食，往往會因「尋找餐廳太麻煩」而放棄健康的飲食選項。<br /><br />
               本平台透過數位工具，消除「懶」的障礙，讓健康與永續成為元智人的日常。
             </p>
           </div>
           <div className="space-y-4">
-            <h3 className="text-sm font-bold tracking-[0.15em] text-[#1A1A1A] border-b border-[#1A1A1A] pb-2 inline-block uppercase">核心價值</h3>
-            <p className="text-sm text-stone-500 leading-loose tracking-wide font-medium">
+            <h3 className="text-[20px] font-bold tracking-[0.15em] text-[#1A1A1A] border-b border-[#1A1A1A] pb-2 inline-block uppercase">核心價值</h3>
+            <p className="text-[16px] text-stone-500 leading-loose tracking-wide font-medium">
               我們相信，當你開始了解每一口食物的分類與能量，你就已經在為校園的永續轉型貢獻力量。<br /><br />
               <span className="text-[#1A1A1A] font-bold">透明的飲食資訊不僅是實踐「責任消費」的第一步，更是落實「健康與福祉」的核心基石。</span>
             </p>
@@ -33,7 +33,7 @@ export default function AboutView() {
         </div>
       </div>
 
-      <div className="pt-16 border-t border-stone-200">
+      {/* <div className="pt-16 border-t border-stone-200">
         <div className="text-center mb-16">
           <h2 className="text-xl font-bold tracking-[0.2em] text-[#1A1A1A] uppercase mb-2">網站成員</h2>
           <p className="text-[10px] font-bold tracking-[0.3em] text-stone-400 uppercase">Team Members</p>
@@ -54,7 +54,7 @@ export default function AboutView() {
             </div>
           ))}
         </div>
-      </div>
+      </div> */}
     </div>
   );
 }

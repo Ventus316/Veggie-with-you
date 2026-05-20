@@ -66,7 +66,7 @@ export default function App() {
   const isFullScreenView = activeTab === 'map' || activeTab === 'info' || activeTab === 'menu' || activeTab === 'shopDetail' || activeTab === 'shops' || activeTab === 'about';
   
   // 2. 控制滾動鎖定 (僅地圖與百科鎖死高度)
-  const isNoScrollView = activeTab === 'map' || activeTab === 'info';
+  const isNoScrollView = activeTab === 'map' || activeTab === 'info' || activeTab === 'about';
   
   // 3. 隱藏頁尾
   const hideFooter = activeTab === 'map' || activeTab === 'info' || activeTab === 'home' || activeTab === 'menu' || activeTab === 'shopDetail' || activeTab === 'shops' || activeTab === 'about';
@@ -84,7 +84,7 @@ export default function App() {
         isNoScrollView 
           ? 'h-screen pt-0 overflow-hidden' 
           : isFullScreenView 
-            ? 'min-h-screen pt-0 pb-16' 
+            ? 'min-h-screen pt-0' 
             : 'pt-1'
       }`}>
         {renderView()}
