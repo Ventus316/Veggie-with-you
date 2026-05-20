@@ -133,9 +133,10 @@ export default function InfoView() {
                 <img 
                   src={thumb.src} 
                   alt={thumb.alt} 
-                  className={`w-full h-full object-contain drop-shadow-[0_40px_40px_rgba(0,0,0,0.4)] transition-all duration-1000 ${
+                  className={`relative w-full h-full object-contain drop-shadow-[0_40px_40px_rgba(0,0,0,0.4)] transition-all duration-1000 ${
                     i === activeThumbIndex ? 'scale-100 opacity-100' : 'scale-[0.6] opacity-30'
                   }`}
+                  style={thumb.offset ? thumb.offset : {}} // 👈 如果資料有寫 offset 就套用
                 />
               </div>
             )
@@ -152,7 +153,7 @@ export default function InfoView() {
               {activeThumb.alt}
             </h1>
             <p className="text-[1rem] text-white/90 leading-[2] tracking-[0.15em] text-justify mb-6">
-              {activeTopic.description}
+              {activeThumb.description}
             </p>
 
             {/* 🎯 【左側 6 顆餐點小縮圖網格】 */}

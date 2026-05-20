@@ -72,14 +72,13 @@ export const INFO_CATEGORIES = [
 ];
 
 // 小百科的詳細資料結構 (保留原有的工程邏輯)
-const localAsset = (fileName) => `${fileName}`;
+const localAsset = (fileName) => `info/${fileName}`;
 
 export const NUTRITION_TOPICS = [
   {
     id: 'rice',
     tabLabel: '飯麵類',
-    title: '白飯',
-    description: '白米飯是穩定的碳水化合物來源，能快速提供能量，且低脂、易消化、不含麩質，是維持體力的基礎。',
+    // 移除了外層的 title 和 description，因為現在每個食材都有自己的了！
     theme: {
       canvas: '#ffe8bf',
       circlePrimary: '#211106',
@@ -87,25 +86,54 @@ export const NUTRITION_TOPICS = [
       circleSecondary: '#a65f29',
       text: '#ffffff',
     },
-    // 🌟 這裡換回你的主視覺大圖
-    mainImage: localAsset('rice_1.png'),
+    mainImage: localAsset('rice.png'),
     mainImageAlt: '白飯',
     thumbnails: [
-      // 🌟 這裡換回你的 6 個小碗圖 (請確保 public 資料夾裡的檔名也是用底線)
-      { src: localAsset('strongrice_2.png'), alt: '糙米飯', variant: 'square' },
-      { src: localAsset('noodle_2.png'), alt: '麵條', variant: 'rounded' },
-      { src: localAsset('fullnoodle_2.png'), alt: '拉麵', variant: 'wide' },
-      { src: localAsset('purplerice_2.png'), alt: '紫米飯', variant: 'rounded' },
-      { src: localAsset('animnoodle_2.png'), alt: '烏龍麵', variant: 'wide' },
-      { src: localAsset('rice_1.png'), alt: '白飯', variant: 'square', underline: true }
+      { 
+        src: localAsset('rice.png'), 
+        alt: '白飯', 
+        description: '白飯是穩定的碳水化合物來源，能快速提供能量，且低脂、易消化、不含麩質，是維持體力的基礎。',
+        variant: 'square', underline: true 
+      },
+      { 
+        src: localAsset('strongrice.png'), 
+        alt: '糙米飯', 
+        description: '保留了米糠與胚芽，富含膳食纖維、維生素 B 群及礦物質，GI 值較低，能帶來更持久的飽足感與穩定能量。',
+        variant: 'square' 
+      },
+      { 
+        src: localAsset('purplerice.png'), 
+        alt: '紫米飯', 
+        description: '富含天然花青素，具有優良的抗氧化效果，並提供豐富的鐵質與維生素，有助於維持紅潤氣色與新陳代謝。',
+        variant: 'rounded' 
+      },
+      { 
+        src: localAsset('fullnoodle.png'), 
+        alt: '全麥麵', 
+        description: '由小麥粉製成的麵條，口感 Q 彈有嚼勁，能快速補充碳水化合物，搭配豐富的蔬菜配料能讓營養更加均衡。',
+        variant: 'wide' ,
+        offset: { top:"-40px", left:"114px" }
+      },
+      { 
+        src: localAsset('noodle.png'), 
+        alt: '蕎麥麵', 
+        description: '傳統的小麥麵條，提供日常所需的澱粉與熱量，烹調方式多樣，是亞洲飲食文化中不可或缺的重要主食。',
+        variant: 'rounded' ,
+        offset: { top:"-50px", left:"136px" }
+      },
+      { 
+        src: localAsset('animnoodle.png'), 
+        alt: '烏龍麵', 
+        description: '粗實的日本傳統麵條，口感滑順且帶有極佳的嚼勁，易於消化且飽足感高，非常適合搭配清淡的高湯食用。',
+        variant: 'wide' ,
+        offset: { top:"-80px", left:"83px" }
+      },
     ],
     panelLabel: '飯麵類'
   },
   {
     id: 'vegetable',
     tabLabel: '蔬菜類',
-    title: '菠菜',
-    description: '富含鐵質、葉酸與維生素K，有助於補血及維持骨骼健康。其豐富的葉黃素與胡蘿蔔素也能保護視力，是營養價值極高的深綠色蔬菜。',
     theme: {
       canvas: '#8bc34a',
       circlePrimary: '#7bb12e',
@@ -113,23 +141,51 @@ export const NUTRITION_TOPICS = [
       circleSecondary: '#c8df9c',
       text: '#ffffff',
     },
-    mainImage: localAsset('green_4.png'), // 請確認此檔名
+    mainImage: localAsset('green4.png'),
     mainImageAlt: '菠菜',
     thumbnails: [
-      { src: localAsset('green_5.png'), alt: '菠菜小株', variant: 'small' },
-      { src: localAsset('green2_2.png'), alt: '高麗菜', variant: 'square' },
-      { src: localAsset('green3_2.png'), alt: '花椰菜', variant: 'square' },
-      { src: localAsset('redgreen_2.png'), alt: '胡蘿蔔', variant: 'tall' },
-      { src: localAsset('purplegreen_2.png'), alt: '茄子', variant: 'rounded' },
-      { src: localAsset('green1_2.png'), alt: '青江菜', variant: 'square', underline: true }
+      { 
+        src: localAsset('green4.png'), 
+        alt: '菠菜', 
+        description: '富含鐵質、葉酸與維生素 K，有助於補血及維持骨骼健康。其豐富的葉黃素與胡蘿蔔素也能有效保護視力。',
+        variant: 'small' 
+      },
+      { 
+        src: localAsset('green2.png'), 
+        alt: '高麗菜', 
+        description: '含有豐富的維生素 C、維生素 K 與膳食纖維，獨特的維生素 U (高麗菜精) 更有助於保護消化道黏膜，清甜百搭。',
+        variant: 'square' 
+      },
+      { 
+        src: localAsset('green3.png'), 
+        alt: '花椰菜', 
+        description: '被譽為十字花科的營養明星！富含蘿蔔硫素、維生素 C 與豐富的膳食纖維，具有極佳的抗氧化與提升防護力效果。',
+        variant: 'square' 
+      },
+      { 
+        src: localAsset('redgreen.png'), 
+        alt: '紅蘿蔔', 
+        description: '富含大量的 β-胡蘿蔔素，能在體內轉化為維生素 A，對視力保健與皮膚黏膜健康極為有益，脂溶性特性適合炒食。',
+        variant: 'tall' 
+      },
+      { 
+        src: localAsset('purplegreen.png'), 
+        alt: '茄子', 
+        description: '深紫色的外皮富含花青素與抗氧化物質，柔軟的果肉含有豐富的維生素 P，有助於維持微血管彈性與心血管健康。',
+        variant: 'rounded' 
+      },
+      { 
+        src: localAsset('green1.png'), 
+        alt: '青江菜', 
+        description: '十字花科蔬菜的一員，含鈣量高且草酸較低，是植物性鈣質的優良來源，同時提供豐富的維生素 A 與維生素 C。',
+        variant: 'square', underline: true 
+      }
     ],
     panelLabel: '蔬菜類'
   },
   {
     id: 'bean',
     tabLabel: '豆製類',
-    title: '傳統豆腐',
-    description: '富含植物性蛋白質與鈣質，有助於肌肉生長與骨骼健康。其飽和脂肪低且不含膽固醇，是大豆異黃酮的優質來源，能幫助調節生理機能。',
     theme: {
       canvas: '#ddd8d8',
       circlePrimary: '#333333',
@@ -137,15 +193,45 @@ export const NUTRITION_TOPICS = [
       circleSecondary: '#c8c8c8',
       text: '#ffffff',
     },
-    mainImage: localAsset('tofu_1.png'), // 請確認此檔名
+    mainImage: localAsset('tofu.png'),
     mainImageAlt: '傳統豆腐',
     thumbnails: [
-      { src: localAsset('drytofu_2.png'), alt: '煎豆腐', variant: 'square' },
-      { src: localAsset('greenmeat_2.png'), alt: '豆皮排', variant: 'wide' },
-      { src: localAsset('beanwater_2.png'), alt: '豆漿', variant: 'tall' },
-      { src: localAsset('bean_2.png'), alt: '毛豆', variant: 'square' },
-      { src: localAsset('japanbean_2.png'), alt: '納豆', variant: 'square' },
-      { src: localAsset('tofu_1.png'), alt: '傳統豆腐', variant: 'square', underline: true }
+      { 
+        src: localAsset('tofu.png'), 
+        alt: '傳統豆腐', 
+        description: '富含植物性蛋白質與天然鈣質，有助於肌肉生長與骨骼健康。其飽和脂肪極低且不含膽固醇，是大豆異黃酮的優質來源。',
+        variant: 'square', underline: true 
+      },
+      { 
+        src: localAsset('greenmeat.png'), 
+        alt: '素雞', 
+        description: '由大豆蛋白濃縮而成的豆皮，蛋白質密度極高，口感扎實且富有層次，是許多素食者用來取代肉類口感的極佳選擇。',
+        variant: 'wide' 
+      },
+      { 
+        src: localAsset('beanwater.png'), 
+        alt: '豆漿', 
+        description: '被譽為「植物界的牛奶」，富含優質大豆蛋白、大豆異黃酮與卵磷脂，天然無乳糖且易於人體吸收，是極佳的營養飲品。',
+        variant: 'tall' 
+      },
+      { 
+        src: localAsset('drytofu.png'), 
+        alt: '豆乾', 
+        description: '經過少油慢煎的豆腐，外酥內嫩，不僅增添了迷人的豆香風味，還能提供豐富的植物性蛋白質與極佳的飽足感。',
+        variant: 'square' 
+      },
+      { 
+        src: localAsset('japanbean.png'), 
+        alt: '納豆', 
+        description: '經過枯草桿菌發酵的大豆，產生了獨特且珍貴的「納豆激酶」，有助於促進新陳代謝與維持循環順暢，營養價值極高。',
+        variant: 'square' 
+      },
+      { 
+        src: localAsset('bean.png'), 
+        alt: '毛豆', 
+        description: '未成熟的綠色大豆，不僅是優質的植物性蛋白質來源，還富含維生素 C、B 群及大量膳食纖維，是健康解饞的最佳零嘴。',
+        variant: 'square' 
+      }
     ],
     panelLabel: '豆製類'
   }
