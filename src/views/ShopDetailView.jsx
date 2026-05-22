@@ -115,7 +115,7 @@ export default function ShopDetailView({ shop, setActiveTab }) {
         <div className="grid grid-cols-2 md:grid-cols-1 md:grid-rows-2 gap-6 md:h-full">
           {displayMealImgs.map((imgUrl, i) => (
             <div key={i} className="relative h-[150px] md:h-full rounded-xl overflow-hidden shadow-sm bg-stone-200">
-              <img src={imgUrl} alt="特色" className="w-full h-full object-cover object-left-top hover:scale-105 transition-transform duration-[1500ms]" />
+              <img src={imgUrl} alt="特色" className="w-full h-full object-cover object-left-top" />
             </div>
           ))}
         </div>
