@@ -1,5 +1,5 @@
 // src/App.jsx
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect , useRef } from 'react';
 import Header from './components/layout/Header';
 import Footer from './components/layout/Footer';
 import BackToTop from './components/ui/BackToTop';
@@ -18,6 +18,8 @@ export default function App() {
   const [selectedShop, setSelectedShop] = useState(null);
   const [isScrolled, setIsScrolled] = useState(false);
 
+  const isNavigatingRef = useRef(false);
+
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 50);
     window.addEventListener('scroll', handleScroll);
@@ -28,18 +30,28 @@ export default function App() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  // 🌟 核心 BUG 修復點：導航欄全域切換攔截器
   const handleNavbarTabChange = (tabId) => {
-    // 1. 清除店家列表頁的捲動暫存，確保下次進去是全新的頂部
+    // 【防護機制】：如果正在冷卻中（true），或者點擊的就是當前頁面，直接 return 掉，不理他
+    if (isNavigatingRef.current || tabId === activeTab) return;
+
+    // 將狀態設為「正在切換中」，鎖住後面的點擊
+    isNavigatingRef.current = true;
+
+    // 1. 清除店家列表頁的捲動暫存
     sessionStorage.removeItem('scroll_pos_shops'); 
     // 2. 清除當前選取的店家狀態
     setSelectedShop(null); 
     // 3. 切換目標分頁
     setActiveTab(tabId); 
     
-    // 🌟 4. 關鍵修復：不論跳轉到店家頁、餐點頁、關於我們還是首頁，
-    // 在組件抽換完成的瞬間，強迫瀏覽器視窗立刻、無延遲地回到最上方 (instant)
+    // 4. 強迫瀏覽器視窗立刻回到最上方
     window.scrollTo({ top: 0, behavior: 'instant' });
+
+    // 🌟 【解除鎖定】：設定 500 毫秒 (0.5秒) 後，把鎖打開，允許下一次點擊
+    // 這個時間您可以根據視覺動畫的長短自行微調（通常 500ms ~ 800ms 最舒適）
+    setTimeout(() => {
+      isNavigatingRef.current = false;
+    }, 500); 
   };
 
   const renderView = () => {

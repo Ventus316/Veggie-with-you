@@ -13,7 +13,7 @@ import {
 
 import { WEEKDAY_ICONS } from '../data/Data';
 // 🌟 1. 引入剛剛拆分出去的燈箱組件
-import MenuLightbox from '../components/ui/MenuLightbox';
+import MenuLightbox from '../components/ui/MenuLightbox_shop';
 
 export default function ShopDetailView({ shop, setActiveTab }) {
   const [selectedMenu, setSelectedMenu] = useState(null);

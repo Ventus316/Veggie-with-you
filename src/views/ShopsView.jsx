@@ -5,8 +5,7 @@ import useShopFilters from '../hooks/useShopFilters';
 import FadeInCard from '../components/ui/FadeInCard_shops';
 import { SORT_ICONS } from '../data/Data';
 
-// 🌟 1. 引入剛剛抽離出來的獨立燈箱組件
-import MenuLightbox from '../components/ui/MenuLightbox';
+import MenuLightbox from '../components/ui/MenuLightbox_shop';
 
 // 定義翻譯對應表，供卡片動態顯示用
 const TRANSPORT_LABELS = { walking: '步行', bicycle: '腳踏車', scooter: '機車', transit: '大眾運輸' };
