@@ -12,8 +12,12 @@ export default function MenuLightbox({ selectedMenu, onClose }) {
   // 當燈箱開啟時，鎖定背景的滾動
   useEffect(() => {
     document.body.style.overflow = 'hidden';
+    const bttBtn = document.getElementById('back-to-top-btn');
+    if (bttBtn) bttBtn.style.display = 'none';
+    
     return () => { 
       document.body.style.overflow = 'unset'; 
+      if (bttBtn) bttBtn.style.display = '';
     };
   }, []);
 
