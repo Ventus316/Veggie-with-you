@@ -187,15 +187,9 @@ export default function ShopDetailView({ shop, setActiveTab }) {
                           <div className="flex justify-end w-full">
                             {timeStr === '休息' ? (
                               <div className="h-8 flex items-center justify-end">
-                                <img 
-                                  src="/images/icons/closed_status.png" 
-                                  alt="公休" 
-                                  className="h-6 object-contain"
-                                  onError={(e) => {
-                                    e.target.style.display = 'none';
-                                    e.target.parentNode.innerHTML = `<span class="text-stone-500 font-bold tracking-widest text-sm bg-stone-200 px-2 py-1 rounded">公休</span>`;
-                                  }}
-                                />
+                                <span className="text-stone-500 font-bold tracking-widest text-sm bg-stone-200 px-3 py-1 rounded-md">
+                                  公休
+                                </span>
                               </div>
                             ) : (
                               <div className="text-sm font-bold tracking-widest text-stone-600 text-right">
