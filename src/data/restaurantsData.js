@@ -26,11 +26,13 @@ export const RESTAURANTS = [
       payment: "只收現金",
       reservation: "不可訂位"
     },
-    menuImg: "images/suwo_menu1.jpeg",
-    img: "images/suwo_store2.jpeg", 
+    menuImg: "shops/images/suwo_menu1.jpeg",
+    img: "shops/images/suwo_store2.jpeg", 
+    shopLogo: "/shops/icons/suwo.svg",
+    shopBg: "/shops/enviroment/suwo.png",
     recommendations: [
-      { name: "薯餅漢堡", price: 55, img: "images/suwo_burger.jpeg" }, 
-      { name: "素煎餃", price: 65, img: "images/suwo_dumpling.jpeg" }
+      { name: "薯餅漢堡", price: 55, img: "shops/images/suwo_burger.jpeg" }, 
+      { name: "素煎餃", price: 65, img: "shops/images/suwo_dumpling.jpeg" }
     ],
     lat: 24.9678, lng: 121.2636 
   },
@@ -59,11 +61,13 @@ export const RESTAURANTS = [
       payment: "只收現金",
       reservation: "不可訂位"
     },
-    menuImg: "images/tianran_menu.jpeg", 
-    img: "images/tianran_store1.jpeg", 
+    menuImg: "shops/images/tianran_menu.jpeg", 
+    img: "shops/images/tianran_store1.jpeg", 
+    shopLogo: "/shops/icons/tianran.svg",
+    shopBg: "/shops/enviroment/tianran.png",
     recommendations: [
-      { name: "素蚵仔煎", price: 50, img: "images/tianran_oyster.jpeg" }, 
-      { name: "素水餃", price: 50, img: "images/tianran_dumpling.jpeg" }
+      { name: "素蚵仔煎", price: 50, img: "shops/images/tianran_oyster.jpeg" }, 
+      { name: "素水餃", price: 50, img: "shops/images/tianran_dumpling.jpeg" }
     ],
     lat: 24.9711, lng: 121.2604
   },
@@ -92,11 +96,13 @@ export const RESTAURANTS = [
       payment: "只收現金",
       reservation: "不可訂位"
     },
-    menuImg: "images/shiwei_menu2.jpeg", 
-    img: "images/shiwei_store1.jpeg", 
+    menuImg: "shops/images/shiwei_menu2.jpeg", 
+    img: "shops/images/shiwei_store1.jpeg", 
+    shopLogo: "/shops/icons/shiwei.svg",
+    shopBg: "/shops/enviroment/shiwei.png",
     recommendations: [
-      { name: "咖哩烏龍麵", price: 125, img: "images/shiwei_udon.jpg" }, 
-      { name: "素魯飯", price: 45, img: "images/shiwei_rice.jpeg" }
+      { name: "咖哩烏龍麵", price: 125, img: "shops/images/shiwei_udon.jpg" }, 
+      { name: "素魯飯", price: 45, img: "shops/images/shiwei_rice.jpeg" }
     ],
     lat: 24.9772, lng: 121.2532 
   },
@@ -125,11 +131,13 @@ export const RESTAURANTS = [
       payment: "只收現金",
       reservation: "不可訂位"
     },
-    menuImg: "images/liansheng_menu1.jpeg", 
-    img: "images/liansheng_store.jpeg", 
+    menuImg: "shops/images/liansheng_menu1.jpeg", 
+    img: "shops/images/liansheng_store.jpeg", 
+    shopLogo: "/shops/icons/liansheng.svg",
+    shopBg: "/shops/enviroment/liansheng.png",
     recommendations: [
-      { name: "素排飯", price: 90, img: "images/liansheng_rice.jpeg" }, 
-      { name: "青菜豆腐湯", price: 35, img: "images/liansheng_soup.jpeg" }
+      { name: "素排飯", price: 90, img: "shops/images/liansheng_rice.jpeg" }, 
+      { name: "青菜豆腐湯", price: 35, img: "shops/images/liansheng_soup.jpeg" }
     ],
     lat: 24.9654, lng: 121.2610 
   },
@@ -158,11 +166,13 @@ export const RESTAURANTS = [
       payment: "只收現金",
       reservation: "不可訂位"
     },
-    menuImg: "images/pinpin_menu.jpeg", 
-    img: "images/pinpin_store.jpeg", 
+    menuImg: "shops/images/pinpin_menu.jpeg", 
+    img: "shops/images/pinpin_store.jpeg", 
+    shopLogo: "/shops/icons/pinpin.svg",
+    shopBg: "/shops/enviroment/pinpin.png",
     recommendations: [
-      { name: "香椿湯麵", price: 80, img: "images/pinpin_noodle.jpeg" }, 
-      { name: "客製滷味", price: '自由搭配', img: "images/pinpin_luwei.jpeg" }
+      { name: "香椿湯麵", price: 80, img: "shops/images/pinpin_noodle.jpeg" }, 
+      { name: "客製滷味", price: '自由搭配', img: "shops/images/pinpin_luwei.jpeg" }
     ],
     lat: 24.9763, lng: 121.2573 
   },
@@ -191,11 +201,13 @@ export const RESTAURANTS = [
       payment: "只收現金",
       reservation: "不可訂位"
     },
-    menuImg: "images/5plus2_menu.jpeg", 
-    img: "images/5plus2_store1.jpeg", 
+    menuImg: "shops/images/5plus2_menu.jpeg", 
+    img: "shops/images/5plus2_store1.jpeg", 
+    shopLogo: "/shops/icons/5plus2.svg",
+    shopBg: "/shops/enviroment/5plus2.png",
     recommendations: [
-      { name: "素圓", price: 20, img: "images/5plus2_meatball.jpeg" }, 
-      { name: "素香麵", price: 60, img: "images/5plus2_noodle.jpeg" }
+      { name: "素圓", price: 20, img: "shops/images/5plus2_meatball.jpeg" }, 
+      { name: "素香麵", price: 60, img: "shops/images/5plus2_noodle.jpeg" }
     ],
     lat: 24.9784, lng: 121.2582 
   },
@@ -224,11 +236,13 @@ export const RESTAURANTS = [
       payment: "只收現金",
       reservation: "可訂位 (需預訂)"
     },
-    menuImg: "images/comfortzone_menu.jpeg", 
-    img: "images/comfortzone_store.jpeg", 
+    menuImg: "shops/images/comfortzone_menu.jpeg", 
+    img: "shops/images/comfortzone_store.jpeg", 
+    shopLogo: "/shops/icons/comfortzone.svg",
+    shopBg: "/shops/enviroment/comfortzone.png",
     recommendations: [
-      { name: "起司馬鈴薯", price: 100, img: "images/comfortzone_potato.png" }, 
-      { name: "起司豆皮", price: 50, img: "images/comfortzone_tofu.png" }
+      { name: "起司馬鈴薯", price: 100, img: "shops/images/comfortzone_potato.png" }, 
+      { name: "起司豆皮", price: 50, img: "shops/images/comfortzone_tofu.png" }
     ],
     lat: 24.9730, lng: 121.2545 
   },
@@ -257,11 +271,13 @@ export const RESTAURANTS = [
       payment: "現金、信用卡、行動支付",
       reservation: "可訂位"
     },
-    menuImg: "images/italian_menu1.jpeg", 
-    img: "images/italian_store.jpeg", 
+    menuImg: "shops/images/italian_menu1.jpeg", 
+    img: "shops/images/italian_store.jpeg", 
+    shopLogo: "/shops/icons/italian.svg",
+    shopBg: "/shops/enviroment/italian.png",
     recommendations: [
-      { name: "招牌總匯披薩", price: 130, img: "images/italian_pizza.jpeg" }, 
-      { name: "田園風味焗烤飯", price: 115, img: "images/italian_rice.jpeg" }
+      { name: "招牌總匯披薩", price: 130, img: "shops/images/italian_pizza.jpeg" }, 
+      { name: "田園風味焗烤飯", price: 115, img: "shops/images/italian_rice.jpeg" }
     ],
     lat: 24.9696, lng: 121.2505 
   },
@@ -290,11 +306,13 @@ export const RESTAURANTS = [
       payment: "只收現金",
       reservation: "現場候位"
     },
-    menuImg: "images/fuyuan_menu.png",
-    img: "images/fuyuan_store.png", 
+    menuImg: "shops/images/fuyuan_menu.png",
+    img: "shops/images/fuyuan_store.png", 
+    shopLogo: "/shops/icons/fuyuan.svg",
+    shopBg: "/shops/enviroment/fuyuan.png",
     recommendations: [
-      { name: "什錦炒麵", price: 50, img: "images/fuyuan_noodles.png" }, 
-      { name: "招牌便當", price: 95, img: "images/fuyuan_bento.png" }
+      { name: "什錦炒麵", price: 50, img: "shops/images/fuyuan_noodles.png" }, 
+      { name: "招牌便當", price: 95, img: "shops/images/fuyuan_bento.png" }
     ],
     lat: 24.9650, lng: 121.2580 
   },
@@ -323,11 +341,13 @@ export const RESTAURANTS = [
       payment: "只收現金",
       reservation: "可訂位"
     },
-    menuImg: "images/vege_menu.jpg",
-    img: "images/vege_store.png", 
+    menuImg: "shops/images/vege_menu.jpg",
+    img: "shops/images/vege_store.png", 
+    shopLogo: "/shops/icons/vege.svg",
+    shopBg: "/shops/enviroment/vege.png",
     recommendations: [
-      { name: "藥膳十全大補鍋", price: 228, img: "images/vege_hotpot.png" }, 
-      { name: "脆皮叉燒飯", price: 130, img: "images/vege_rice.png" }
+      { name: "藥膳十全大補鍋", price: 228, img: "shops/images/vege_hotpot.png" }, 
+      { name: "脆皮叉燒飯", price: 130, img: "shops/images/vege_rice.png" }
     ],
     lat: 24.9620, lng: 121.2750 
   },
@@ -356,11 +376,13 @@ export const RESTAURANTS = [
       payment: "只收現金",
       reservation: "現場候位"
     },
-    menuImg: "images/delaisu_menu.jpg",
-    img: "images/delaisu_store.png", 
+    menuImg: "shops/images/delaisu_menu.jpg",
+    img: "shops/images/delaisu_store.png", 
+    shopLogo: "/shops/icons/delaisu.svg",
+    shopBg: "/shops/enviroment/delaisu.png",
     recommendations: [
-      { name: "薯餅堡", price: 50, img: "images/delaisu_burger.png" }, 
-      { name: "起司蛋餅", price: 40, img: "images/delaisu_egg.png" }
+      { name: "薯餅堡", price: 50, img: "shops/images/delaisu_burger.png" }, 
+      { name: "起司蛋餅", price: 40, img: "shops/images/delaisu_egg.png" }
     ],
     lat: 24.9580, lng: 121.2410 
   },
@@ -389,11 +411,13 @@ export const RESTAURANTS = [
       payment: "只收現金",
       reservation: "接受訂位"
     },
-    menuImg: "images/hoanhy_menu.jpg",
-    img: "images/hoanhy_store.png", 
+    menuImg: "shops/images/hoanhy_menu.jpg",
+    img: "shops/images/hoanhy_store.png", 
+    shopLogo: "/shops/icons/hoanhy.svg",
+    shopBg: "/shops/enviroment/hoanhy.png",
     recommendations: [
-      { name: "什錦米粉", price: 90, img: "images/hoanhy_noodles.png" }, 
-      { name: "月亮煎餅", price: 110, img: "images/hoanhy_pancake.png" }
+      { name: "什錦米粉", price: 90, img: "shops/images/hoanhy_noodles.png" }, 
+      { name: "月亮煎餅", price: 110, img: "shops/images/hoanhy_pancake.png" }
     ],
     lat: 24.9980, lng: 121.3050 
   }
