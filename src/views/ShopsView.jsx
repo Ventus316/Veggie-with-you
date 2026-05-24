@@ -13,6 +13,9 @@ const TRANSPORT_LABELS = { walking: '步行', bicycle: '腳踏車', scooter: '�
 export default function ShopsView({ setSelectedShop, setActiveTab }) {
   const [selectedMenu, setSelectedMenu] = useState(null);
   
+  // 🌟 新增：營業狀態單鍵切換狀態 (all -> open -> closed -> all)
+  const [filterStatus, setFilterStatus] = useState('all');
+  
   const { 
     filterTransport, setFilterTransport, 
     filterTime, setFilterTime, 
@@ -20,14 +23,40 @@ export default function ShopsView({ setSelectedShop, setActiveTab }) {
   } = useShopFilters();
   
   const handleShopClick = (shopData) => {
-    // 關鍵修正點 1：在點擊事件觸發的第一時間，火速捕捉並記錄目前的捲動高度
     sessionStorage.setItem('scroll_pos_shops', window.scrollY.toString());
-    
     setSelectedShop(shopData);
     setActiveTab('shopDetail');
   };
 
-  // 關鍵修正點 2：多週期滾動追蹤復原機制
+  // 🌟 核心過濾邏輯：統一的即時營業時間判斷
+  const getRealTimeStatus = (openData) => {
+    if (!openData || !Array.isArray(openData)) return { text: '未知', isOpen: false };
+    const daysMap = ['日', '一', '二', '三', '四', '五', '六'];
+    const now = new Date();
+    const todayStr = daysMap[now.getDay()];
+    const todaySchedule = openData.find(item => item.day === todayStr);
+    if (!todaySchedule || todaySchedule.time === '休息') return { text: '公休', isOpen: false };
+    const currentMinutes = now.getHours() * 60 + now.getMinutes();
+    for (const range of todaySchedule.time.split('\n')) {
+      const [startStr, endStr] = range.split('-');
+      if (!startStr || !endStr) continue;
+      const [startH, startM] = startStr.split(':').map(Number);
+      const [endH, endM] = endStr.split(':').map(Number);
+      if (currentMinutes >= startH * 60 + startM && currentMinutes <= endH * 60 + endM) {
+        return { text: '營業中', isOpen: true };
+      }
+    }
+    return { text: '公休', isOpen: false };
+  };
+
+  // 🌟 二次過濾：疊加營業狀態篩選
+  const finalShops = filteredShops.filter(shop => {
+    if (filterStatus === 'all') return true;
+    const status = getRealTimeStatus(shop.open);
+    return filterStatus === 'open' ? status.isOpen : !status.isOpen;
+  });
+
+  // 多週期滾動追蹤復原機制 (依賴改為 finalShops)
   useEffect(() => {
     const savedPosition = sessionStorage.getItem('scroll_pos_shops');
     if (savedPosition) {
@@ -46,34 +75,46 @@ export default function ShopsView({ setSelectedShop, setActiveTab }) {
 
       return () => clearInterval(intervalId);
     }
-  }, [filteredShops]);
+  }, [finalShops]);
 
-  // 動態獲取並格式化今日營業時間的輔助函式
+  // 動態獲取並格式化今日營業時間的輔助函式 (給舊版卡片文字顯示用)
   const getTodayOpenHours = (openArray) => {
     if (!Array.isArray(openArray)) return '暫無營業時間資料';
-    
     const daysMap = ['日', '一', '二', '三', '四', '五', '六'];
     const todayDayStr = daysMap[new Date().getDay()];
-    
     const todayInfo = openArray.find(item => item.day === todayDayStr);
     
     if (!todayInfo) return '未提供今日營業時間';
-    
-    if (todayInfo.time === '休息') {
-      return '今日公休';
-    }
-    
+    if (todayInfo.time === '休息') return '今日公休';
     return `今日 ${todayInfo.time.replace(/\n/g, ' ')}`;
   };
 
+  // 🌟 單鍵切換邏輯
+  const handleStatusToggle = (e) => {
+    e.stopPropagation();
+    if (filterStatus === 'all') setFilterStatus('open');
+    else if (filterStatus === 'open') setFilterStatus('closed');
+    else setFilterStatus('all');
+  };
+
+  // 🌟 統一按鈕底色為黑色
+  const getStatusBtnConfig = () => {
+    const baseStyle = 'bg-stone-800 text-white border-stone-800 shadow-sm';
+    if (filterStatus === 'open') return { label: '營業', dot: 'bg-emerald-400 shadow-[0_0_6px_rgba(52,211,153,0.8)]', style: baseStyle };
+    if (filterStatus === 'closed') return { label: '公休', dot: 'bg-rose-400', style: baseStyle };
+    return { label: '全部', dot: 'bg-stone-400', style: baseStyle };
+  };
+  const statusConfig = getStatusBtnConfig();
+
   return (
     <div className="px-6 max-w-5xl mx-auto min-h-screen animate-in fade-in duration-1000">
+      
+      {/* 頂部篩選器 */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-8 border-b border-stone-200 pb-8 mt-8 mx-12">
-        
         <div className="space-y-3 w-full overflow-hidden">
           
-          {/* 交通工具列 */}
-          <div className="flex gap-2 overflow-x-auto no-scrollbar">
+          {/* 交通工具列 + 狀態切換鈕 */}
+          <div className="flex gap-2 overflow-x-auto no-scrollbar items-center">
             {[
               { id: 'walking', label: '步行', icon: SORT_ICONS.walking },
               { id: 'bicycle', label: '腳踏車', icon: SORT_ICONS.bicycle },
@@ -100,6 +141,15 @@ export default function ShopsView({ setSelectedShop, setActiveTab }) {
                 {opt.label}
               </button>
             ))}
+
+            {/* 🌟 狀態切換鈕 (緊跟在交通方式之後，無分隔線) */}
+            <button
+              onClick={handleStatusToggle}
+              className={`flex-shrink-0 flex items-center px-3 py-2 rounded-lg text-[10px] font-bold border transition-all duration-300 ${statusConfig.style}`}
+            >
+              <span className={`w-1.5 h-1.5 rounded-full mr-1.5 transition-colors duration-300 ${statusConfig.dot}`} />
+              {statusConfig.label}
+            </button>
           </div>
 
           {/* 時間限制列 */}
@@ -129,7 +179,8 @@ export default function ShopsView({ setSelectedShop, setActiveTab }) {
       </div>
 
       <div className="flex flex-col space-y-6 mx-6">
-        {filteredShops.map((shop, idx) => (
+        {/* 🌟 陣列改用 finalShops */}
+        {finalShops.map((shop, idx) => (
           <FadeInCard key={shop.id} delay={(idx % 5) * 100}>
             <div onClick={() => handleShopClick(shop)} className="group relative bg-[#FDFCF8] flex flex-col p-6 md:p-8 border border-stone-200 hover:border-[#1A1A1A] hover:shadow-xl transition-all duration-500 cursor-pointer">
               <div className="flex flex-col mb-6 border-b border-stone-100 pb-4">
@@ -190,7 +241,8 @@ export default function ShopsView({ setSelectedShop, setActiveTab }) {
           </FadeInCard>
         ))}
 
-        {filteredShops.length === 0 && (
+        {/* 🌟 陣列改用 finalShops */}
+        {finalShops.length === 0 && (
           <div className="py-24 text-center">
             <Leaf size={32} className="mx-auto text-stone-300 mb-4" />
             <p className="text-stone-400 text-xs tracking-[0.2em] font-bold uppercase">無符合篩選條件的店家</p>
@@ -198,7 +250,6 @@ export default function ShopsView({ setSelectedShop, setActiveTab }) {
         )}
       </div>
 
-      {/* 🌟 2. 替換為統一的 MenuLightbox 組件 */}
       {selectedMenu && (
         <MenuLightbox 
           selectedMenu={selectedMenu} 

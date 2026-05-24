@@ -1,11 +1,11 @@
 // src/views/MapView.jsx
 import React, { useState, useEffect } from 'react';
-import { ChevronLeft, Star, Clock, Search, MapPin, X, ArrowRight, Navigation } from 'lucide-react';
-// 🌟 1. 引入共用 Hook
+import { ChevronLeft, Star, Clock, Search, MapPin, X, ArrowRight } from 'lucide-react';
 import useShopFilters from '../hooks/useShopFilters';
 import GoogleMapComponent from '../components/ui/GoogleMapComponent_map';
-
 import { SORT_ICONS } from '../data/Data';
+
+const TRANSPORT_LABELS = { walking: '步行', bicycle: '腳踏車', scooter: '機車', transit: '大眾運輸' };
 
 const STAGE_CONFIG = {
   perspective: '1200px',
@@ -15,7 +15,6 @@ const STAGE_CONFIG = {
     tablet: { x: '23%',  y: '0%', z: '-120px', rotateY: '-10deg', rotateX: '5deg', scale: 1, zIndex: 10 }
   },
   tabletActive: {
-    // 確保地圖平貼於螢幕，防止觸控偏移
     tablet: { x: '15%',   y: '0%', z: '0px', rotateY: '0deg', rotateX: '0deg', scale: 1.1, zIndex: 50 },
     phone:  { x: '-170%', y: '5%', z: '-300px', rotateY: '25deg', rotateX: '0deg', scale: 1, zIndex: 10 }
   }
@@ -25,7 +24,8 @@ export default function MapView({ selectedShop, setSelectedShop, setActiveTab })
   const [activeDevice, setActiveDevice] = useState(selectedShop ? 'phone' : 'tablet');
   const [mapActiveShop, setMapActiveShop] = useState(null);
 
-  // 🌟 2. 使用 Hook 取得過濾後的乾淨資料，完全移除本地的 useMemo 與 filterType
+  const [filterStatus, setFilterStatus] = useState('all');
+
   const { 
     filterTransport, setFilterTransport, 
     filterTime, setFilterTime, 
@@ -35,9 +35,7 @@ export default function MapView({ selectedShop, setSelectedShop, setActiveTab })
 
   useEffect(() => {
     if (selectedShop) {
-      const timer = setTimeout(() => {
-        setMapActiveShop(selectedShop);
-      }, 150);
+      const timer = setTimeout(() => { setMapActiveShop(selectedShop); }, 150);
       return () => clearTimeout(timer);
     } else {
       setMapActiveShop(null);
@@ -50,29 +48,59 @@ export default function MapView({ selectedShop, setSelectedShop, setActiveTab })
     return `translate3d(${x}, ${y}, ${z}) rotateY(${rotateY}) rotateX(${rotateX}) scale(${scale})`;
   };
 
+  const getRealTimeStatus = (openData) => {
+    if (!openData || !Array.isArray(openData)) return { text: '未知', isOpen: false };
+    const daysMap = ['日', '一', '二', '三', '四', '五', '六'];
+    const now = new Date();
+    const todayStr = daysMap[now.getDay()];
+    const todaySchedule = openData.find(item => item.day === todayStr);
+    if (!todaySchedule || todaySchedule.time === '休息') return { text: '公休', isOpen: false };
+    const currentMinutes = now.getHours() * 60 + now.getMinutes();
+    for (const range of todaySchedule.time.split('\n')) {
+      const [startStr, endStr] = range.split('-');
+      if (!startStr || !endStr) continue;
+      const [startH, startM] = startStr.split(':').map(Number);
+      const [endH, endM] = endStr.split(':').map(Number);
+      if (currentMinutes >= startH * 60 + startM && currentMinutes <= endH * 60 + endM) {
+        return { text: '營業中', isOpen: true };
+      }
+    }
+    return { text: '公休', isOpen: false };
+  };
+
+  const finalShops = filteredShops.filter(shop => {
+    if (filterStatus === 'all') return true;
+    const status = getRealTimeStatus(shop.open);
+    return filterStatus === 'open' ? status.isOpen : !status.isOpen;
+  });
+
+  const handleStatusToggle = (e) => {
+    e.stopPropagation();
+    if (filterStatus === 'all') setFilterStatus('open');
+    else if (filterStatus === 'open') setFilterStatus('closed');
+    else setFilterStatus('all');
+  };
+
+  // 🌟 統一按鈕底色為黑色
+  const getStatusBtnConfig = () => {
+    const baseStyle = 'bg-stone-800 text-white border-stone-800 shadow-sm';
+    if (filterStatus === 'open') return { label: '營業', dot: 'bg-emerald-500 shadow-[0_0_4px_rgba(16,185,129,0.8)]', style: baseStyle };
+    if (filterStatus === 'closed') return { label: '公休', dot: 'bg-rose-500', style: baseStyle };
+    return { label: '全部', dot: 'bg-stone-300', style: baseStyle };
+  };
+  const statusConfig = getStatusBtnConfig();
+
   return (
     <div className="relative w-full h-screen bg-[#E5E3DF] overflow-hidden flex items-center justify-center animate-in fade-in duration-700" style={{ perspective: STAGE_CONFIG.perspective }}>
       
-      {/* ==================== 平板外框 ==================== */}
       <div 
         className="absolute w-[900px] max-w-[92vw] h-[600px] max-h-[75vh] bg-[#1A1A1A] rounded-[2rem] border-[10px] border-[#1A1A1A] shadow-2xl flex flex-col"
-        style={{ 
-          transform: getTransform('tablet'), 
-          transition: STAGE_CONFIG.transition, 
-          zIndex: currentPos.tablet.zIndex, 
-          transformStyle: 'preserve-3d',
-          cursor: activeDevice !== 'tablet' ? 'pointer' : 'default' 
-        }}
-        onClickCapture={(e) => { 
-          if (activeDevice !== 'tablet') {
-            e.stopPropagation();
-            setActiveDevice('tablet'); 
-          }
-        }}
+        style={{ transform: getTransform('tablet'), transition: STAGE_CONFIG.transition, zIndex: currentPos.tablet.zIndex, transformStyle: 'preserve-3d', cursor: activeDevice !== 'tablet' ? 'pointer' : 'default' }}
+        onClickCapture={(e) => { if (activeDevice !== 'tablet') { e.stopPropagation(); setActiveDevice('tablet'); } }}
       >
         <div className={`flex-1 relative bg-[#E8EAED] rounded-[1.5rem] overflow-hidden ${activeDevice !== 'tablet' ? 'pointer-events-none' : ''}`}>
           <GoogleMapComponent 
-            shops={filteredShops} 
+            shops={finalShops}
             selectedShop={mapActiveShop} 
             onMarkerClick={(shop) => { setSelectedShop(shop); setActiveDevice('tablet'); }}
             onMapClick={() => { setActiveDevice('tablet'); }}
@@ -80,26 +108,13 @@ export default function MapView({ selectedShop, setSelectedShop, setActiveTab })
         </div>
       </div>
 
-      {/* ==================== 手機外框 ==================== */}
       <div 
         className="absolute w-[320px] h-[650px] max-h-[85vh] bg-[#1A1A1A] rounded-[2.5rem] border-[12px] border-[#1A1A1A] shadow-2xl flex flex-col"
-        style={{ 
-          transform: getTransform('phone'), 
-          transition: STAGE_CONFIG.transition, 
-          zIndex: currentPos.phone.zIndex, 
-          transformStyle: 'preserve-3d',
-          cursor: activeDevice !== 'phone' ? 'pointer' : 'default' 
-        }}
-        onClickCapture={(e) => { 
-          if (activeDevice !== 'phone') {
-            e.stopPropagation();
-            setActiveDevice('phone'); 
-          }
-        }}
+        style={{ transform: getTransform('phone'), transition: STAGE_CONFIG.transition, zIndex: currentPos.phone.zIndex, transformStyle: 'preserve-3d', cursor: activeDevice !== 'phone' ? 'pointer' : 'default' }}
+        onClickCapture={(e) => { if (activeDevice !== 'phone') { e.stopPropagation(); setActiveDevice('phone'); } }}
       >
         <div className={`flex-1 relative bg-white rounded-[1.8rem] overflow-hidden flex flex-col ${activeDevice !== 'phone' ? 'pointer-events-none' : ''}`}>
           {selectedShop ? (
-            /* --- 詳細資料區 --- */
             <div className="flex-1 flex flex-col overflow-y-auto no-scrollbar animate-in fade-in duration-300">
               <div className="relative w-full h-52 flex-shrink-0">
                 <img src={selectedShop.img} className="w-full h-full object-cover" alt={selectedShop.name}/>
@@ -131,10 +146,7 @@ export default function MapView({ selectedShop, setSelectedShop, setActiveTab })
                       
                       <div className="space-y-4 flex flex-col items-start w-full">
                         {(() => {
-                          if (!Array.isArray(selectedShop.open)) {
-                            return <span className="text-stone-500 text-xs font-bold">請參考店家公告</span>;
-                          }
-
+                          if (!Array.isArray(selectedShop.open)) return <span className="text-stone-500 text-xs font-bold">請參考店家公告</span>;
                           const groupedMap = {};
                           selectedShop.open.forEach((item) => {
                             if (!groupedMap[item.time]) groupedMap[item.time] = [];
@@ -147,9 +159,7 @@ export default function MapView({ selectedShop, setSelectedShop, setActiveTab })
                                 {daysArray.map((day, dIdx) => (
                                   <div key={dIdx} className="w-6 h-6 flex items-center justify-center">
                                     <img 
-                                      src={`/images/icons/day_${day}.png`}
-                                      alt={day} 
-                                      className="w-full h-full object-contain"
+                                      src={`/images/icons/day_${day}.png`} alt={day} className="w-full h-full object-contain"
                                       onError={(e) => {
                                         e.target.style.display = 'none';
                                         e.target.parentNode.innerHTML = `<span class="w-6 h-6 rounded-full bg-[#1A1A1A] text-white flex items-center justify-center text-[10px]">${day}</span>`;
@@ -158,14 +168,11 @@ export default function MapView({ selectedShop, setSelectedShop, setActiveTab })
                                   </div>
                                 ))}
                               </div>
-
                               <div className="flex justify-start w-full">
                                 {timeStr === '休息' ? (
                                   <div className="h-6 flex items-center">
                                     <img 
-                                      src="/images/icons/closed_status.png" 
-                                      alt="公休" 
-                                      className="h-5 object-contain"
+                                      src="/images/icons/closed_status.png" alt="公休" className="h-5 object-contain"
                                       onError={(e) => {
                                         e.target.style.display = 'none';
                                         e.target.parentNode.innerHTML = `<span class="text-stone-500 font-bold tracking-widest text-xs bg-stone-200 px-2 py-0.5 rounded">公休</span>`;
@@ -198,68 +205,51 @@ export default function MapView({ selectedShop, setSelectedShop, setActiveTab })
               </div>
             </div>
           ) : (
-            /* --- 搜尋清單區 --- */
             <div className="flex-1 flex flex-col bg-white overflow-hidden pt-8">
               
-              {/* 頭部搜尋與篩選區塊 */}
               <div className="py-2 px-4 border-b border-stone-100 bg-white">
                  
-                 {/* 搜尋框 */}
                  <div className="flex items-center bg-stone-100/60 border border-stone-200 rounded-xl px-4 py-3 mb-4">
                    <Search size={16} className="text-stone-400 mr-3 flex-shrink-0" />
                    <input type="text" placeholder="搜尋店名..." className="flex-1 bg-transparent text-xs font-medium focus:outline-none border-none min-w-0" value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)}/>
                    {searchQuery && <X size={10} className="text-stone-400 cursor-pointer" onClick={() => setSearchQuery('')} />}
                  </div>
                  
-                {/* 🌟 終極解法：橫向膠囊按鈕 (完全避開 3D 圖層重疊 Bug) */}
                 <div className="space-y-3 w-full overflow-hidden">
                   
-                  {/* 交通工具列 (可橫向滑動) */}
-                  <div className="flex gap-2 overflow-x-auto no-scrollbar">
-                    {[
-                      { id: 'walking', label: '步行', icon: SORT_ICONS.walking },
-                      { id: 'bicycle', label: '腳踏車', icon: SORT_ICONS.bicycle },
-                      { id: 'scooter', label: '機車', icon: SORT_ICONS.scooter }
-                    ].map(opt => (
+                  <div className="flex gap-2 overflow-x-auto no-scrollbar items-center">
+                    {['walking', 'bicycle', 'scooter'].map(id => (
                       <button
-                        key={opt.id}
-                        onClick={(e) => { e.stopPropagation(); setFilterTransport(opt.id); }}
-                        className={`flex-shrink-0 flex items-center px-3 py-2 rounded-lg text-[10px] font-bold border transition-colors ${
-                          filterTransport === opt.id 
-                            ? 'bg-stone-800 text-white border-stone-800 shadow-sm' 
-                            : 'bg-white text-stone-600 border-stone-200 hover:bg-stone-50'
+                        key={id}
+                        onClick={(e) => { e.stopPropagation(); setFilterTransport(id); }}
+                        className={`flex-shrink-0 flex items-center px-2 py-2 rounded-lg text-[10px] font-bold border transition-colors ${
+                          filterTransport === id ? 'bg-stone-800 text-white border-stone-800 shadow-sm' : 'bg-white text-stone-600 border-stone-200 hover:bg-stone-50'
                         }`}
                       >
                         <img 
-                          src={opt.icon} 
-                          alt={opt.label}
-                          // 🌟 如果被選中，用 filter 讓圖標變成純白色；沒選中就維持原本的灰色
-                          className={`w-3.5 h-3.5 mr-1.5 object-contain ${
-                            filterTransport === opt.id 
-                              ? 'filter brightness-0 invert' 
-                              : 'filter brightness-50 contrast-125'
-                          }`} 
+                          src={SORT_ICONS[id]} alt={id}
+                          className={`w-3.5 h-3.5 mr-1.5 object-contain ${filterTransport === id ? 'filter brightness-0 invert' : 'filter brightness-50 contrast-125'}`} 
                         />
-                        {opt.label}
+                        {TRANSPORT_LABELS[id]}
                       </button>
                     ))}
+
+                    <button
+                      onClick={handleStatusToggle}
+                      className={`flex-shrink-0 flex items-center px-2 py-2 rounded-lg text-[10px] font-bold border transition-all duration-300 ${statusConfig.style}`}
+                    >
+                      <span className={`w-1.5 h-1.5 rounded-full mr-1.5 transition-colors duration-300 ${statusConfig.dot}`} />
+                      {statusConfig.label}
+                    </button>
                   </div>
 
-                  {/* 時間限制列 (可橫向滑動) */}
                   <div className="flex gap-2 overflow-x-auto no-scrollbar">
-                    {[
-                      { id: 'all', label: '不限' },
-                      { id: '5', label: '5 分' },
-                      { id: '10', label: '10 分' },
-                      { id: '15', label: '15 分' }
-                    ].map(opt => (
+                    {[ { id: 'all', label: '不限' }, { id: '5', label: '5 分' }, { id: '10', label: '10 分' }, { id: '15', label: '15 分' } ].map(opt => (
                       <button
                         key={opt.id}
                         onClick={(e) => { e.stopPropagation(); setFilterTime(opt.id); }}
                         className={`flex-shrink-0 flex items-center px-2 py-2 rounded-lg text-[10px] font-bold border transition-colors ${
-                          filterTime === opt.id 
-                            ? 'bg-stone-800 text-white border-stone-800 shadow-sm' 
-                            : 'bg-white text-stone-600 border-stone-200 hover:bg-stone-50'
+                          filterTime === opt.id ? 'bg-stone-800 text-white border-stone-800 shadow-sm' : 'bg-white text-stone-600 border-stone-200 hover:bg-stone-50'
                         }`}
                       >
                         <Clock size={12} className={`mr-1.5 ${filterTime === opt.id ? 'text-white' : 'text-stone-400'}`} />
@@ -272,7 +262,7 @@ export default function MapView({ selectedShop, setSelectedShop, setActiveTab })
               </div>
 
               <div className="flex-1 overflow-y-auto no-scrollbar">
-                 {filteredShops.map((shop, idx) => (
+                 {finalShops.map((shop, idx) => (
                    <div key={shop.id} className="p-4 border-b border-stone-50 flex cursor-pointer hover:bg-stone-50 transition-colors animate-in fade-in"
                      style={{ animationDelay: `${idx * 40}ms` }}
                      onClick={() => { setSelectedShop(shop); setActiveDevice('phone'); }}>
@@ -285,7 +275,7 @@ export default function MapView({ selectedShop, setSelectedShop, setActiveTab })
                       </div>
                    </div>
                  ))}
-                 {filteredShops.length === 0 && (
+                 {finalShops.length === 0 && (
                    <div className="p-10 text-center text-xs text-stone-400 font-bold uppercase tracking-widest leading-loose">
                      找不到符合條件的店家<br/>請試著調整篩選範圍
                    </div>
