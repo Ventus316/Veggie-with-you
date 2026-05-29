@@ -7,7 +7,7 @@ import BackToTop from './components/ui/BackToTop';
 // 各頁面視圖
 import HomeView from './views/HomeView';
 // import ShopsView from './views/ShopsView';
-import ShopsView from './views/Shops_testView';
+import ShopsView from './views/Shops_spotlightView';
 import MapView from './views/MapView';
 import MenuView from './views/MenuView';
 import InfoView from './views/InfoView';
