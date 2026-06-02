@@ -28,7 +28,7 @@ export default function MenuView({ activeTab, setActiveTab, setSelectedShop }) {
   });
 
   return (
-    <div className="pt-16 px-6 max-w-[1400px] mx-auto min-h-screen animate-in fade-in duration-1000">
+    <div className="pt-16 px-6 max-w-350 mx-auto min-h-screen animate-in fade-in duration-1000">
       <div className="flex flex-col space-y-2">
         {rows.map((row, rowIndex) => (
           <div key={rowIndex} className="flex w-full h-[30vh] md:h-[40vh] gap-2 justify-around">
@@ -53,14 +53,14 @@ export default function MenuView({ activeTab, setActiveTab, setSelectedShop }) {
                       setExpandedRows(prev => ({ ...prev, [rowIndex]: colIndex }));
                     }
                   }}
-                  className={`relative transition-all duration-700 ease-[cubic-bezier(0.25,0.8,0.25,1)] overflow-hidden bg-stone-900 cursor-pointer ${isExpanded ? 'flex-[4]' : 'flex-1'}`}
+                  className={`relative transition-all duration-700 ease-[cubic-bezier(0.25,0.8,0.25,1)] overflow-hidden bg-stone-900 cursor-pointer ${isExpanded ? 'flex-4' : 'flex-1'}`}
                 >
                   <img 
                     src={dish.img} 
                     alt={dish.name} 
                     className={`absolute inset-0 w-full h-full object-cover transition-all duration-700 ${isExpanded ? 'grayscale-0 opacity-100' : 'grayscale-[0.3] opacity-60'}`}
                   />
-                  <div className={`absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/40 transition-opacity duration-500 ${isExpanded ? 'opacity-100' : 'opacity-0'}`}></div>
+                  <div className={`absolute inset-0 bg-linear-to-t from-black/80 via-transparent to-black/40 transition-opacity duration-500 ${isExpanded ? 'opacity-100' : 'opacity-0'}`}></div>
 
                   <div className={`absolute inset-0 flex items-center justify-center transition-opacity duration-300 ${isExpanded ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>
                      <span className="text-white text-sm md:text-lg tracking-[0.3em] font-light uppercase [writing-mode:vertical-rl] drop-shadow-md">
@@ -69,7 +69,7 @@ export default function MenuView({ activeTab, setActiveTab, setSelectedShop }) {
                   </div>
                   
                   <div className={`absolute top-4 left-4 md:top-6 md:left-6 text-white transition-opacity duration-500 delay-100 z-10 ${isExpanded ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
-                    <h3 className="text-base md:text-xl font-bold tracking-[0.1em] whitespace-nowrap drop-shadow-md">
+                    <h3 className="text-base md:text-xl font-bold tracking-widest whitespace-nowrap drop-shadow-md">
                       {dish.name}
                     </h3>
                   </div>

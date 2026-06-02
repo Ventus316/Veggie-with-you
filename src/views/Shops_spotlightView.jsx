@@ -87,25 +87,26 @@ export default function Shops_testView({ activeTab, setSelectedShop, setActiveTa
     return { label: '全部', dot: 'bg-stone-400', style: baseStyle };
   };
   const statusConfig = getStatusBtnConfig();
-
   const renderShopCardContent = (shop, isOverlay = false) => {
     const status = getRealTimeStatus(shop.open);
-    const statusBg = status.isOpen ? 'bg-stone-200' : 'bg-stone-100';
-    const statusTextColor = isOverlay ? 'text-black' : (status.isOpen ? 'text-[#1A1A1A]' : 'text-stone-400');
+    
+    const statusBg = 'bg-stone-200'; 
+    const statusTextColor = isOverlay ? 'text-black' : 'text-[#1A1A1A]'; 
+    
     const transportBg = 'bg-stone-100';
     const transportTextColor = isOverlay ? 'text-black' : 'text-stone-500';
     const transportIconOpacity = isOverlay ? 'opacity-100' : 'opacity-50';
 
     return (
-      <div className="w-full max-w-[200px] aspect-[4/5] mx-auto flex flex-col items-center justify-start pointer-events-none">
+      <div className="w-full max-w-50 aspect-4/5 mx-auto flex flex-col items-center justify-start pointer-events-none">
         <div 
-          className={`w-[120px] h-[120px] md:w-[140px] md:h-[140px] mt-4 rounded-full overflow-hidden bg-white flex items-center justify-center mb-5 border border-stone-200/50 shadow-sm ${!isOverlay ? 'pointer-events-auto cursor-pointer' : ''}`}
+          className={`w-30 h-30 md:w-35 md:h-35 mt-4 rounded-full overflow-hidden bg-white flex items-center justify-center mb-5 border border-stone-200/50 shadow-sm ${!isOverlay ? 'pointer-events-auto cursor-pointer' : ''}`}
           onMouseEnter={!isOverlay ? () => setHoveredShopId(shop.id) : undefined}
           onMouseLeave={!isOverlay ? () => setHoveredShopId(null) : undefined}
         >
           <img src={resolveAsset(shop.shopLogo || shop.img)} alt={shop.name} className="w-full h-full object-cover"/>
         </div>
-        <div className="flex items-center justify-between w-full px-1 max-w-[160px]">
+        <div className="flex items-center justify-between w-full px-1 max-w-40">
           <span className={`px-2.5 py-1 rounded-full text-[10px] md:text-xs font-bold tracking-widest ${statusBg} ${statusTextColor}`}>
             {status.text}
           </span>
@@ -142,7 +143,7 @@ export default function Shops_testView({ activeTab, setSelectedShop, setActiveTa
                 <button
                   key={id}
                   onClick={(e) => { e.stopPropagation(); setFilterTransport(id); }}
-                  className={`flex-shrink-0 flex items-center px-3 py-2 rounded-lg text-[10px] font-bold border transition-colors ${filterTransport === id ? 'bg-stone-800 text-white border-stone-800 shadow-sm' : 'bg-transparent text-stone-600 border-transparent hover:bg-stone-200/30'}`}
+                  className={`shrink-0 flex items-center px-3 py-2 rounded-lg text-[10px] font-bold border transition-colors ${filterTransport === id ? 'bg-stone-800 text-white border-stone-800 shadow-sm' : 'bg-transparent text-stone-600 border-transparent hover:bg-stone-200/30'}`}
                 >
                   <img src={SORT_ICONS[id]} alt={id} className={`w-3.5 h-3.5 mr-1.5 object-contain ${filterTransport === id ? 'filter brightness-0 invert' : 'filter brightness-50 contrast-125'}`} />
                   {TRANSPORT_LABELS[id]}
@@ -151,7 +152,7 @@ export default function Shops_testView({ activeTab, setSelectedShop, setActiveTa
               
               <button
                 onClick={handleStatusToggle}
-                className={`flex-shrink-0 flex items-center px-3 py-2 rounded-lg text-[10px] font-bold border transition-all duration-300 ${statusConfig.style}`}
+                className={`shrink-0 flex items-center px-3 py-2 rounded-lg text-[10px] font-bold border transition-all duration-300 ${statusConfig.style}`}
               >
                 <span className={`w-1.5 h-1.5 rounded-full mr-1.5 transition-colors duration-300 ${statusConfig.dot}`} />
                 {statusConfig.label}
@@ -163,7 +164,7 @@ export default function Shops_testView({ activeTab, setSelectedShop, setActiveTa
                 <button
                   key={opt.id}
                   onClick={(e) => { e.stopPropagation(); setFilterTime(opt.id); }}
-                  className={`flex-shrink-0 flex items-center px-2 py-2 rounded-lg text-[10px] font-bold border transition-colors ${filterTime === opt.id ? 'bg-stone-800 text-white border-stone-800 shadow-sm' : 'bg-transparent text-stone-600 border-transparent hover:bg-stone-200/30'}`}
+                  className={`shrink-0 flex items-center px-2 py-2 rounded-lg text-[10px] font-bold border transition-colors ${filterTime === opt.id ? 'bg-stone-800 text-white border-stone-800 shadow-sm' : 'bg-transparent text-stone-600 border-transparent hover:bg-stone-200/30'}`}
                 >
                   <Clock size={12} className={`mr-1.5 ${filterTime === opt.id ? 'text-white' : 'text-stone-400'}`} />
                   {opt.label}

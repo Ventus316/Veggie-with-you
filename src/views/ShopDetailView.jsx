@@ -46,6 +46,42 @@ export default function ShopDetailView({ activeTab, setActiveTab, shop }) {
 
   const features = shop.features || {};
 
+  const getRealTimeStatus = (openData) => {
+    if (!openData || !Array.isArray(openData)) return { text: "公休", isOpen: false, color: "bg-stone-100 text-stone-500 border-stone-200" };
+
+    const now = new Date();
+    const days = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'];
+    const todayKey = days[now.getDay()];
+
+    const todayData = openData.find(item => item.day === todayKey);
+
+    if (!todayData || !todayData.time || todayData.time === '休息') {
+      return { text: "公休", isOpen: false, color: "bg-stone-100 text-stone-500 border-stone-200" };
+    }
+
+    const timeRanges = todayData.time.split('\n').flatMap(t => t.split(','));
+    const currentMinutes = now.getHours() * 60 + now.getMinutes();
+
+    for (let range of timeRanges) {
+      const [startStr, endStr] = range.trim().split('-');
+      if (!startStr || !endStr) continue;
+
+      const [sH, sM] = startStr.split(':').map(Number);
+      const [eH, eM] = endStr.split(':').map(Number);
+
+      const startMinutes = sH * 60 + sM;
+      let endMinutes = eH * 60 + eM;
+
+      if (endMinutes < startMinutes) endMinutes += 24 * 60;
+
+      if (currentMinutes >= startMinutes && currentMinutes <= endMinutes) {
+        return { text: "營業中", isOpen: true, color: "bg-emerald-100 text-emerald-700 border-emerald-200" };
+      }
+    }
+
+    return { text: "公休", isOpen: false, color: "bg-stone-100 text-stone-500 border-stone-200" };
+  };
+
   const renderStatusIcon = (value) => {
     const isPositive = (val) => {
       if (!val) return false;
@@ -55,9 +91,9 @@ export default function ShopDetailView({ activeTab, setActiveTab, shop }) {
     };
 
     return isPositive(value) ? (
-      <CheckCircle2 size={20} strokeWidth={2.5} className="text-emerald-600 flex-shrink-0" />
+      <CheckCircle2 size={20} strokeWidth={2.5} className="text-emerald-600 shrink-0" />
     ) : (
-      <XCircle size={20} strokeWidth={2.5} className="text-rose-500 flex-shrink-0" />
+      <XCircle size={20} strokeWidth={2.5} className="text-rose-500 shrink-0" />
     );
   };
 
@@ -76,9 +112,21 @@ export default function ShopDetailView({ activeTab, setActiveTab, shop }) {
       <div className="mb-12 border-b border-stone-200 pb-8">
         <h1 className="text-4xl md:text-5xl font-light tracking-[0.15em] text-[#1A1A1A] mb-6">{shop.name}</h1>
         
-        <div className="flex flex-wrap items-center text-[10px] md:text-xs font-bold tracking-[0.1em] text-stone-500 gap-3">
-          <span className="px-3 py-1 border border-[#1A1A1A] text-[#1A1A1A] uppercase mr-2">{shop.type || '素食'}</span>
+      <div className="flex flex-wrap items-center text-[10px] md:text-xs font-bold tracking-widest text-stone-500 gap-3">
           
+          <div className="flex items-center gap-2 mr-2">
+            {(() => {
+              const status = getRealTimeStatus(shop.open);
+              return (
+                <span className={`px-2 py-1 rounded-md text-[10px] font-bold border ${status.color}`}>
+                  {status.text}
+                </span>
+              );
+            })()}
+            {/* 右邊接續原本的素食類型黑框 */}
+            <span className="px-3 py-1 border border-[#1A1A1A] text-[#1A1A1A] uppercase rounded-md">{shop.type || '素食'}</span>
+          </div>
+
           {shop.distance && (
             <>
               <span className="bg-stone-200/60 text-stone-600 px-2.5 py-1 rounded-md">步行 {shop.distance.walking} 分</span>
@@ -93,15 +141,15 @@ export default function ShopDetailView({ activeTab, setActiveTab, shop }) {
       </div>
 
       {/* 圖片展示區 */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-20 md:h-[480px]"> 
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-20 md:h-120"> 
         <div 
           onClick={() => shop.menuImg && setSelectedMenu(shop.menuImg)}
-          className={`md:col-span-2 relative h-[300px] md:h-full rounded-xl overflow-hidden shadow-sm bg-stone-200 ${shop.menuImg ? 'cursor-pointer group/menu' : ''}`}
+          className={`md:col-span-2 relative h-75 md:h-full rounded-xl overflow-hidden shadow-sm bg-stone-200 ${shop.menuImg ? 'cursor-pointer group/menu' : ''}`}
         >
           <img 
             src={displayMainImg} 
             alt="主視覺" 
-            className="w-full h-full object-cover object-left-top group-hover/menu:scale-105 transition-transform duration-[1500ms]" 
+            className="w-full h-full object-cover object-top-left group-hover/menu:scale-105 transition-transform duration-1500" 
           />
           <span className="absolute top-4 left-4 bg-[#1A1A1A]/80 backdrop-blur text-white text-[10px] px-3 py-1.5 tracking-widest font-bold uppercase shadow-sm pointer-events-none">
             {shop.menuImg ? '精選菜單' : '店家視覺'}
@@ -116,8 +164,8 @@ export default function ShopDetailView({ activeTab, setActiveTab, shop }) {
         
         <div className="grid grid-cols-2 md:grid-cols-1 md:grid-rows-2 gap-6 md:h-full">
           {displayMealImgs.map((imgUrl, i) => (
-            <div key={i} className="relative h-[150px] md:h-full rounded-xl overflow-hidden shadow-sm bg-stone-200">
-              <img src={imgUrl} alt="特色" className="w-full h-full object-cover object-left-top" />
+            <div key={i} className="relative h-37.5 md:h-full rounded-xl overflow-hidden shadow-sm bg-stone-200">
+              <img src={imgUrl} alt="特色" className="w-full h-full object-cover object-top-left" />
             </div>
           ))}
         </div>
@@ -165,7 +213,7 @@ export default function ShopDetailView({ activeTab, setActiveTab, shop }) {
                       const isLast = gIdx === entries.length - 1;
 
                       return (
-                        <div key={gIdx} className={`flex flex-col items-end w-full ${!isLast ? 'border-b border-[#1A1A1A]/10 border-[#1A1A1A]/30 pb-4' : ''}`}>
+                        <div key={gIdx} className={`flex flex-col items-end w-full ${!isLast ? 'border-b border-[#1A1A1A]/10 pb-4' : ''}`}>
                           <div className="flex flex-col gap-2 mb-2 items-end">
                             {rows.map((row, rIdx) => (
                               <div key={rIdx} className="flex gap-2 justify-end">

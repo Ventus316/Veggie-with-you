@@ -21,14 +21,14 @@ const STAGE_CONFIG = {
   }
 };
 
-// 🌟 2. 確保參數有加上 activeTab
 export default function MapView({ activeTab, selectedShop, setSelectedShop, setActiveTab }) {
   const [activeDevice, setActiveDevice] = useState(selectedShop ? 'phone' : 'tablet');
   const [mapActiveShop, setMapActiveShop] = useState(null);
   const [filterStatus, setFilterStatus] = useState('all');
 
   const { navigateTo } = useNavigationMemory(activeTab, setActiveTab);
-
+  
+  // 🎯 合併篩選器的呼叫，刪除重複宣告的
   const { 
     filterTransport, setFilterTransport, 
     filterTime, setFilterTime, 
@@ -36,6 +36,51 @@ export default function MapView({ activeTab, selectedShop, setSelectedShop, setA
     filteredShops 
   } = useShopFilters(selectedShop);
 
+  // 🎯 完整且沒有被切斷的營業狀態判斷函式
+  const getRealTimeStatus = (openData) => {
+    if (!openData || !Array.isArray(openData)) return { text: "公休", isOpen: false, color: "bg-stone-100 text-stone-500 border-stone-200" };
+
+    const now = new Date();
+    const days = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'];
+    const todayKey = days[now.getDay()];
+
+    const todayData = openData.find(item => item.day === todayKey);
+
+    if (!todayData || !todayData.time || todayData.time === '休息') {
+      return { text: "公休", isOpen: false, color: "bg-stone-100 text-stone-500 border-stone-200" };
+    }
+
+    const timeRanges = todayData.time.split('\n').flatMap(t => t.split(','));
+    const currentMinutes = now.getHours() * 60 + now.getMinutes();
+
+    for (let range of timeRanges) {
+      const [startStr, endStr] = range.trim().split('-');
+      if (!startStr || !endStr) continue;
+
+      const [sH, sM] = startStr.split(':').map(Number);
+      const [eH, eM] = endStr.split(':').map(Number);
+
+      const startMinutes = sH * 60 + sM;
+      let endMinutes = eH * 60 + eM;
+
+      if (endMinutes < startMinutes) endMinutes += 24 * 60;
+
+      if (currentMinutes >= startMinutes && currentMinutes <= endMinutes) {
+        return { text: "營業中", isOpen: true, color: "bg-emerald-100 text-emerald-700 border-emerald-200" };
+      }
+    }
+
+    return { text: "公休", isOpen: false, color: "bg-stone-100 text-stone-500 border-stone-200" };
+  };
+
+  // 🎯 在函式宣告完之後，才執行 finalShops 的資料過濾
+  const finalShops = filteredShops.filter(shop => {
+    if (filterStatus === 'all') return true;
+    const status = getRealTimeStatus(shop.open);
+    return filterStatus === 'open' ? status.isOpen : !status.isOpen;
+  });
+
+  // 👇 地圖與裝置邏輯
   useEffect(() => {
     if (selectedShop) {
       const timer = setTimeout(() => { setMapActiveShop(selectedShop); }, 150);
@@ -51,32 +96,6 @@ export default function MapView({ activeTab, selectedShop, setSelectedShop, setA
     return `translate3d(${x}, ${y}, ${z}) rotateY(${rotateY}) rotateX(${rotateX}) scale(${scale})`;
   };
 
-  const getRealTimeStatus = (openData) => {
-    if (!openData || !Array.isArray(openData)) return { text: '未知', isOpen: false };
-    const daysMap = ['日', '一', '二', '三', '四', '五', '六'];
-    const now = new Date();
-    const todayStr = daysMap[now.getDay()];
-    const todaySchedule = openData.find(item => item.day === todayStr);
-    if (!todaySchedule || todaySchedule.time === '休息') return { text: '公休', isOpen: false };
-    const currentMinutes = now.getHours() * 60 + now.getMinutes();
-    for (const range of todaySchedule.time.split('\n')) {
-      const [startStr, endStr] = range.split('-');
-      if (!startStr || !endStr) continue;
-      const [startH, startM] = startStr.split(':').map(Number);
-      const [endH, endM] = endStr.split(':').map(Number);
-      if (currentMinutes >= startH * 60 + startM && currentMinutes <= endH * 60 + endM) {
-        return { text: '營業中', isOpen: true };
-      }
-    }
-    return { text: '公休', isOpen: false };
-  };
-
-  const finalShops = filteredShops.filter(shop => {
-    if (filterStatus === 'all') return true;
-    const status = getRealTimeStatus(shop.open);
-    return filterStatus === 'open' ? status.isOpen : !status.isOpen;
-  });
-
   const handleStatusToggle = (e) => {
     e.stopPropagation();
     if (filterStatus === 'all') setFilterStatus('open');
@@ -84,7 +103,6 @@ export default function MapView({ activeTab, selectedShop, setSelectedShop, setA
     else setFilterStatus('all');
   };
 
-  // 🌟 統一按鈕底色為黑色
   const getStatusBtnConfig = () => {
     const baseStyle = 'bg-stone-800 text-white border-stone-800 shadow-sm';
     if (filterStatus === 'open') return { label: '營業', dot: 'bg-emerald-500 shadow-[0_0_4px_rgba(16,185,129,0.8)]', style: baseStyle };
@@ -97,11 +115,11 @@ export default function MapView({ activeTab, selectedShop, setSelectedShop, setA
     <div className="relative w-full h-screen bg-[#E5E3DF] overflow-hidden flex items-center justify-center animate-in fade-in duration-700" style={{ perspective: STAGE_CONFIG.perspective }}>
       
       <div 
-        className="absolute w-[900px] max-w-[92vw] h-[600px] max-h-[75vh] bg-[#1A1A1A] rounded-[2rem] border-[10px] border-[#1A1A1A] shadow-2xl flex flex-col"
+        className="absolute w-225 max-w-[92vw] h-150 max-h-[75vh] bg-[#1A1A1A] rounded-4xl border-10 border-[#1A1A1A] shadow-2xl flex flex-col"
         style={{ transform: getTransform('tablet'), transition: STAGE_CONFIG.transition, zIndex: currentPos.tablet.zIndex, transformStyle: 'preserve-3d', cursor: activeDevice !== 'tablet' ? 'pointer' : 'default' }}
         onClickCapture={(e) => { if (activeDevice !== 'tablet') { e.stopPropagation(); setActiveDevice('tablet'); } }}
       >
-        <div className={`flex-1 relative bg-[#E8EAED] rounded-[1.5rem] overflow-hidden ${activeDevice !== 'tablet' ? 'pointer-events-none' : ''}`}>
+        <div className={`flex-1 relative bg-[#E8EAED] rounded-3xl overflow-hidden ${activeDevice !== 'tablet' ? 'pointer-events-none' : ''}`}>
           <GoogleMapComponent 
             shops={finalShops}
             selectedShop={mapActiveShop} 
@@ -112,21 +130,21 @@ export default function MapView({ activeTab, selectedShop, setSelectedShop, setA
       </div>
 
       <div 
-        className="absolute w-[320px] h-[650px] max-h-[85vh] bg-[#1A1A1A] rounded-[2.5rem] border-[12px] border-[#1A1A1A] shadow-2xl flex flex-col"
+        className="absolute w-[320px] h-162.5 max-h-[85vh] bg-[#1A1A1A] rounded-[2.5rem] border-12 border-[#1A1A1A] shadow-2xl flex flex-col"
         style={{ transform: getTransform('phone'), transition: STAGE_CONFIG.transition, zIndex: currentPos.phone.zIndex, transformStyle: 'preserve-3d', cursor: activeDevice !== 'phone' ? 'pointer' : 'default' }}
         onClickCapture={(e) => { if (activeDevice !== 'phone') { e.stopPropagation(); setActiveDevice('phone'); } }}
       >
         <div className={`flex-1 relative bg-white rounded-[1.8rem] overflow-hidden flex flex-col ${activeDevice !== 'phone' ? 'pointer-events-none' : ''}`}>
           {selectedShop ? (
             <div className="flex-1 flex flex-col overflow-y-auto no-scrollbar animate-in fade-in duration-300">
-              <div className="relative w-full h-52 flex-shrink-0">
+              <div className="relative w-full h-52 shrink-0">
                 <img src={selectedShop.img} className="w-full h-full object-cover" alt={selectedShop.name}/>
                 <button onClick={() => setSelectedShop(null)} className="absolute top-8 left-4 w-10 h-10 bg-[#1A1A1A]/80 backdrop-blur rounded-full flex items-center justify-center text-white z-50 border-none cursor-pointer shadow-lg hover:bg-black">
                   <ChevronLeft size={22} strokeWidth={2.5} />
                 </button>
               </div>
 
-              <div className="p-5 flex-1 bg-white rounded-t-[1.5rem] -mt-6 relative z-10 flex flex-col">
+              <div className="p-5 flex-1 bg-white rounded-t-3xl -mt-6 relative z-10 flex flex-col">
                 <h2 className="text-xl font-black text-[#1A1A1A] mb-1">{selectedShop.name}</h2>
                 <div className="flex items-center text-[11px] mb-4">
                   <span className="font-bold mr-1">{selectedShop.rating}</span>
@@ -136,14 +154,14 @@ export default function MapView({ activeTab, selectedShop, setSelectedShop, setA
                 
                 <div className="space-y-4 text-xs text-stone-700 border-t border-stone-100 pt-5 mb-8">
                   <div className="flex items-start space-x-3">
-                    <MapPin size={16} className="text-stone-300 flex-shrink-0" />
+                    <MapPin size={16} className="text-stone-300 shrink-0" />
                     <div className="leading-tight">
                       步行 {selectedShop.distance?.walking || 0} 分鐘
                       <span className="text-stone-400 ml-1">· 機車 {selectedShop.distance?.scooter || 0} 分鐘</span>
                     </div>
                   </div>
                   <div className="flex items-start space-x-3 w-full">
-                    <Clock size={16} className="text-stone-300 flex-shrink-0 mt-0.5" />
+                    <Clock size={16} className="text-stone-300 shrink-0 mt-0.5" />
                     <div className="leading-tight flex-1">
                       <div className="text-emerald-600 font-bold uppercase tracking-widest text-xs mb-3">營業時間</div>
                       
@@ -214,7 +232,7 @@ export default function MapView({ activeTab, selectedShop, setSelectedShop, setA
               <div className="py-2 px-4 border-b border-stone-100 bg-white">
                  
                  <div className="flex items-center bg-stone-100/60 border border-stone-200 rounded-xl px-4 py-3 mb-4">
-                   <Search size={16} className="text-stone-400 mr-3 flex-shrink-0" />
+                   <Search size={16} className="text-stone-400 mr-3 shrink-0" />
                    <input type="text" placeholder="搜尋店名..." className="flex-1 bg-transparent text-xs font-medium focus:outline-none border-none min-w-0" value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)}/>
                    {searchQuery && <X size={10} className="text-stone-400 cursor-pointer" onClick={() => setSearchQuery('')} />}
                  </div>
@@ -226,7 +244,7 @@ export default function MapView({ activeTab, selectedShop, setSelectedShop, setA
                       <button
                         key={id}
                         onClick={(e) => { e.stopPropagation(); setFilterTransport(id); }}
-                        className={`flex-shrink-0 flex items-center px-2 py-2 rounded-lg text-[10px] font-bold border transition-colors ${
+                        className={`shrink-0 flex items-center px-2 py-2 rounded-lg text-[10px] font-bold border transition-colors ${
                           filterTransport === id ? 'bg-stone-800 text-white border-stone-800 shadow-sm' : 'bg-white text-stone-600 border-stone-200 hover:bg-stone-50'
                         }`}
                       >
@@ -240,7 +258,7 @@ export default function MapView({ activeTab, selectedShop, setSelectedShop, setA
 
                     <button
                       onClick={handleStatusToggle}
-                      className={`flex-shrink-0 flex items-center px-2 py-2 rounded-lg text-[10px] font-bold border transition-all duration-300 ${statusConfig.style}`}
+                      className={`shrink-0 flex items-center px-2 py-2 rounded-lg text-[10px] font-bold border transition-all duration-300 ${statusConfig.style}`}
                     >
                       <span className={`w-1.5 h-1.5 rounded-full mr-1.5 transition-colors duration-300 ${statusConfig.dot}`} />
                       {statusConfig.label}
@@ -252,7 +270,7 @@ export default function MapView({ activeTab, selectedShop, setSelectedShop, setA
                       <button
                         key={opt.id}
                         onClick={(e) => { e.stopPropagation(); setFilterTime(opt.id); }}
-                        className={`flex-shrink-0 flex items-center px-2 py-2 rounded-lg text-[10px] font-bold border transition-colors ${
+                        className={`shrink-0 flex items-center px-2 py-2 rounded-lg text-[10px] font-bold border transition-colors ${
                           filterTime === opt.id ? 'bg-stone-800 text-white border-stone-800 shadow-sm' : 'bg-white text-stone-600 border-stone-200 hover:bg-stone-50'
                         }`}
                       >
@@ -272,9 +290,21 @@ export default function MapView({ activeTab, selectedShop, setSelectedShop, setA
                      onClick={() => { setSelectedShop(shop); setActiveDevice('phone'); }}>
                       <div className="flex-1 pr-3 flex flex-col justify-center min-w-0">
                         <h3 className="font-bold text-sm mb-1 truncate">{shop.name}</h3>
-                        <div className="text-[10px] text-emerald-700 font-bold uppercase truncate tracking-wider">{shop.type}</div>
+                          <div className="text-[10px] uppercase truncate tracking-wider flex items-center space-x-2 mt-1">
+                            {(() => {
+                              const status = getRealTimeStatus(shop.open);
+                              return (
+                                <>
+                                  <span className={`px-2 py-0.5 rounded text-[10px] font-bold border ${status.color}`}>
+                                    {status.text}
+                                  </span>
+                                  <span className="text-stone-500 font-medium">{shop.type}</span>
+                                </>
+                              );
+                            })()}
+                          </div>
                       </div>
-                      <div className="w-14 h-14 rounded-xl overflow-hidden shadow-sm border border-stone-100 flex-shrink-0">
+                      <div className="w-14 h-14 rounded-xl overflow-hidden shadow-sm border border-stone-100 shrink-0">
                         <img src={shop.img} className="w-full h-full object-cover" alt={shop.name}/>
                       </div>
                    </div>
