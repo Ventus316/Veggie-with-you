@@ -1,6 +1,7 @@
 // src/views/ShopDetailView.jsx
 
 import React, { useState, useEffect } from 'react';
+import useNavigationMemory from '../hooks/useNavigationMemory';
 import { 
   ChevronLeft, 
   MapPin, 
@@ -15,8 +16,9 @@ import { WEEKDAY_ICONS } from '../data/Data';
 // 🌟 1. 引入剛剛拆分出去的燈箱組件
 import MenuLightbox from '../components/ui/MenuLightbox_shop';
 
-export default function ShopDetailView({ shop, setActiveTab }) {
+export default function ShopDetailView({ activeTab, setActiveTab, shop }) {
   const [selectedMenu, setSelectedMenu] = useState(null);
+  const { goBack, navigateTo } = useNavigationMemory(activeTab, setActiveTab);
 
   useEffect(() => {
     if (!shop) {
@@ -64,10 +66,10 @@ export default function ShopDetailView({ shop, setActiveTab }) {
       
       {/* 頂部：返回按鈕 */}
       <button 
-        onClick={() => setActiveTab('shops')} 
+        onClick={() => goBack('shops')} // 如果沒有歷史紀錄，預設退回 'shops'
         className="flex items-center text-xs font-bold tracking-[0.2em] text-stone-400 hover:text-[#1A1A1A] uppercase mb-10 transition-colors group cursor-pointer"
       >
-        <ChevronLeft size={16} className="mr-1 group-hover:-translate-x-1 transition-transform" /> 返回列表
+        <ChevronLeft size={16} className="mr-1 group-hover:-translate-x-1 transition-transform" /> 返回
       </button>
 
       {/* 標題與簡介 */}
@@ -260,7 +262,7 @@ export default function ShopDetailView({ shop, setActiveTab }) {
           </div>
 
           <button
-            onClick={() => setActiveTab('map')}
+            onClick={() => navigateTo('map')}
             className="w-full mt-6 py-4 text-white text-xs font-bold tracking-[0.2em] uppercase transition-all duration-300 flex items-center justify-center space-x-2 bg-[#1A1A1A] hover:bg-stone-700 cursor-pointer rounded-xl shadow-md"
           >
             <span>前往地圖查看路線</span>

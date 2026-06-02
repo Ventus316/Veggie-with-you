@@ -4,12 +4,15 @@ import React, { useState } from 'react';
 import { MapPin } from 'lucide-react';
 import { ALL_DISHES } from '../data/Data';
 import { RESTAURANTS } from '../data/restaurantsData';
-// 🌟 引入滾動記憶鉤子 (確保你已經創建了這個檔案)
-import useScrollMemory from '../hooks/useScrollMemory';
+import useNavigationMemory from '../hooks/useNavigationMemory';
 
-export default function MenuView({ setActiveTab, setSelectedShop }) {
-  // 🌟 啟用滾動記憶，給予專屬 ID
-  useScrollMemory('menu');
+export default function MenuView({ activeTab, setActiveTab, setSelectedShop }) {
+  
+  const { navigateTo, restoreScrollPosition } = useNavigationMemory(activeTab, setActiveTab);
+
+  React.useEffect(() => {
+    restoreScrollPosition('menu');
+  }, [restoreScrollPosition]);
 
   const rows = [];
   for (let i = 0; i < ALL_DISHES.length; i += 4) {
@@ -43,7 +46,7 @@ export default function MenuView({ setActiveTab, setSelectedShop }) {
                       const targetShop = RESTAURANTS.find(r => r.name === dish.shop);
                       if (targetShop) {
                         setSelectedShop(targetShop);
-                        setActiveTab('shopDetail');
+                        navigateTo('shopDetail');
                       }
                     } else {
                       // 未展開狀態下點擊：展開卡片 (支援手機版操作)
@@ -77,7 +80,6 @@ export default function MenuView({ setActiveTab, setSelectedShop }) {
                     </span>
                   </div>
 
-                  {/* 🌟 你的地圖按鈕，因為有 e.stopPropagation()，所以不會觸發外層的跳轉 */}
                   <button 
                     onClick={(e) => {
                       e.stopPropagation(); 
@@ -85,7 +87,8 @@ export default function MenuView({ setActiveTab, setSelectedShop }) {
                       if(targetShop) {
                         setSelectedShop(targetShop);
                       }
-                      setActiveTab('map');
+                      // 🌟 改為 navigateTo，記錄來時路徑
+                      navigateTo('map'); 
                     }}
                     className={`absolute bottom-4 right-4 md:bottom-6 md:right-6 text-white border-b border-transparent hover:text-stone-300 hover:border-stone-300 transition-colors z-20 flex items-center space-x-1 duration-500 delay-100 cursor-pointer ${isExpanded ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
                   >

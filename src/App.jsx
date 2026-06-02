@@ -57,21 +57,29 @@ export default function App() {
 
   const renderView = () => {
     switch (activeTab) {
-      case 'home': return <HomeView setActiveTab={setActiveTab} />;
-      case 'shops': return <ShopsView setSelectedShop={setSelectedShop} setActiveTab={setActiveTab} />;
-      case 'shopDetail': return <ShopDetailView shop={selectedShop} setActiveTab={setActiveTab} />;
+      case 'home': 
+        return <HomeView activeTab={activeTab} setActiveTab={setActiveTab} />;
+      case 'shops': 
+        return <ShopsView activeTab={activeTab} setSelectedShop={setSelectedShop} setActiveTab={setActiveTab} />;
+      case 'shopDetail': 
+        return <ShopDetailView activeTab={activeTab} shop={selectedShop} setActiveTab={setActiveTab} />;
       case 'map': 
         return (
           <MapView 
+            activeTab={activeTab} 
             selectedShop={selectedShop} 
             setSelectedShop={setSelectedShop} 
             setActiveTab={setActiveTab} 
           />
         );
-      case 'menu': return <MenuView setActiveTab={setActiveTab} setSelectedShop={setSelectedShop} />;
-      case 'info': return <InfoView />;
-      case 'about': return <AboutView />;
-      default: return <HomeView setActiveTab={setActiveTab} />;
+      case 'menu': 
+        return <MenuView activeTab={activeTab} setActiveTab={setActiveTab} setSelectedShop={setSelectedShop} />;
+      case 'info': 
+        return <InfoView />;
+      case 'about': 
+        return <AboutView />;
+      default: 
+        return <HomeView activeTab={activeTab} setActiveTab={setActiveTab} />;
     }
   };
 

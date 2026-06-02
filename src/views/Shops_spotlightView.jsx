@@ -1,27 +1,28 @@
-// src/views/Shops_testView.jsx
+// src/views/Shops_spotlightView.jsx
 import React, { useEffect, useState, useRef } from 'react';
 import { Clock, Leaf } from 'lucide-react';
 import useShopFilters from '../hooks/useShopFilters';
 import FadeInCard from '../components/ui/FadeInCard_shops';
 import { SORT_ICONS } from '../data/Data';
+import useNavigationMemory from '../hooks/useNavigationMemory';
 
 const TRANSPORT_LABELS = { walking: '步行', bicycle: '腳踏車', scooter: '機車', transit: '大眾運輸' };
 
-export default function Shops_testView({ setSelectedShop, setActiveTab }) {
+export default function Shops_testView({ activeTab, setSelectedShop, setActiveTab }) {
   const { filterTransport, setFilterTransport, filterTime, setFilterTime, filteredShops } = useShopFilters();
   
   const [hoveredShopId, setHoveredShopId] = useState(null);
   const gridWrapperRef = useRef(null);
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
-
   const [filterStatus, setFilterStatus] = useState('all');
+
+  const { navigateTo, restoreScrollPosition } = useNavigationMemory(activeTab, setActiveTab);
 
   const handleMouseMove = (e) => {
     if (!gridWrapperRef.current) return;
     const rect = gridWrapperRef.current.getBoundingClientRect();
     setMousePos({ x: e.clientX - rect.left, y: e.clientY - rect.top });
   };
-
   const handleMouseLeave = () => setHoveredShopId(null);
 
   useEffect(() => {
@@ -31,9 +32,8 @@ export default function Shops_testView({ setSelectedShop, setActiveTab }) {
   }, [hoveredShopId]);
 
   const handleShopClick = (shopData) => {
-    sessionStorage.setItem('scroll_pos_shops', window.scrollY.toString());
     setSelectedShop(shopData);
-    setActiveTab('shopDetail');
+    navigateTo('shopDetail');
   };
 
   const getRealTimeStatus = (openData) => {
@@ -63,21 +63,8 @@ export default function Shops_testView({ setSelectedShop, setActiveTab }) {
   });
 
   useEffect(() => {
-    const savedPosition = sessionStorage.getItem('scroll_pos_shops');
-    if (savedPosition) {
-      const targetScroll = parseInt(savedPosition, 10);
-      let attempts = 0;
-      const intervalId = setInterval(() => {
-        window.scrollTo(0, targetScroll);
-        attempts++;
-        if (Math.abs(window.scrollY - targetScroll) <= 3 || attempts > 12) {
-          clearInterval(intervalId);
-          sessionStorage.removeItem('scroll_pos_shops');
-        }
-      }, 40);
-      return () => clearInterval(intervalId);
-    }
-  }, [finalShops]);
+    restoreScrollPosition('shops'); 
+  }, [finalShops, restoreScrollPosition]);
 
   const resolveAsset = (path) => {
     if (!path) return '';

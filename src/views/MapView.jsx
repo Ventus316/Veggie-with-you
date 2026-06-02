@@ -4,6 +4,7 @@ import { ChevronLeft, Star, Clock, Search, MapPin, X, ArrowRight } from 'lucide-
 import useShopFilters from '../hooks/useShopFilters';
 import GoogleMapComponent from '../components/ui/GoogleMapComponent_map';
 import { SORT_ICONS } from '../data/Data';
+import useNavigationMemory from '../hooks/useNavigationMemory';
 
 const TRANSPORT_LABELS = { walking: '步行', bicycle: '腳踏車', scooter: '機車', transit: '大眾運輸' };
 
@@ -20,11 +21,13 @@ const STAGE_CONFIG = {
   }
 };
 
-export default function MapView({ selectedShop, setSelectedShop, setActiveTab }) {
+// 🌟 2. 確保參數有加上 activeTab
+export default function MapView({ activeTab, selectedShop, setSelectedShop, setActiveTab }) {
   const [activeDevice, setActiveDevice] = useState(selectedShop ? 'phone' : 'tablet');
   const [mapActiveShop, setMapActiveShop] = useState(null);
-
   const [filterStatus, setFilterStatus] = useState('all');
+
+  const { navigateTo } = useNavigationMemory(activeTab, setActiveTab);
 
   const { 
     filterTransport, setFilterTransport, 
@@ -195,8 +198,9 @@ export default function MapView({ selectedShop, setSelectedShop, setActiveTab })
                   </div>
                 </div>
 
+                {/* 🌟 4. 把原來的 setActiveTab('shopDetail') 換成 navigateTo */}
                 <button 
-                  onClick={() => setActiveTab('shopDetail')}
+                  onClick={() => navigateTo('shopDetail')}
                   className="mt-auto w-full py-4 bg-[#1A1A1A] text-white text-[10px] font-bold tracking-[0.2em] uppercase flex items-center justify-center space-x-2 border-none cursor-pointer hover:bg-stone-800 transition-colors"
                 >
                   <span>查看完整店家詳情</span>
