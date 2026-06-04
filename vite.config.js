@@ -4,9 +4,9 @@ import tailwindcss from '@tailwindcss/vite' // 1. 補上這行
 
 // https://vite.dev/config/
 export default defineConfig({
-  base: '/Veggie-with-you/',
+  // base: '/YZU_VegFind/',
   plugins: [
     react(),
-    tailwindcss(), // 2. 補上這行
+    tailwindcss(),
   ],
 })
