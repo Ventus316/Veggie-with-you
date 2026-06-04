@@ -3,8 +3,15 @@
 import React, { useState, useEffect, useRef } from 'react';
 // 🌟 從 mockData 引入自定義 Logo 素材
 import { LOGO_LONG, LOGO_SHORT } from '../../data/Data';
+import useUserLocation from '../../hooks/useUserLocation';
 
 export default function Header({ activeTab, setActiveTab, isFullScreenView }) {
+  // 🌟 1. 新增：呼叫獨立定位 Hook
+  const { location, error, isLoading } = useUserLocation();
+
+  // 🌟 2. 新增：在控制台印出來檢查有沒有成功
+  console.log("Header 偵測目前定位：", { location, error, isLoading });
+
   const [isFloatingExpanded, setIsFloatingExpanded] = useState(true);
   const timeoutRef = useRef(null);
 

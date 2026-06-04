@@ -21,11 +21,10 @@ const STAGE_CONFIG = {
   }
 };
 
-export default function MapView({ activeTab, selectedShop, setSelectedShop, setActiveTab }) {
+export default function MapView({ shopsData, activeTab, selectedShop, setSelectedShop, setActiveTab }) {
   const [activeDevice, setActiveDevice] = useState(selectedShop ? 'phone' : 'tablet');
   const [mapActiveShop, setMapActiveShop] = useState(null);
   const [filterStatus, setFilterStatus] = useState('all');
-
   const { navigateTo } = useNavigationMemory(activeTab, setActiveTab);
   
   // 🎯 合併篩選器的呼叫，刪除重複宣告的
@@ -34,7 +33,7 @@ export default function MapView({ activeTab, selectedShop, setSelectedShop, setA
     filterTime, setFilterTime, 
     searchQuery, setSearchQuery,
     filteredShops 
-  } = useShopFilters(selectedShop);
+  } = useShopFilters(shopsData, selectedShop);
 
   // 🎯 完整且沒有被切斷的營業狀態判斷函式
   const getRealTimeStatus = (openData) => {

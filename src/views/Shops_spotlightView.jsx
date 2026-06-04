@@ -8,8 +8,8 @@ import useNavigationMemory from '../hooks/useNavigationMemory';
 
 const TRANSPORT_LABELS = { walking: '步行', bicycle: '腳踏車', scooter: '機車', transit: '大眾運輸' };
 
-export default function Shops_testView({ activeTab, setSelectedShop, setActiveTab }) {
-  const { filterTransport, setFilterTransport, filterTime, setFilterTime, filteredShops } = useShopFilters();
+export default function Shops_testView({ shopsData, activeTab, setSelectedShop, setActiveTab }) {
+  const { filterTransport, setFilterTransport, filterTime, setFilterTime, filteredShops } = useShopFilters(shopsData);
   
   const [hoveredShopId, setHoveredShopId] = useState(null);
   const gridWrapperRef = useRef(null);

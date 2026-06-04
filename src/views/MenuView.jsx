@@ -6,7 +6,7 @@ import { ALL_DISHES } from '../data/Data';
 import { RESTAURANTS } from '../data/restaurantsData';
 import useNavigationMemory from '../hooks/useNavigationMemory';
 
-export default function MenuView({ activeTab, setActiveTab, setSelectedShop }) {
+export default function MenuView({ shopsData, activeTab, setActiveTab, setSelectedShop }) {
   
   const { navigateTo, restoreScrollPosition } = useNavigationMemory(activeTab, setActiveTab);
 
@@ -43,7 +43,7 @@ export default function MenuView({ activeTab, setActiveTab, setSelectedShop }) {
                   onClick={() => {
                     if (isExpanded) {
                       // 展開狀態下點擊：跳轉到店家詳情
-                      const targetShop = RESTAURANTS.find(r => r.name === dish.shop);
+                      const targetShop = shopsData.find(r => r.name === dish.shop);
                       if (targetShop) {
                         setSelectedShop(targetShop);
                         navigateTo('shopDetail');

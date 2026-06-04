@@ -14,10 +14,17 @@ import InfoView from './views/InfoView';
 import AboutView from './views/AboutView';
 import ShopDetailView from './views/ShopDetailView';
 
+import useUserLocation from './hooks/useUserLocation';
+import useDynamicDistances from './hooks/useDynamicDistances';
+
 export default function App() {
   const [activeTab, setActiveTab] = useState('home');
   const [selectedShop, setSelectedShop] = useState(null);
   const [isScrolled, setIsScrolled] = useState(false);
+
+  // 🌟 2. 呼叫定位與動態計算 (全站只會執行一次)
+  const { location } = useUserLocation();
+  const { dynamicShops } = useDynamicDistances(location);
 
   const isNavigatingRef = useRef(false);
 
@@ -60,12 +67,14 @@ export default function App() {
       case 'home': 
         return <HomeView activeTab={activeTab} setActiveTab={setActiveTab} />;
       case 'shops': 
-        return <ShopsView activeTab={activeTab} setSelectedShop={setSelectedShop} setActiveTab={setActiveTab} />;
+        // 🌟 新增 shopsData={dynamicShops}
+        return <ShopsView shopsData={dynamicShops} activeTab={activeTab} setSelectedShop={setSelectedShop} setActiveTab={setActiveTab} />;
       case 'shopDetail': 
         return <ShopDetailView activeTab={activeTab} shop={selectedShop} setActiveTab={setActiveTab} />;
       case 'map': 
         return (
           <MapView 
+            shopsData={dynamicShops} // 🌟 新增 shopsData={dynamicShops}
             activeTab={activeTab} 
             selectedShop={selectedShop} 
             setSelectedShop={setSelectedShop} 
@@ -73,7 +82,8 @@ export default function App() {
           />
         );
       case 'menu': 
-        return <MenuView activeTab={activeTab} setActiveTab={setActiveTab} setSelectedShop={setSelectedShop} />;
+        // 🌟 新增 shopsData={dynamicShops}
+        return <MenuView shopsData={dynamicShops} activeTab={activeTab} setActiveTab={setActiveTab} setSelectedShop={setSelectedShop} />;
       case 'info': 
         return <InfoView />;
       case 'about': 
