@@ -37,16 +37,15 @@ export default function MapView({ shopsData, activeTab, selectedShop, setSelecte
 
   // 🎯 完整且沒有被切斷的營業狀態判斷函式
   const getRealTimeStatus = (openData) => {
-    if (!openData || !Array.isArray(openData)) return { text: "公休", isOpen: false, color: "bg-stone-100 text-stone-500 border-stone-200" };
+    if (!openData || !Array.isArray(openData)) return { text: "公休", isOpen: false };
 
+    const daysMap = ['日', '一', '二', '三', '四', '五', '六'];
     const now = new Date();
-    const days = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'];
-    const todayKey = days[now.getDay()];
-
-    const todayData = openData.find(item => item.day === todayKey);
+    const todayStr = daysMap[now.getDay()];
+    const todayData = openData.find(item => item.day === todayStr);
 
     if (!todayData || !todayData.time || todayData.time === '休息') {
-      return { text: "公休", isOpen: false, color: "bg-stone-100 text-stone-500 border-stone-200" };
+      return { text: "公休", isOpen: false };
     }
 
     const timeRanges = todayData.time.split('\n').flatMap(t => t.split(','));
@@ -65,11 +64,11 @@ export default function MapView({ shopsData, activeTab, selectedShop, setSelecte
       if (endMinutes < startMinutes) endMinutes += 24 * 60;
 
       if (currentMinutes >= startMinutes && currentMinutes <= endMinutes) {
-        return { text: "營業中", isOpen: true, color: "bg-emerald-100 text-emerald-700 border-emerald-200" };
+        return { text: "營業中", isOpen: true };
       }
     }
 
-    return { text: "公休", isOpen: false, color: "bg-stone-100 text-stone-500 border-stone-200" };
+    return { text: "公休", isOpen: false };
   };
 
   // 🎯 在函式宣告完之後，才執行 finalShops 的資料過濾
@@ -294,7 +293,8 @@ export default function MapView({ shopsData, activeTab, selectedShop, setSelecte
                               const status = getRealTimeStatus(shop.open);
                               return (
                                 <>
-                                  <span className={`px-2 py-0.5 rounded text-[10px] font-bold border ${status.color}`}>
+                                  {/* 🌟 替換為您的圓角膠囊樣式 */}
+                                  <span className="px-2 py-0.5 rounded-full text-[10px] font-bold tracking-widest bg-stone-200 text-[#1A1A1A]">
                                     {status.text}
                                   </span>
                                   <span className="text-stone-500 font-medium">{shop.type}</span>

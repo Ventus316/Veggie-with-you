@@ -47,16 +47,15 @@ export default function ShopDetailView({ activeTab, setActiveTab, shop }) {
   const features = shop.features || {};
 
   const getRealTimeStatus = (openData) => {
-    if (!openData || !Array.isArray(openData)) return { text: "公休", isOpen: false, color: "bg-stone-100 text-stone-500 border-stone-200" };
+    if (!openData || !Array.isArray(openData)) return { text: "公休", isOpen: false };
 
+    const daysMap = ['日', '一', '二', '三', '四', '五', '六'];
     const now = new Date();
-    const days = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'];
-    const todayKey = days[now.getDay()];
-
-    const todayData = openData.find(item => item.day === todayKey);
+    const todayStr = daysMap[now.getDay()];
+    const todayData = openData.find(item => item.day === todayStr);
 
     if (!todayData || !todayData.time || todayData.time === '休息') {
-      return { text: "公休", isOpen: false, color: "bg-stone-100 text-stone-500 border-stone-200" };
+      return { text: "公休", isOpen: false };
     }
 
     const timeRanges = todayData.time.split('\n').flatMap(t => t.split(','));
@@ -75,11 +74,11 @@ export default function ShopDetailView({ activeTab, setActiveTab, shop }) {
       if (endMinutes < startMinutes) endMinutes += 24 * 60;
 
       if (currentMinutes >= startMinutes && currentMinutes <= endMinutes) {
-        return { text: "營業中", isOpen: true, color: "bg-emerald-100 text-emerald-700 border-emerald-200" };
+        return { text: "營業中", isOpen: true };
       }
     }
 
-    return { text: "公休", isOpen: false, color: "bg-stone-100 text-stone-500 border-stone-200" };
+    return { text: "公休", isOpen: false };
   };
 
   const renderStatusIcon = (value) => {
@@ -112,19 +111,20 @@ export default function ShopDetailView({ activeTab, setActiveTab, shop }) {
       <div className="mb-12 border-b border-stone-200 pb-8">
         <h1 className="text-4xl md:text-5xl font-light tracking-[0.15em] text-[#1A1A1A] mb-6">{shop.name}</h1>
         
-      <div className="flex flex-wrap items-center text-[10px] md:text-xs font-bold tracking-widest text-stone-500 gap-3">
+      <div className="flex flex-wrap items-center text-[12px] font-bold tracking-widest text-stone-500 gap-3">
           
           <div className="flex items-center gap-2 mr-2">
             {(() => {
               const status = getRealTimeStatus(shop.open);
               return (
-                <span className={`px-2 py-1 rounded-md text-[10px] font-bold border ${status.color}`}>
+                // 🌟 替換為您的圓角膠囊樣式
+                <span className="px-3 py-1 rounded-full text-[12px] font-bold tracking-widest bg-stone-200 text-[#1A1A1A] mr-2">
                   {status.text}
                 </span>
               );
             })()}
             {/* 右邊接續原本的素食類型黑框 */}
-            <span className="px-3 py-1 border border-[#1A1A1A] text-[#1A1A1A] uppercase rounded-md">{shop.type || '素食'}</span>
+            <span className="px-3 py-1 rounded-full text-[12px] font-bold tracking-widest bg-stone-200 text-[#1A1A1A]">{shop.type || '素食'}</span>
           </div>
 
           {shop.distance && (
