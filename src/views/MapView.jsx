@@ -21,7 +21,7 @@ const STAGE_CONFIG = {
   }
 };
 
-export default function MapView({ shopsData, activeTab, selectedShop, setSelectedShop, setActiveTab }) {
+export default function MapView({ userLocation, shopsData, activeTab, selectedShop, setSelectedShop, setActiveTab }) {
   const [activeDevice, setActiveDevice] = useState(selectedShop ? 'phone' : 'tablet');
   const [mapActiveShop, setMapActiveShop] = useState(null);
   const [filterStatus, setFilterStatus] = useState('all');
@@ -121,6 +121,7 @@ export default function MapView({ shopsData, activeTab, selectedShop, setSelecte
           <GoogleMapComponent 
             shops={finalShops}
             selectedShop={mapActiveShop} 
+            userLocation={userLocation} // 🌟 新增這行：把座標傳給真正的地圖元件
             onMarkerClick={(shop) => { setSelectedShop(shop); setActiveDevice('tablet'); }}
             onMapClick={() => { setActiveDevice('tablet'); }}
           />

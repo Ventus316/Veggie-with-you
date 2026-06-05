@@ -3,19 +3,23 @@
 import React, { useEffect, useRef } from 'react';
 import { setOptions, importLibrary } from '@googlemaps/js-api-loader';
 
+
 // 🌟 1. 從 Data 引入自製的地圖素材
 import { MAP_SCHOOL, MAP_RADISH } from '../../data/Data';
+import currentLocationIcon from '../../assets/map/location.png';
 
 setOptions({
     key: import.meta.env.VITE_GOOGLE_MAPS_API_KEY,
     version: 'weekly',
 });
 
-export default function GoogleMapComponent({ shops, selectedShop, onMarkerClick, onMapClick }) {
+export default function GoogleMapComponent({ shops, selectedShop, userLocation, onMarkerClick, onMapClick }) {
   const mapRef = useRef(null);
   const googleMap = useRef(null);
   const markersRef = useRef({});
   const schoolMarkerRef = useRef(null); // 儲存學校標記的引用
+  const userMarkerRef = useRef(null); // 儲存用戶位置標記的引用
+
 
   useEffect(() => {
     const initMap = async () => {
@@ -62,6 +66,28 @@ export default function GoogleMapComponent({ shops, selectedShop, onMarkerClick,
     initMap();
   }, [shops]);
 
+  useEffect(() => {
+    if (!googleMap.current || !window.google || !userLocation) return;
+
+    if (!userMarkerRef.current) {
+      // 如果還沒畫過，就新建一個 Marker
+      userMarkerRef.current = new window.google.maps.Marker({
+        position: userLocation,
+        map: googleMap.current,
+        title: "您的當前位置",
+        icon: {
+          url: currentLocationIcon,
+          scaledSize: new window.google.maps.Size(40, 40), // 可自行調整圖標大小
+          anchor: new window.google.maps.Point(20, 20),    // 讓圖標正中心對齊座標
+        },
+        zIndex: 9999, // 確保在最上層
+      });
+    } else {
+      // 如果已經畫過，但位置改變了，就更新座標
+      userMarkerRef.current.setPosition(userLocation);
+    }
+  }, [userLocation]);
+
   const renderMarkers = (shopsData) => {
     if (!googleMap.current || !window.google) return;
 
@@ -105,7 +131,7 @@ export default function GoogleMapComponent({ shops, selectedShop, onMarkerClick,
   }, [selectedShop]);
 
   return (
-    <div className="absolute inset-0 w-full h-full rounded-[1.5rem] overflow-hidden cursor-pointer">
+    <div className="absolute inset-0 w-full h-full rounded-3xl overflow-hidden cursor-pointer">
       <div ref={mapRef} className="w-full h-full" />
     </div>
   );

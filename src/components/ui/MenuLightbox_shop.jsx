@@ -63,7 +63,7 @@ export default function MenuLightbox({ selectedMenu, onClose }) {
 
   return (
     <div 
-      className="fixed inset-0 z-[200] flex items-center justify-center bg-[#1A1A1A]/95 backdrop-blur-sm p-4 md:p-10 animate-in fade-in duration-300 select-none" 
+      className="fixed inset-0 z-200 flex items-center justify-center bg-[#1A1A1A]/95 backdrop-blur-sm p-4 md:p-10 animate-in fade-in duration-300 select-none" 
       onClick={onClose}
       onWheel={handleWheel} 
     >

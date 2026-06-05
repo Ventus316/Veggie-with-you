@@ -74,7 +74,8 @@ export default function App() {
       case 'map': 
         return (
           <MapView 
-            shopsData={dynamicShops} // 🌟 新增 shopsData={dynamicShops}
+            userLocation={location}
+            shopsData={dynamicShops} 
             activeTab={activeTab} 
             selectedShop={selectedShop} 
             setSelectedShop={setSelectedShop} 
