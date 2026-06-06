@@ -3,8 +3,8 @@ import { useState, useEffect, useCallback } from 'react';
 
 // 🌟 防呆預設座標：若抓不到定位，預設為元智大學座標 (可自行微調)
 const DEFAULT_LOCATION = {
-  lat: 24.9682,
-  lng: 121.2613
+  lat: 24.9705,
+  lng: 121.2633
 };
 
 export default function useUserLocation() {

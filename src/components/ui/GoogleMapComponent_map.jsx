@@ -13,12 +13,16 @@ setOptions({
     version: 'weekly',
 });
 
-export default function GoogleMapComponent({ shops, selectedShop, userLocation, onMarkerClick, onMapClick }) {
+export default function GoogleMapComponent({ shops, selectedShop, userLocation, filterTransport, onMarkerClick, onMapClick }) {
   const mapRef = useRef(null);
   const googleMap = useRef(null);
   const markersRef = useRef({});
   const schoolMarkerRef = useRef(null); // 儲存學校標記的引用
   const userMarkerRef = useRef(null); // 儲存用戶位置標記的引用
+
+  // 👇 2. 新增這兩行：用來存儲路線計算服務 (大腦) 與路線渲染器 (雙手)
+  const directionsService = useRef(null);
+  const directionsRenderer = useRef(null);
 
 
   useEffect(() => {
@@ -36,6 +40,18 @@ export default function GoogleMapComponent({ shops, selectedShop, userLocation, 
             zoomControl: true,
             gestureHandling: 'greedy',
             clickableIcons: false, // 禁用 Google 內建 POI 點擊
+          });
+
+          // 👇 3. 新增這段：初始化導航工具
+          directionsService.current = new window.google.maps.DirectionsService();
+          directionsRenderer.current = new window.google.maps.DirectionsRenderer({
+            map: googleMap.current,
+            suppressMarkers: true, // 🌟 關鍵：隱藏預設的紅綠 A/B 標記，保留我們自己精緻的蘿蔔和定位點！
+            polylineOptions: {
+              strokeColor: '#3B82F6', // 漂亮的藍色導航線
+              strokeOpacity: 0.8,
+              strokeWeight: 6,        // 線條粗細
+            }
           });
 
           // 當地圖被點擊時，通知父層將平板移到前方
@@ -87,6 +103,45 @@ export default function GoogleMapComponent({ shops, selectedShop, userLocation, 
       userMarkerRef.current.setPosition(userLocation);
     }
   }, [userLocation]);
+
+  // 👇 4. 新增這段：動態計算與繪製路線
+  useEffect(() => {
+    // 確保所有地圖與導航工具都載入完畢
+    if (!googleMap.current || !window.google || !directionsService.current || !directionsRenderer.current) return;
+
+    // 狀況 A：如果沒有選取店家，就「清除」地圖上的路線 (🌟 拿掉 !userLocation 的限制)
+    if (!selectedShop) {
+      directionsRenderer.current.setDirections({ routes: [] });
+      return;
+    }
+
+    // 🌟 新增：決定起點！如果有 userLocation 就用真實定位，沒有就用學校預設座標
+    const yzuCenter = { lat: 24.9705, lng: 121.2633 };
+    const originLocation = userLocation || yzuCenter;
+
+    // 狀況 B：轉換交通方式
+    let travelMode = window.google.maps.TravelMode.WALKING;
+    if (filterTransport === 'bicycle') travelMode = window.google.maps.TravelMode.BICYCLING;
+    if (filterTransport === 'scooter') travelMode = window.google.maps.TravelMode.DRIVING; // 機車使用汽車模式模擬道路
+
+    // 狀況 C：發送請求給 Google 計算路線
+    directionsService.current.route(
+      {
+        origin: originLocation, // 🌟 起點改用我們上面判斷好的 originLocation
+        destination: { lat: selectedShop.lat, lng: selectedShop.lng }, // 終點：店家位置
+        travelMode: travelMode,
+      },
+      (response, status) => {
+        if (status === 'OK') {
+          // 算成功了！餵給渲染器自動畫藍色線條並縮放
+          directionsRenderer.current.setDirections(response);
+        } else {
+          console.error('導航路線計算失敗:', status);
+          directionsRenderer.current.setDirections({ routes: [] }); // 失敗時清空路線
+        }
+      }
+    );
+  }, [selectedShop, userLocation, filterTransport]);
 
   const renderMarkers = (shopsData) => {
     if (!googleMap.current || !window.google) return;

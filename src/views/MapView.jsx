@@ -122,6 +122,7 @@ export default function MapView({ userLocation, shopsData, activeTab, selectedSh
             shops={finalShops}
             selectedShop={mapActiveShop} 
             userLocation={userLocation} // 🌟 新增這行：把座標傳給真正的地圖元件
+            filterTransport={filterTransport}
             onMarkerClick={(shop) => { setSelectedShop(shop); setActiveDevice('tablet'); }}
             onMapClick={() => { setActiveDevice('tablet'); }}
           />
