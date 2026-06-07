@@ -4,7 +4,6 @@ import React, { useState } from 'react';
 import { MapPin } from 'lucide-react';
 
 import { ALL_DISHES } from '../data/Data';
-import { RESTAURANTS } from '../data/restaurantsData';
 import useNavigationMemory from '../hooks/useNavigationMemory';
 
 export default function MenuView({ shopsData, activeTab, setActiveTab, setSelectedShop }) {
@@ -84,7 +83,7 @@ export default function MenuView({ shopsData, activeTab, setActiveTab, setSelect
                   <button 
                     onClick={(e) => {
                       e.stopPropagation(); 
-                      const targetShop = RESTAURANTS.find(r => r.name === dish.shop);
+                      const targetShop = shopsData.find(r => r.name === dish.shop);
                       if(targetShop) {
                         setSelectedShop(targetShop);
                       }

@@ -66,7 +66,7 @@ export default function App() {
       case 'home': 
         return <HomeView activeTab={activeTab} setActiveTab={setActiveTab} />;
       case 'shops': 
-        // 🌟 新增 shopsData={dynamicShops}
+        // 🌟  shopsData={dynamicShops}
         return <ShopsView shopsData={dynamicShops} activeTab={activeTab} setSelectedShop={setSelectedShop} setActiveTab={setActiveTab} />;
       case 'shopDetail': 
         return <ShopDetailView activeTab={activeTab} shop={selectedShop} setActiveTab={setActiveTab} />;
@@ -82,7 +82,7 @@ export default function App() {
           />
         );
       case 'menu': 
-        // 🌟 新增 shopsData={dynamicShops}
+        // 🌟  shopsData={dynamicShops}
         return <MenuView shopsData={dynamicShops} activeTab={activeTab} setActiveTab={setActiveTab} setSelectedShop={setSelectedShop} />;
       case 'info': 
         return <InfoView />;
