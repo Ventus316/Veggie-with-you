@@ -1,6 +1,6 @@
 // src/components/ui/GoogleMapComponent_map.jsx
 
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { setOptions, importLibrary } from '@googlemaps/js-api-loader';
 
 
@@ -24,6 +24,8 @@ export default function GoogleMapComponent({ shops, selectedShop, userLocation, 
   // 👇 2. 新增這兩行：用來存儲路線計算服務 (大腦) 與路線渲染器 (雙手)
   const directionsService = useRef(null);
   const directionsRenderer = useRef(null);
+
+  const [isMapReady, setIsMapReady] = useState(false);
 
 
   useEffect(() => {
@@ -72,6 +74,8 @@ export default function GoogleMapComponent({ shops, selectedShop, userLocation, 
             },
             zIndex: 10, // 層級略高於一般未選取的店家
           });
+
+          setIsMapReady(true);
         }
 
         renderMarkers(shops);
@@ -84,7 +88,7 @@ export default function GoogleMapComponent({ shops, selectedShop, userLocation, 
   }, [shops]);
 
   useEffect(() => {
-    if (!googleMap.current || !window.google || !userLocation) return;
+    if (!isMapReady || !googleMap.current || !window.google || !userLocation) return;
 
     if (!userMarkerRef.current) {
       // 如果還沒畫過，就新建一個 Marker
@@ -103,12 +107,12 @@ export default function GoogleMapComponent({ shops, selectedShop, userLocation, 
       // 如果已經畫過，但位置改變了，就更新座標
       userMarkerRef.current.setPosition(userLocation);
     }
-  }, [userLocation]);
+  }, [userLocation, isMapReady]);
 
   // 👇 4. 新增這段：動態計算與繪製路線
   useEffect(() => {
     // 確保所有地圖與導航工具都載入完畢
-    if (!googleMap.current || !window.google || !directionsService.current || !directionsRenderer.current) return;
+    if (!isMapReady || !googleMap.current || !window.google || !directionsService.current || !directionsRenderer.current) return;
 
     // 狀況 A：如果沒有選取店家，就「清除」地圖上的路線 (🌟 拿掉 !userLocation 的限制)
     if (!selectedShop) {
@@ -142,7 +146,7 @@ export default function GoogleMapComponent({ shops, selectedShop, userLocation, 
         }
       }
     );
-  }, [selectedShop, userLocation, filterTransport]);
+  }, [selectedShop, userLocation, filterTransport, isMapReady]);
 
   const renderMarkers = (shopsData) => {
     if (!googleMap.current || !window.google) return;
