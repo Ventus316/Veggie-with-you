@@ -5,6 +5,7 @@ import useShopFilters from '../hooks/useShopFilters';
 import FadeInCard from '../components/ui/FadeInCard_shops';
 import { SORT_ICONS } from '../data/Data';
 import useNavigationMemory from '../hooks/useNavigationMemory';
+import { getRealTimeStatus } from '../utils/getRealTimeStatus';
 
 const TRANSPORT_LABELS = { walking: '步行', bicycle: '腳踏車', scooter: '機車', transit: '大眾運輸' };
 
@@ -34,26 +35,6 @@ export default function Shops_testView({ shopsData, activeTab, setSelectedShop, 
   const handleShopClick = (shopData) => {
     setSelectedShop(shopData);
     navigateTo('shopDetail');
-  };
-
-  const getRealTimeStatus = (openData) => {
-    if (!openData || !Array.isArray(openData)) return { text: '未知', isOpen: false };
-    const daysMap = ['日', '一', '二', '三', '四', '五', '六'];
-    const now = new Date();
-    const todayStr = daysMap[now.getDay()];
-    const todaySchedule = openData.find(item => item.day === todayStr);
-    if (!todaySchedule || todaySchedule.time === '休息') return { text: '公休', isOpen: false };
-    const currentMinutes = now.getHours() * 60 + now.getMinutes();
-    for (const range of todaySchedule.time.split('\n')) {
-      const [startStr, endStr] = range.split('-');
-      if (!startStr || !endStr) continue;
-      const [startH, startM] = startStr.split(':').map(Number);
-      const [endH, endM] = endStr.split(':').map(Number);
-      if (currentMinutes >= startH * 60 + startM && currentMinutes <= endH * 60 + endM) {
-        return { text: '營業中', isOpen: true };
-      }
-    }
-    return { text: '公休', isOpen: false };
   };
 
   const finalShops = filteredShops.filter(shop => {

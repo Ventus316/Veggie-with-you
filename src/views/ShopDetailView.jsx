@@ -16,6 +16,8 @@ import { WEEKDAY_ICONS } from '../data/Data';
 // 🌟 1. 引入剛剛拆分出去的燈箱組件
 import MenuLightbox from '../components/ui/MenuLightbox_shop';
 
+import { getRealTimeStatus } from '../utils/getRealTimeStatus';
+
 export default function ShopDetailView({ activeTab, setActiveTab, shop }) {
   const [selectedMenu, setSelectedMenu] = useState(null);
   const { goBack, navigateTo } = useNavigationMemory(activeTab, setActiveTab);
@@ -45,41 +47,6 @@ export default function ShopDetailView({ activeTab, setActiveTab, shop }) {
   ];
 
   const features = shop.features || {};
-
-  const getRealTimeStatus = (openData) => {
-    if (!openData || !Array.isArray(openData)) return { text: "公休", isOpen: false };
-
-    const daysMap = ['日', '一', '二', '三', '四', '五', '六'];
-    const now = new Date();
-    const todayStr = daysMap[now.getDay()];
-    const todayData = openData.find(item => item.day === todayStr);
-
-    if (!todayData || !todayData.time || todayData.time === '休息') {
-      return { text: "公休", isOpen: false };
-    }
-
-    const timeRanges = todayData.time.split('\n').flatMap(t => t.split(','));
-    const currentMinutes = now.getHours() * 60 + now.getMinutes();
-
-    for (let range of timeRanges) {
-      const [startStr, endStr] = range.trim().split('-');
-      if (!startStr || !endStr) continue;
-
-      const [sH, sM] = startStr.split(':').map(Number);
-      const [eH, eM] = endStr.split(':').map(Number);
-
-      const startMinutes = sH * 60 + sM;
-      let endMinutes = eH * 60 + eM;
-
-      if (endMinutes < startMinutes) endMinutes += 24 * 60;
-
-      if (currentMinutes >= startMinutes && currentMinutes <= endMinutes) {
-        return { text: "營業中", isOpen: true };
-      }
-    }
-
-    return { text: "公休", isOpen: false };
-  };
 
   const renderStatusIcon = (value) => {
     const isPositive = (val) => {

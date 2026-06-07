@@ -1,10 +1,18 @@
 // src/views/MapView.jsx
+
+// 1. 第三方程式庫 (Core & External)
 import React, { useState, useEffect } from 'react';
 import { ChevronLeft, Star, Clock, Search, MapPin, X, ArrowRight } from 'lucide-react';
-import useShopFilters from '../hooks/useShopFilters';
-import GoogleMapComponent from '../components/ui/GoogleMapComponent_map';
+
+// 2. 邏輯、資料與 Hooks (Data & Logic)
 import { SORT_ICONS } from '../data/Data';
+import useShopFilters from '../hooks/useShopFilters';
 import useNavigationMemory from '../hooks/useNavigationMemory';
+import { getRealTimeStatus } from '../utils/getRealTimeStatus';
+
+// 3. 內部元件 (Components)
+import GoogleMapComponent from '../components/ui/GoogleMapComponent_map';
+
 
 const TRANSPORT_LABELS = { walking: '步行', bicycle: '腳踏車', scooter: '機車', transit: '大眾運輸' };
 
@@ -21,6 +29,7 @@ const STAGE_CONFIG = {
   }
 };
 
+
 export default function MapView({ userLocation, shopsData, activeTab, selectedShop, setSelectedShop, setActiveTab }) {
   const [activeDevice, setActiveDevice] = useState(selectedShop ? 'phone' : 'tablet');
   const [mapActiveShop, setMapActiveShop] = useState(null);
@@ -34,42 +43,6 @@ export default function MapView({ userLocation, shopsData, activeTab, selectedSh
     searchQuery, setSearchQuery,
     filteredShops 
   } = useShopFilters(shopsData, selectedShop);
-
-  // 🎯 完整且沒有被切斷的營業狀態判斷函式
-  const getRealTimeStatus = (openData) => {
-    if (!openData || !Array.isArray(openData)) return { text: "公休", isOpen: false };
-
-    const daysMap = ['日', '一', '二', '三', '四', '五', '六'];
-    const now = new Date();
-    const todayStr = daysMap[now.getDay()];
-    const todayData = openData.find(item => item.day === todayStr);
-
-    if (!todayData || !todayData.time || todayData.time === '休息') {
-      return { text: "公休", isOpen: false };
-    }
-
-    const timeRanges = todayData.time.split('\n').flatMap(t => t.split(','));
-    const currentMinutes = now.getHours() * 60 + now.getMinutes();
-
-    for (let range of timeRanges) {
-      const [startStr, endStr] = range.trim().split('-');
-      if (!startStr || !endStr) continue;
-
-      const [sH, sM] = startStr.split(':').map(Number);
-      const [eH, eM] = endStr.split(':').map(Number);
-
-      const startMinutes = sH * 60 + sM;
-      let endMinutes = eH * 60 + eM;
-
-      if (endMinutes < startMinutes) endMinutes += 24 * 60;
-
-      if (currentMinutes >= startMinutes && currentMinutes <= endMinutes) {
-        return { text: "營業中", isOpen: true };
-      }
-    }
-
-    return { text: "公休", isOpen: false };
-  };
 
   // 🎯 在函式宣告完之後，才執行 finalShops 的資料過濾
   const finalShops = filteredShops.filter(shop => {
