@@ -121,8 +121,7 @@ export default function GoogleMapComponent({ shops, selectedShop, userLocation, 
     }
 
     // 🌟 新增：決定起點！如果有 userLocation 就用真實定位，沒有就用學校預設座標
-    const yzuCenter = { lat: 24.9705, lng: 121.2633 };
-    const originLocation = userLocation || yzuCenter;
+    if (!userLocation) return;
 
     // 狀況 B：轉換交通方式
     let travelMode = window.google.maps.TravelMode.WALKING;
