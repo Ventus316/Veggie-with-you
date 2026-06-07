@@ -58,6 +58,7 @@ export default function MenuView({ shopsData, activeTab, setActiveTab, setSelect
                   <img 
                     src={dish.img} 
                     alt={dish.name} 
+                    loading="lazy" 
                     className={`absolute inset-0 w-full h-full object-cover transition-all duration-700 ${isExpanded ? 'grayscale-0 opacity-100' : 'grayscale-[0.3] opacity-60'}`}
                   />
                   <div className={`absolute inset-0 bg-linear-to-t from-black/80 via-transparent to-black/40 transition-opacity duration-500 ${isExpanded ? 'opacity-100' : 'opacity-0'}`}></div>

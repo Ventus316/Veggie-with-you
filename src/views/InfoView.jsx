@@ -134,6 +134,7 @@ export default function InfoView() {
                 <img 
                   src={thumb.src} 
                   alt={thumb.alt} 
+                  loading="lazy"
                   className={`relative w-full h-full object-contain drop-shadow-[0_40px_40px_rgba(0,0,0,0.4)] transition-all duration-1000 ${
                     i === activeThumbIndex ? 'scale-100 opacity-100' : 'scale-[0.6] opacity-30'
                   }`}
@@ -168,6 +169,7 @@ export default function InfoView() {
                       <img 
                         src={thumb.src} 
                         alt={thumb.alt} 
+                        loading="lazy"
                         className={`max-w-full max-h-full object-contain transition-all duration-500 ${
                           isActive ? 'scale-110 drop-shadow-[0_10px_15px_rgba(255,255,255,0.2)]' : 'opacity-60 group-hover:opacity-100 group-hover:scale-105'
                         }`} 

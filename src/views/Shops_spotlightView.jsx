@@ -89,7 +89,7 @@ export default function Shops_testView({ shopsData, activeTab, setSelectedShop, 
           onMouseEnter={!isOverlay ? () => setHoveredShopId(shop.id) : undefined}
           onMouseLeave={!isOverlay ? () => setHoveredShopId(null) : undefined}
         >
-          <img src={resolveAsset(shop.shopLogo || shop.img)} alt={shop.name} className="w-full h-full object-cover"/>
+          <img src={resolveAsset(shop.shopLogo || shop.img)} alt={shop.name} loading="lazy" className="w-full h-full object-cover"/>
         </div>
         <div className="flex items-center justify-between w-full px-1 max-w-40">
           <span className={`px-2.5 py-1 rounded-full text-[10px] md:text-xs font-bold tracking-widest ${statusBg} ${statusTextColor}`}>
@@ -111,7 +111,7 @@ export default function Shops_testView({ shopsData, activeTab, setSelectedShop, 
         <div className="absolute inset-0 bg-[#F6F6F4]" />
         {finalShops.slice(0, 12).map(shop => (
           <img 
-            key={`bg-${shop.id}`} src={resolveAsset(shop.shopBg || shop.img)} alt="Environment"
+            key={`bg-${shop.id}`} src={resolveAsset(shop.shopBg || shop.img)} alt="Environment" loading="lazy" 
             className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-700 ease-out ${hoveredShopId === shop.id ? 'opacity-100' : 'opacity-0'}`}
           />
         ))}

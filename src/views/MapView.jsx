@@ -108,7 +108,7 @@ export default function MapView({ userLocation, shopsData, activeTab, selectedSh
           {selectedShop ? (
             <div className="flex-1 flex flex-col overflow-y-auto no-scrollbar animate-in fade-in duration-300">
               <div className="relative w-full h-52 shrink-0">
-                <img src={selectedShop.img} className="w-full h-full object-cover" alt={selectedShop.name}/>
+                <img src={selectedShop.img} loading="lazy" className="w-full h-full object-cover" alt={selectedShop.name}/>
                 <button onClick={() => setSelectedShop(null)} className="absolute top-8 left-4 w-10 h-10 bg-[#1A1A1A]/80 backdrop-blur rounded-full flex items-center justify-center text-white z-50 border-none cursor-pointer shadow-lg hover:bg-black">
                   <ChevronLeft size={22} strokeWidth={2.5} />
                 </button>
@@ -150,7 +150,7 @@ export default function MapView({ userLocation, shopsData, activeTab, selectedSh
                                 {daysArray.map((day, dIdx) => (
                                   <div key={dIdx} className="w-6 h-6 flex items-center justify-center">
                                     <img 
-                                      src={`/images/icons/day_${day}.png`} alt={day} className="w-full h-full object-contain"
+                                      src={`/images/icons/day_${day}.png`} alt={day} loading="lazy" className="w-full h-full object-contain"
                                       onError={(e) => {
                                         e.target.style.display = 'none';
                                         e.target.parentNode.innerHTML = `<span class="w-6 h-6 rounded-full bg-[#1A1A1A] text-white flex items-center justify-center text-[10px]">${day}</span>`;
