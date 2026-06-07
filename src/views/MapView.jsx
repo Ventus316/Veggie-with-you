@@ -26,6 +26,36 @@ const STAGE_CONFIG = {
   }
 };
 
+const FallbackDayIcon = ({ day }) => {
+  const [hasError, setHasError] = useState(false);
+  if (hasError) {
+    return <span className="w-6 h-6 rounded-full bg-[#1A1A1A] text-white flex items-center justify-center text-[10px]">{day}</span>;
+  }
+  return (
+    <img 
+      src={`/images/icons/day_${day}.png`} 
+      alt={day} 
+      loading="lazy" 
+      className="w-full h-full object-contain"
+      onError={() => setHasError(true)} // 發生錯誤時，只改狀態，讓 React 自己切換 UI
+    />
+  );
+};
+
+const FallbackClosedIcon = () => {
+  const [hasError, setHasError] = useState(false);
+  if (hasError) {
+    return <span className="text-stone-500 font-bold tracking-widest text-xs bg-stone-200 px-2 py-0.5 rounded">公休</span>;
+  }
+  return (
+    <img 
+      src="/images/icons/closed_status.png" 
+      alt="公休" 
+      className="h-5 object-contain"
+      onError={() => setHasError(true)} 
+    />
+  );
+};
 
 export default function MapView({ userLocation, shopsData, activeTab, selectedShop, setSelectedShop, setActiveTab }) {
   const [activeDevice, setActiveDevice] = useState(selectedShop ? 'phone' : 'tablet');
@@ -146,31 +176,21 @@ export default function MapView({ userLocation, shopsData, activeTab, selectedSh
 
                           return Object.entries(groupedMap).map(([timeStr, daysArray], gIdx) => (
                             <div key={gIdx} className="flex flex-col items-start">
-                              <div className="flex gap-1.5 mb-1.5 flex-wrap">
-                                {daysArray.map((day, dIdx) => (
-                                  <div key={dIdx} className="w-6 h-6 flex items-center justify-center">
-                                    <img 
-                                      src={`/images/icons/day_${day}.png`} alt={day} loading="lazy" className="w-full h-full object-contain"
-                                      onError={(e) => {
-                                        e.target.style.display = 'none';
-                                        e.target.parentNode.innerHTML = `<span class="w-6 h-6 rounded-full bg-[#1A1A1A] text-white flex items-center justify-center text-[10px]">${day}</span>`;
-                                      }}
-                                    />
-                                  </div>
-                                ))}
-                              </div>
-                              <div className="flex justify-start w-full">
-                                {timeStr === '休息' ? (
-                                  <div className="h-6 flex items-center">
-                                    <img 
-                                      src="/images/icons/closed_status.png" alt="公休" className="h-5 object-contain"
-                                      onError={(e) => {
-                                        e.target.style.display = 'none';
-                                        e.target.parentNode.innerHTML = `<span class="text-stone-500 font-bold tracking-widest text-xs bg-stone-200 px-2 py-0.5 rounded">公休</span>`;
-                                      }}
-                                    />
-                                  </div>
-                                ) : (
+                                <div className="flex gap-1.5 mb-1.5 flex-wrap">
+                                  {daysArray.map((day, dIdx) => (
+                                    <div key={dIdx} className="w-6 h-6 flex items-center justify-center">
+                                      {/* 🌟 換成我們的保鑣組件 1 */}
+                                      <FallbackDayIcon day={day} />
+                                    </div>
+                                  ))}
+                                </div>
+                                <div className="flex justify-start w-full">
+                                  {timeStr === '休息' ? (
+                                    <div className="h-6 flex items-center">
+                                      {/* 🌟 換成我們的保鑣組件 2 */}
+                                      <FallbackClosedIcon />
+                                    </div>
+                                  ) : (
                                   <div className="text-xs font-bold tracking-widest text-stone-600">
                                     {timeStr.split('\n').map((line, i) => (
                                       <span key={i} className="block mt-0.5">{line}</span>
