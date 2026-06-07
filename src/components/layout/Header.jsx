@@ -1,9 +1,10 @@
 // src/components/layout/Header.jsx
 
 import React, { useState, useEffect, useRef } from 'react';
-// 🌟 從 mockData 引入自定義 Logo 素材
-import { LOGO_LONG, LOGO_SHORT } from '../../data/Data';
+
 import useUserLocation from '../../hooks/useUserLocation';
+
+import { LOGO_LONG, LOGO_SHORT } from '../../assets/iconHub';
 
 export default function Header({ activeTab, setActiveTab, isFullScreenView }) {
   // 🌟 1. 新增：呼叫獨立定位 Hook

@@ -3,13 +3,13 @@
 import React, { useState, useEffect } from 'react';
 import { ChevronLeft, Star, Clock, Search, MapPin, X, ArrowRight } from 'lucide-react';
 
-import { SORT_ICONS } from '../data/Data';
 import { getRealTimeStatus } from '../utils/getRealTimeStatus';
 import useShopFilters from '../hooks/useShopFilters';
 import useNavigationMemory from '../hooks/useNavigationMemory';
 
 import GoogleMapComponent from '../components/ui/GoogleMapComponent_map';
 
+import { SORT_ICONS } from '../assets/iconHub';
 
 const TRANSPORT_LABELS = { walking: '步行', bicycle: '腳踏車', scooter: '機車', transit: '大眾運輸' };
 

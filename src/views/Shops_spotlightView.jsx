@@ -2,13 +2,13 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { Clock, Leaf } from 'lucide-react';
 
-import { SORT_ICONS } from '../data/Data';
 import { getRealTimeStatus } from '../utils/getRealTimeStatus';
 import useShopFilters from '../hooks/useShopFilters';
 import useNavigationMemory from '../hooks/useNavigationMemory';
 
 import FadeInCard from '../components/ui/FadeInCard_shops';
 
+import { SORT_ICONS } from '../assets/iconHub';
 
 const TRANSPORT_LABELS = { walking: '步行', bicycle: '腳踏車', scooter: '機車', transit: '大眾運輸' };
 

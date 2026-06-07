@@ -1,7 +1,7 @@
 // src/views/InfoView.jsx
 import React, { useState } from 'react';
 
-import { NUTRITION_TOPICS } from '../data/Data';
+import { NUTRITION_TOPICS } from '../data/infoData';
 
 export default function InfoView() {
   const [activeTopicId, setActiveTopicId] = useState(NUTRITION_TOPICS[0].id);

@@ -11,11 +11,12 @@ import {
   Navigation
 } from 'lucide-react';
 
-import { WEEKDAY_ICONS } from '../data/Data';
 import { getRealTimeStatus } from '../utils/getRealTimeStatus';
 import useNavigationMemory from '../hooks/useNavigationMemory';
 
 import MenuLightbox from '../components/ui/MenuLightbox_shop';
+
+import { WEEKDAY_ICONS } from '../assets/iconHub';
 
 
 export default function ShopDetailView({ activeTab, setActiveTab, shop }) {

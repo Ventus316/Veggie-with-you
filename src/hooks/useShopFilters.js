@@ -1,6 +1,5 @@
 // src/hooks/useShopFilters.js
 import { useState, useMemo } from 'react';
-// (如果外面沒傳資料，預設還是用靜態資料防呆)
 import { RESTAURANTS } from '../data/restaurantsData';
 
 // 🌟 修改：加入 shopsData 參數，讓外部可以傳入算好的動態資料
