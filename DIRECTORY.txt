@@ -1,0 +1,33 @@
+YZU_VegFind/
+├── 📂 public/               # 靜態資源庫 (不需經過 Vite 打包，直接透過絕對路徑讀取的素材)
+│   ├── 📂 info/             # 小百科專屬圖片 (透過 infoData.js 讀取)
+│   ├── 📂 shops/            # 店家門面實景與高解析度餐點圖
+│   ├── 📂 sort/             # 排序或分類用的靜態圖標
+│   ├── 📄 favicon.svg       # 網頁瀏覽器標籤頁圖示
+│   └── 📄 icons.svg         # SVG 圖標集合
+│
+├── 📂 src/                  # 專案核心原始碼 (React 元件與邏輯層)
+│   ├── 📂 assets/           # 需動態打包的靜態素材 (如 Logo、iconHub轉運站)
+│   ├── 📂 components/       # 共用 React UI 組件 (Header, Footer, 漸顯卡片, 地圖渲染器等)
+│   ├── 📂 context/          # 全域狀態管理中心 (如 GlobalStateContext，解決 Props Drilling)
+│   ├── 📂 data/             # 靜態資料中心 (restaurantsData, infoData, dishData)
+│   ├── 📂 hooks/            # 自訂 React Hooks (動態距離運算、篩選器狀態、導航記憶等)
+│   ├── 📂 utils/            # 共用邏輯大腦 (如 getRealTimeStatus 營業時間演算法)
+│   ├── 📂 views/            # 頁面級別視圖組件 (Home, Map, Menu, Shops, Info, Detail)
+│   ├── 📄 App.css           # App 層級專用樣式表
+│   ├── 📄 App.jsx           # 路由分發與版面配置樞紐
+│   ├── 📄 index.css         # 全域樣式表 (Tailwind CSS 引入處)
+│   └── 📄 main.jsx          # 應用程式進入點 (掛載 Context 與 App 元件)
+│
+├── 📂 old/                 # 舊版程式碼或歷史備份檔案
+├── 📄 .env                  # 環境變數設定檔 (存放 Google Maps API 金鑰，不上傳 Git)
+├── 📄 .gitignore            # Git 忽略追蹤清單 (阻擋 node_modules 與 .env 等機密檔案)
+├── 📄 eslint.config.js      # ESLint 程式碼品質與語法檢查規則設定
+├── 📄 index.html            # Vite 網頁進入點範本 (掛載 React Root 的空殼)
+├── 📄 package.json          # 專案套件依賴清單與 npm 執行腳本配置
+├── 📄 package-lock.json     # 鎖定 npm 套件確切版本的紀錄檔
+├── 📄 README.md             # 專案技術說明與部署指南
+├── 📄 TO DO.docx            # 專案開發進度與待辦事項清單
+└── 📄 vite.config.js        # Vite 建置工具與開發伺服器核心設定檔
+└── 📄 DIRECTORY.txt         # 本專案目錄結構說明文件
+
