@@ -2,13 +2,14 @@
 
 import React from 'react';
 import { Leaf } from 'lucide-react';
+
 import { TEAM_MEMBERS } from '../data/Data';
 
 export default function AboutView() {
   return (
     <div className="pt-8 min-h-screen flex items-center justify-center animate-in fade-in duration-1000">
       <div className="max-w-4xl mx-auto text-center">
-        <h2 className="text-3xl md:text-5xl font-light tracking-[0.1em] text-[#1A1A1A] leading-[1.5] mb-16 relative inline-block">
+        <h2 className="text-3xl md:text-5xl font-light tracking-widest text-[#1A1A1A] leading-normal mb-16 relative inline-block">
           <span className="absolute -top-8 -left-8 text-stone-200">
             <Leaf size={48} strokeWidth={1} />
           </span>

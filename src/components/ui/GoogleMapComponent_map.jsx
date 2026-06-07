@@ -4,8 +4,9 @@ import React, { useEffect, useRef } from 'react';
 import { setOptions, importLibrary } from '@googlemaps/js-api-loader';
 
 
-// 🌟 1. 從 Data 引入自製的地圖素材
-import { MAP_SCHOOL, MAP_RADISH } from '../../data/Data';
+// 🌟 引入自製的地圖素材
+import MAP_SCHOOL from '../../assets/map/school.png';
+import MAP_RADISH from '../../assets/map/radish.png';
 import currentLocationIcon from '../../assets/map/location.png';
 
 setOptions({

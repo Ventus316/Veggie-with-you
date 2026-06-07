@@ -1,5 +1,6 @@
 // src/views/InfoView.jsx
 import React, { useState } from 'react';
+
 import { NUTRITION_TOPICS } from '../data/Data';
 
 export default function InfoView() {
@@ -152,7 +153,7 @@ export default function InfoView() {
             <h1 className="text-[4rem] font-bold text-white mb-3 tracking-widest drop-shadow-lg">
               {activeThumb.alt}
             </h1>
-            <p className="text-[1rem] text-white/90 leading-[2] tracking-[0.15em] text-justify mb-6">
+            <p className="text-[1rem] text-white/90 leading-loose tracking-[0.15em] text-justify mb-6">
               {activeThumb.description}
             </p>
 
@@ -163,7 +164,7 @@ export default function InfoView() {
                 return (
                   <div key={i} className="flex flex-col items-center gap-2 cursor-pointer group" onClick={() => handleThumbClick(i)}>
                     {/* duration-500 控制滑鼠移入(Hover)或選取縮圖時，小圖案微幅放大的彈性反饋速度 */}
-                    <div className="w-[70px] h-[70px] transition-all duration-500 ease-out flex items-center justify-center">
+                    <div className="w-17.5 h-17.5 transition-all duration-500 ease-out flex items-center justify-center">
                       <img 
                         src={thumb.src} 
                         alt={thumb.alt} 
@@ -173,7 +174,7 @@ export default function InfoView() {
                       />
                     </div>
                     {/* duration-500 控制小縮圖下方白色焦點橫線「向兩側平滑伸展」的過渡時間 */}
-                    <div className={`h-[2px] bg-white transition-all duration-500 ${isActive ? 'w-[70%] opacity-100' : 'w-0 opacity-0'}`} />
+                    <div className={`h-0.5 bg-white transition-all duration-500 ${isActive ? 'w-[70%] opacity-100' : 'w-0 opacity-0'}`} />
                   </div>
                 )
               })}

@@ -91,7 +91,7 @@ export default function Header({ activeTab, setActiveTab, isFullScreenView }) {
         onMouseEnter={handleMouseEnter} 
         onMouseLeave={handleMouseLeave} 
         // 🌟 微調了 pr-2 md:pr-4，因為按鈕本身現在自帶 padding 了
-        className={`fixed z-[9999] top-6 right-6 h-[60px] bg-[#F6F6F4]/95 backdrop-blur-md shadow-xl rounded-full border border-stone-200 overflow-hidden transition-all duration-[1000ms] ease-[cubic-bezier(0.25,1,0.25,1)] flex items-center ${
+        className={`fixed z-9999 top-6 right-6 h-15 bg-[#F6F6F4]/95 backdrop-blur-md shadow-xl rounded-full border border-stone-200 overflow-hidden transition-all duration-1000 ease-[cubic-bezier(0.25,1,0.25,1)] flex items-center ${
           isFloatingExpanded ? 'pr-2 md:pr-4' : 'pr-0'
         }`}
       >
@@ -100,7 +100,7 @@ export default function Header({ activeTab, setActiveTab, isFullScreenView }) {
             // 1. 加入 hover:bg-stone-200/50 與 transition-colors duration-300
             // 2. 加入 rounded-l-full 讓 hover 狀態的左邊緣貼合膠囊的圓弧
             // 3. 加入 group 讓裡面的 img 可以感應到外層被 hover
-            className="group min-w-[60px] w-auto h-[60px] flex-shrink-0 flex items-center justify-center cursor-pointer bg-transparent z-20 hover:bg-stone-200/50 rounded-l-full transition-colors duration-300"
+            className="group min-w-15 w-auto h-15 shrink-0 flex items-center justify-center cursor-pointer bg-transparent z-20 hover:bg-stone-200/50 rounded-l-full transition-colors duration-300"
           >
             <img 
               src={LOGO_LONG} 
@@ -111,9 +111,9 @@ export default function Header({ activeTab, setActiveTab, isFullScreenView }) {
           </div>
 
          {/* 🌟 1. 移除原本的 space-x-5，並加上 h-full 讓容器高度填滿 60px */}
-         <div className={`flex items-center h-full whitespace-nowrap overflow-hidden transition-all duration-[1000ms] ease-[cubic-bezier(0.25,1,0.25,1)] ${
+         <div className={`flex items-center h-full whitespace-nowrap overflow-hidden transition-all duration-1000 ease-[cubic-bezier(0.25,1,0.25,1)] ${
            isFloatingExpanded 
-             ? 'max-w-[400px] md:max-w-[600px] opacity-100 delay-100' 
+             ? 'max-w-100 md:max-w-150 opacity-100 delay-100' 
              : 'max-w-0 opacity-0 delay-0 pointer-events-none'
          }`}>
            {filteredNavLinks.map(item => (

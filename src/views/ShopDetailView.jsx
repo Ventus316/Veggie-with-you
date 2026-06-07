@@ -1,7 +1,6 @@
 // src/views/ShopDetailView.jsx
 
 import React, { useState, useEffect } from 'react';
-import useNavigationMemory from '../hooks/useNavigationMemory';
 import { 
   ChevronLeft, 
   MapPin, 
@@ -13,10 +12,11 @@ import {
 } from 'lucide-react';
 
 import { WEEKDAY_ICONS } from '../data/Data';
-// 🌟 1. 引入剛剛拆分出去的燈箱組件
+import { getRealTimeStatus } from '../utils/getRealTimeStatus';
+import useNavigationMemory from '../hooks/useNavigationMemory';
+
 import MenuLightbox from '../components/ui/MenuLightbox_shop';
 
-import { getRealTimeStatus } from '../utils/getRealTimeStatus';
 
 export default function ShopDetailView({ activeTab, setActiveTab, shop }) {
   const [selectedMenu, setSelectedMenu] = useState(null);

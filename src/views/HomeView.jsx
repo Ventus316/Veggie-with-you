@@ -9,7 +9,7 @@ export default function HomeView({ setActiveTab }) {
         <div className="max-w-5xl mx-auto text-center flex flex-col items-center">
               
           {/* 1. 【主標題】：mb-8 控制與下方英文副標的距離 */}
-          <h1 className="text-3xl md:text-5xl lg:text-[3.5rem] font-light text-[#1A1A1A] tracking-[0.1em] leading-[1.4] mb-6">
+          <h1 className="text-3xl md:text-5xl lg:text-[3.5rem] font-light text-[#1A1A1A] tracking-widest leading-[1.4] mb-6">
             讓素食成為一種時尚<br />且低門檻的選擇
           </h1>
           

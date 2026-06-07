@@ -1,16 +1,13 @@
 // src/views/MapView.jsx
 
-// 1. 第三方程式庫 (Core & External)
 import React, { useState, useEffect } from 'react';
 import { ChevronLeft, Star, Clock, Search, MapPin, X, ArrowRight } from 'lucide-react';
 
-// 2. 邏輯、資料與 Hooks (Data & Logic)
 import { SORT_ICONS } from '../data/Data';
+import { getRealTimeStatus } from '../utils/getRealTimeStatus';
 import useShopFilters from '../hooks/useShopFilters';
 import useNavigationMemory from '../hooks/useNavigationMemory';
-import { getRealTimeStatus } from '../utils/getRealTimeStatus';
 
-// 3. 內部元件 (Components)
 import GoogleMapComponent from '../components/ui/GoogleMapComponent_map';
 
 

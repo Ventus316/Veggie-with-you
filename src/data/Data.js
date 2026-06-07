@@ -17,9 +17,6 @@ import iconWalk from '../assets/sort/icon_walking.png';
 import iconBicycle from '../assets/sort/icon_bicycle.svg';
 import iconScooter from '../assets/sort/icon_scooter.svg';
 
-import mapSchool from '../assets/map/school.png';
-import mapRadish from '../assets/map/radish.png';
-
 export const LOGO_LONG = logo_long;
 export const LOGO_SHORT = logo_short;
 
@@ -38,9 +35,6 @@ export const SORT_ICONS = {
   bicycle: iconBicycle,
   scooter: iconScooter
 }
-
-export const MAP_SCHOOL = mapSchool;
-export const MAP_RADISH = mapRadish;
 
 
 // 根據上方的 RESTAURANTS 動態生成首頁的熱門餐點

@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import { MapPin } from 'lucide-react';
+
 import { ALL_DISHES } from '../data/Data';
 import { RESTAURANTS } from '../data/restaurantsData';
 import useNavigationMemory from '../hooks/useNavigationMemory';
