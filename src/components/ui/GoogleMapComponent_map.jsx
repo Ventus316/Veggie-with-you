@@ -90,6 +90,22 @@ export default function GoogleMapComponent({ shops, selectedShop, userLocation, 
   useEffect(() => {
     if (!isMapReady || !googleMap.current || !window.google || !userLocation) return;
 
+    // 🌟 【核心防護】：辨識這是不是「假的」防呆座標
+    // 如果傳進來的座標跟學校一模一樣，代表沒有真實 GPS
+    const isFallbackLocation = userLocation.lat === 24.9705 && userLocation.lng === 121.2633;
+
+    if (isFallbackLocation) {
+      // 既然是假的，就絕對不畫藍點！
+      // 如果之前不小心畫出來了，就把它隱藏 (setMap(null))
+      if (userMarkerRef.current) {
+        userMarkerRef.current.setMap(null); 
+      }
+      return; // 提早結束，阻斷後續畫圖邏輯
+    }
+
+    // ==========================================
+    // 往下走的，100% 都是擁有真實 GPS 的天選之人
+    // ==========================================
     if (!userMarkerRef.current) {
       // 如果還沒畫過，就新建一個 Marker
       userMarkerRef.current = new window.google.maps.Marker({
@@ -98,30 +114,33 @@ export default function GoogleMapComponent({ shops, selectedShop, userLocation, 
         title: "您的當前位置",
         icon: {
           url: currentLocationIcon,
-          scaledSize: new window.google.maps.Size(40, 40), // 可自行調整圖標大小
-          anchor: new window.google.maps.Point(20, 20),    // 讓圖標正中心對齊座標
+          scaledSize: new window.google.maps.Size(40, 40), 
+          anchor: new window.google.maps.Point(20, 20),    
         },
         zIndex: 9999, // 確保在最上層
       });
     } else {
-      // 如果已經畫過，但位置改變了，就更新座標
+      // 如果已經畫過，確保它有顯示在地圖上，並更新位置
+      userMarkerRef.current.setMap(googleMap.current);
       userMarkerRef.current.setPosition(userLocation);
     }
   }, [userLocation, isMapReady]);
 
-  // 👇 4. 新增這段：動態計算與繪製路線
+  // 👇 4. 動態計算與繪製路線
   useEffect(() => {
     // 確保所有地圖與導航工具都載入完畢
     if (!isMapReady || !googleMap.current || !window.google || !directionsService.current || !directionsRenderer.current) return;
 
-    // 狀況 A：如果沒有選取店家，就「清除」地圖上的路線 (🌟 拿掉 !userLocation 的限制)
+    // 狀況 A：如果沒有選取店家，就「清除」地圖上的路線
     if (!selectedShop) {
       directionsRenderer.current.setDirections({ routes: [] });
       return;
     }
 
-    // 🌟 新增：決定起點！如果有 userLocation 就用真實定位，沒有就用學校預設座標
-    if (!userLocation) return;
+    // 🌟 【防呆恢復】：如果沒有真實定位，路線的起點就預設為學校座標。
+    // (注意：畫藍色定位點的 useEffect 依然維持 !userLocation return 的保護，所以沒定位時不會畫藍點)
+    const yzuCenter = { lat: 24.9705, lng: 121.2633 };
+    const routeOrigin = userLocation ? userLocation : yzuCenter;
 
     // 狀況 B：轉換交通方式
     let travelMode = window.google.maps.TravelMode.WALKING;
@@ -131,7 +150,7 @@ export default function GoogleMapComponent({ shops, selectedShop, userLocation, 
     // 狀況 C：發送請求給 Google 計算路線
     directionsService.current.route(
       {
-        origin: originLocation, // 🌟 起點改用我們上面判斷好的 originLocation
+        origin: routeOrigin, // 🌟 使用判斷好的起點 (真實定位或學校預設)
         destination: { lat: selectedShop.lat, lng: selectedShop.lng }, // 終點：店家位置
         travelMode: travelMode,
       },
